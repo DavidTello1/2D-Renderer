@@ -72,9 +72,6 @@
     <ClInclude Include="Color.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Sources\GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Glew\include\eglew.h">
       <Filter>Sources\External Libraries\Glew</Filter>
     </ClInclude>
@@ -365,6 +362,9 @@
     </ClInclude>
     <ClInclude Include="ModuleInput.h">
       <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Sources\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
+#include "ModuleGUI.h"
 #include "ModuleResources.h"
 
 #include "ImGui/imgui.h"
@@ -110,6 +111,17 @@ bool ModuleInput::PreUpdate(float dt)
 
 		case SDL_MOUSEWHEEL:
 			mouse_wheel = e.wheel.y;
+			break;
+
+		case SDL_WINDOWEVENT:
+			switch (e.window.event)
+			{
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				App->window->SetWidth(e.window.data1, false);
+				App->window->SetHeigth(e.window.data2, false);
+				App->gui->is_update_pos = true;
+				break;
+			}
 			break;
 
 		case SDL_QUIT:

@@ -76,7 +76,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Color.h" />
-    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Glew\include\eglew.h" />
     <ClInclude Include="Glew\include\glew.h" />
     <ClInclude Include="Glew\include\glxew.h" />

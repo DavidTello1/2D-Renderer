@@ -27,8 +27,8 @@ bool ModuleWindow::Init()
 		SDL_GetDesktopDisplayMode(0, &DM);
 
 		//Create window
-		screen_width = 1024;
-		screen_height = 768;
+		screen_width = DEFAULT_WIDTH;
+		screen_height = DEFAULT_HEIGHT;
 
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
@@ -36,7 +36,7 @@ bool ModuleWindow::Init()
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-		window = SDL_CreateWindow("OOP", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, flags);
+		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, flags);
 
 		if (window == nullptr)
 		{
@@ -74,14 +74,18 @@ bool ModuleWindow::CleanUp()
 	return true;
 }
 
-void ModuleWindow::SetWidth(uint width)
+void ModuleWindow::SetWidth(uint width, bool update_size)
 {
-	SDL_SetWindowSize(window, width, GetHeight()); screen_width = width;
+	if (update_size) 
+		SDL_SetWindowSize(window, width, GetHeight());
+	screen_width = width;
 }
 
-void ModuleWindow::SetHeigth(uint height)
+void ModuleWindow::SetHeigth(uint height, bool update_size)
 {
-	SDL_SetWindowSize(window, GetWidth(), height); screen_height = height;
+	if (update_size)
+		SDL_SetWindowSize(window, GetWidth(), height);
+	screen_height = height;
 }
 
 uint ModuleWindow::GetRefreshRate() const

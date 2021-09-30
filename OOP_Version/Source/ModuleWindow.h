@@ -1,6 +1,10 @@
 #pragma once
 #include "Module.h"
 
+#define TITLE "OOP Version - David Tello"
+#define DEFAULT_WIDTH 1024
+#define DEFAULT_HEIGHT 768
+
 struct SDL_Window;
 struct SDL_Surface;
 
@@ -18,8 +22,8 @@ public:
 	uint GetWidth() const { return screen_width; }
 	uint GetHeight() const { return screen_height; }
 
-	void SetWidth(uint width);
-	void SetHeigth(uint height);
+	void SetWidth(uint width, bool update_size = true);
+	void SetHeigth(uint height, bool update_size = true);
 
 	uint GetRefreshRate() const;
 	void GetMaxMinSize(uint& min_width, uint& min_height, uint& max_width, uint& max_height) const;

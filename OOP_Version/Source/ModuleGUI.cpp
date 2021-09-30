@@ -5,6 +5,8 @@
 #include "ModuleScene.h"
 #include "ModuleRenderer.h"
 
+#include "Color.h"
+
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
 #include "imgui/imgui_impl_sdl.h"
@@ -13,6 +15,7 @@
 ModuleGUI::ModuleGUI(bool start_enabled) : Module("ModuleGUI", start_enabled)
 {
 	is_debug = false;
+	num_asteroids = 0;
 }
 
 // Destructor
@@ -112,18 +115,67 @@ void ModuleGUI::Draw()
 
 void ModuleGUI::DrawInfo()
 {
-	if (ImGui::Begin("Options", NULL))
+	ImGui::SetNextWindowSize(ImVec2(PANEL_WIDTH, PANEL_HEIGHT), ImGuiCond_FirstUseEver);
+	if (is_update_pos)
 	{
-		ImGui::Text("FPS: %d", App->GetFPS());
-		ImGui::Text("Asteroids: ");
-		ImGui::Text("World Size: ");
-		ImGui::NewLine();
-		
-		ImGui::Checkbox("Debug Mode", &is_debug);
-		ImGui::Separator();
+		ImGui::SetNextWindowPos(ImVec2(App->window->GetWidth() - PANEL_WIDTH - 3, 3));
+		is_update_pos = false;
+	}
 
-		ImGui::Button("Add Asteroid");
-		ImGui::Button("Delete Asteroid");
+	if (ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
+	{
+		ImGui::Columns(2, "columns", false);
+
+		ImGui::Text("FPS:");
+		ImGui::Text("Asteroids:");
+		ImGui::Text("World Size:");
+		ImGui::NextColumn();
+
+		ImGui::TextColored(YELLOW, "%d", App->GetFPS());
+		ImGui::TextColored(YELLOW, "0"); //Number of asteroids
+		ImGui::TextColored(YELLOW, "0"); //World width
+		ImGui::SameLine(0,0);
+		ImGui::Text("x");
+		ImGui::SameLine(0,0);
+		ImGui::TextColored(YELLOW, "0"); //world height
+		
+		ImGui::Columns(1);
+		ImGui::NewLine();
+
+		ImGui::Checkbox("Debug Mode", &is_debug);
+		ImGui::NewLine();
+
+		ImGui::SetNextItemWidth(100);
+		ImGui::InputInt("Asteroids", &num_asteroids, 1, 10);
+
+		float width = ImGui::GetContentRegionAvailWidth() / 2;
+
+		if (ImGui::Button("Add", ImVec2(width, 0)))
+		{
+			//for (uint i = 0; i < num_asteroids; ++i)
+			//{
+			//	InstantiateEntity();
+			//}
+			num_asteroids = 0;
+		}
+		ImGui::SameLine(0,1);
+
+		if (ImGui::Button("Delete", ImVec2(width, 0)))
+		{
+			//if (num_asteroids >= entities.size())
+			//{
+			//	App->scene->DeleteAllEntities();
+			//}
+			//else
+			//{
+			//	for (uint i = 0; i < num_asteroids; ++i)
+			//	{
+			//		Entity* entity = entities[0];
+			//		App->scene->DeleteEntity(entity);
+			//	}
+			//}
+			num_asteroids = 0;
+		}
 	}
 	ImGui::End();
 }
