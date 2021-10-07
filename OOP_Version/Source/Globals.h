@@ -40,12 +40,16 @@ void log(const char file[], int line, const char* format, ...);
 typedef unsigned int uint;
 typedef unsigned char uchar;
 typedef unsigned long ulong;
+typedef unsigned long long int u64;
 typedef unsigned long long UID;
+
 
 // Align 16, use if you have math elements in your class like float4x4 or AABB
 #define ALIGN_CLASS_TO_16 \
 	void* operator new(size_t i) { return _aligned_malloc(i,16); }\
     void operator delete(void* p) { _aligned_free(p); }
+
+#define ARRAY_COUNT(array) (sizeof(array)/sizeof(array[0]))
 
 // Deletes a buffer
 #define RELEASE( x )\

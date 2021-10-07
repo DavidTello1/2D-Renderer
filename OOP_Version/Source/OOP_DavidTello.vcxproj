@@ -183,6 +183,8 @@
     <ClInclude Include="SDL\include\SDL_version.h" />
     <ClInclude Include="SDL\include\SDL_video.h" />
     <ClInclude Include="SDL\include\SDL_vulkan.h" />
+    <ClInclude Include="stb\stb_image.h" />
+    <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +206,7 @@
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="PCG\pcg_basic.c" />
     <ClCompile Include="mmgr\mmgr.cpp" />
+    <ClCompile Include="stb\stb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SDL\include\SDL_config.h.cmake" />

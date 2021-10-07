@@ -3,7 +3,7 @@
 
 #include <vector>
 
-class Component;
+//class Component;
 
 class Entity
 {
@@ -21,5 +21,5 @@ public:
 private:
 	UID uid = 0;
 
-	std::vector<Component*> components;
+	//std::vector<Component*> components;
 };
