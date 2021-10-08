@@ -5,7 +5,7 @@
 #include "ModuleScene.h"
 #include "ModuleRenderer.h"
 
-#include "Color.h"
+#include "ModuleResources.h" //
 
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
@@ -43,14 +43,9 @@ bool ModuleGUI::Init()
 	return true;
 }
 
-bool ModuleGUI::Start()
-{
-	return true;
-}
-
 bool ModuleGUI::PreUpdate(float dt)
 {
-	// ImGui
+	// ImGui New Frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->GetWindow());
 	ImGui::NewFrame();
@@ -85,26 +80,6 @@ bool ModuleGUI::CleanUp()
 
 void ModuleGUI::Draw()
 {
-	// DockSpace
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(viewport->Pos);
-	ImGui::SetNextWindowSize(viewport->Size);
-	ImGui::SetNextWindowViewport(viewport->ID);
-
-	ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::Begin("DockSpace", NULL, window_flags);
-	ImGuiID main_dockspace = ImGui::GetID("MyDockspace");
-	float menuBarHeight = ImGui::GetCurrentWindow()->MenuBarHeight();
-
-	ImGui::DockSpace(main_dockspace);
-	ImGui::End();
-	ImGui::PopStyleVar(3);
-
 	// Draw Panel
 	DrawInfo();
 
@@ -118,7 +93,7 @@ void ModuleGUI::DrawInfo()
 	ImGui::SetNextWindowSize(ImVec2(PANEL_WIDTH, PANEL_HEIGHT), ImGuiCond_FirstUseEver);
 	if (is_update_pos)
 	{
-		ImGui::SetNextWindowPos(ImVec2(App->window->GetWidth() - PANEL_WIDTH - 3, 3));
+		ImGui::SetNextWindowPos(ImVec2((float)App->window->GetWidth() - PANEL_WIDTH - 3, 3));
 		is_update_pos = false;
 	}
 
@@ -176,6 +151,8 @@ void ModuleGUI::DrawInfo()
 			//}
 			num_asteroids = 0;
 		}
+
+		ImGui::Image((ImTextureID)App->resources->textures[0]->index, { 20,20 });
 	}
 	ImGui::End();
 }

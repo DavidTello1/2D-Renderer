@@ -2,7 +2,7 @@
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
-#include "ModuleResources.h"
+#include "ModuleRenderer.h"
 
 #include "ImGui/imgui.h"
 #include "imGui/imgui_impl_sdl.h"
@@ -120,6 +120,7 @@ bool ModuleInput::PreUpdate(float dt)
 				App->window->SetWidth(e.window.data1, false);
 				App->window->SetHeigth(e.window.data2, false);
 				App->gui->is_update_pos = true;
+				App->renderer->UpdateViewportSize();
 				break;
 			}
 			break;

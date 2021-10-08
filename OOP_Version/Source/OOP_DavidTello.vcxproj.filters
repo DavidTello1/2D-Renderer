@@ -37,6 +37,9 @@
     <Filter Include="Sources\External Libraries\stb">
       <UniqueIdentifier>{78ada863-0371-41f1-89d5-14eb7bb63cfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Shaders">
+      <UniqueIdentifier>{1f5c46c1-5a95-4e7b-8b12-84db0781a267}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -71,9 +74,6 @@
     </ClInclude>
     <ClInclude Include="mmgr\nommgr.h">
       <Filter>Sources\External Libraries\mmgr</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Sources\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Glew\include\eglew.h">
       <Filter>Sources\External Libraries\Glew</Filter>
@@ -398,9 +398,6 @@
     <ClCompile Include="mmgr\mmgr.cpp">
       <Filter>Sources\External Libraries\mmgr</Filter>
     </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>Sources\Tools</Filter>
-    </ClCompile>
     <ClCompile Include="PCG\pcg_basic.c">
       <Filter>Sources\External Libraries\PCG</Filter>
     </ClCompile>
@@ -444,6 +441,9 @@
     </None>
     <None Include="SDL\include\SDL_config_macosx.h.orig">
       <Filter>Sources\External Libraries\SDL</Filter>
+    </None>
+    <None Include="..\Game\Assets\shaders.glsl">
+      <Filter>Sources\Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

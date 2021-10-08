@@ -75,7 +75,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Color.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Glew\include\eglew.h" />
     <ClInclude Include="Glew\include\glew.h" />
@@ -189,7 +188,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Color.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
     <ClCompile Include="Imgui\imgui_demo.cpp" />
     <ClCompile Include="Imgui\imgui_draw.cpp" />
@@ -209,6 +207,7 @@
     <ClCompile Include="stb\stb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Game\Assets\shaders.glsl" />
     <None Include="SDL\include\SDL_config.h.cmake" />
     <None Include="SDL\include\SDL_config.h.in" />
     <None Include="SDL\include\SDL_config_macosx.h.orig" />

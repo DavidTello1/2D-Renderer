@@ -12,7 +12,6 @@ public:
 	virtual ~ModuleGUI();
 
 	bool Init() override;
-	bool Start() override;
 	bool PreUpdate(float dt) override;
 	bool Update(float dt) override;
 	bool PostUpdate(float dt) override;

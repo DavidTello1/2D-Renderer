@@ -14,9 +14,9 @@ public:
 	ModuleWindow(bool start_enabled = true);
 	virtual ~ModuleWindow();
 
-	bool Init();
-	bool Start();
-	bool CleanUp();
+	bool Init() override;
+	bool Start() override;
+	bool CleanUp() override;
 
 	SDL_Window* GetWindow() const { return window; }
 	uint GetWidth() const { return screen_width; }

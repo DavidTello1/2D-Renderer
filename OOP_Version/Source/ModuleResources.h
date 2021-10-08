@@ -50,7 +50,7 @@ public:
 	ModuleResources(bool start_enabled = true);
 	virtual ~ModuleResources();
 
-	bool Init() override;
+	bool Start() override;
 	bool Update(float dt) override;
 	bool CleanUp() override;
 
@@ -64,13 +64,7 @@ public:
 	static GLuint CreateTexture(Image image);
 	Texture* LoadTexture(const char* filepath);
 
-	void CreateQuad();
-
 public:
 	std::vector<Texture*> textures;
 	std::vector<Shader*> shaders;
-
-	// Quad
-	uint quadVAO = 0;
-	uint quadVBO = 0;
 };

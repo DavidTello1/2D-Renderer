@@ -18,9 +18,9 @@ public:
 	ModuleInput(bool start_enabled = true);
 	~ModuleInput();
 
-	bool Init();
-	bool PreUpdate(float dt);
-	bool CleanUp();
+	bool Init() override;
+	bool PreUpdate(float dt) override;
+	bool CleanUp() override;
 
 	KEY_STATE GetKey(int id) const { return keyboard[id]; }
 	KEY_STATE GetMouseButton(int id) const { return mouse_buttons[id]; }

@@ -1,4 +1,6 @@
 #include "ModuleResources.h"
+#include "Application.h"
+#include "ModuleRenderer.h"
 
 #include <windows.h>
 #include <fstream>
@@ -12,9 +14,10 @@ ModuleResources::~ModuleResources()
 {
 }
 
-bool ModuleResources::Init()
+bool ModuleResources::Start()
 {
-    //CreateQuad(); // create base quad
+    //LoadTexture("Assets/asteroids.png"); // Load Texture
+	LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER"); // Load Default Shader
 
     return true;;
 }
@@ -130,7 +133,7 @@ GLuint ModuleResources::CreateShader(std::string source, const char* name)
     if (!success)
     {
         glGetShaderInfoLog(vshader, infoLogBufferSize, &infoLogSize, infoLogBuffer);
-        LOG("glCompileShader() failed with vertex shader {0}\nReported message:\n{1}\n", name, infoLogBuffer);
+        LOG("glCompileShader() failed with vertex shader %s\nReported message:\n%s\n", name, infoLogBuffer);
     }
 
     GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -140,7 +143,7 @@ GLuint ModuleResources::CreateShader(std::string source, const char* name)
     if (!success)
     {
         glGetShaderInfoLog(fshader, infoLogBufferSize, &infoLogSize, infoLogBuffer);
-        LOG("glCompileShader() failed with fragment shader {0}\nReported message:\n{1}\n", name, infoLogBuffer);
+        LOG("glCompileShader() failed with fragment shader %s\nReported message:\n%s\n", name, infoLogBuffer);
     }
 
     GLuint programHandle = glCreateProgram();
@@ -151,7 +154,7 @@ GLuint ModuleResources::CreateShader(std::string source, const char* name)
     if (!success)
     {
         glGetProgramInfoLog(programHandle, infoLogBufferSize, &infoLogSize, infoLogBuffer);
-        LOG("glLinkProgram() failed with program {0}\nReported message:\n{1}\n", name, infoLogBuffer);
+        LOG("glLinkProgram() failed with program %s\nReported message:\n%s\n", name, infoLogBuffer);
     }
 
     glUseProgram(0);
@@ -217,14 +220,20 @@ GLuint ModuleResources::CreateTexture(Image image)
     GLuint texHandle;
     glGenTextures(1, &texHandle);
     glBindTexture(GL_TEXTURE_2D, texHandle);
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.size.x, image.size.y, 0, dataFormat, dataType, image.pixels);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.size.x, image.size.y, 0, dataFormat, dataType, image.pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    //glCreateTextures(GL_TEXTURE_2D, 1, &default_tex);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 
     return texHandle;
 }
@@ -239,7 +248,7 @@ Texture* ModuleResources::LoadTexture(const char* filepath)
     }
 
     Image image = {};
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
     image.pixels = stbi_load(filepath, &image.size.x, &image.size.y, &image.nchannels, 0); // load image
     if (image.pixels)
     {
@@ -256,25 +265,4 @@ Texture* ModuleResources::LoadTexture(const char* filepath)
     }
     else
         return nullptr;
-}
-
-void ModuleResources::CreateQuad()
-{
-    // Create Quad VAO & VBO
-    float quadVertices[] = {
-        // positions        // texture Coords
-        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-         1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-    };
-    glGenVertexArrays(1, &quadVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindVertexArray(quadVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 }
