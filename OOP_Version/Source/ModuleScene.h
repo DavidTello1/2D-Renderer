@@ -1,6 +1,10 @@
 #pragma once
 #include "Module.h"
-#include "glm/include/glm/glm.hpp"
+
+#include <vector>
+
+class Entity;
+class ComponentCamera;
 
 class ModuleScene : public Module
 {
@@ -14,11 +18,14 @@ public:
 
 	void Draw();
 
-public:
-	//Camera* camera = nullptr;
-	//std::vector<Entity*> entities;
+	//void AddAsteroids(int num);
+	//void DeleteAsteroids(int num);
 
 private:
-	glm::mat4 ViewMatrix;
-	glm::mat4 ProjectionMatrix;
+	Entity* CreateEntity();
+	void DeleteEntity(Entity* entity);
+
+public:
+	ComponentCamera* main_camera = nullptr;
+	std::vector<Entity*> entities;
 };

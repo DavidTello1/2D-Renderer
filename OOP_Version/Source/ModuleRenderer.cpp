@@ -82,18 +82,9 @@ bool ModuleRenderer::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	// Default Texture (white 1x1)
-	glCreateTextures(GL_TEXTURE_2D, 1, &default_tex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	uint32_t color = 0xffffffff;
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
-
 	// Init Textures
 	batch.textures.reserve(MaxTextures);
-	batch.textures.push_back(default_tex_slot);
+	batch.textures.push_back(App->resources->default_tex);
 	batch.textures.push_back(App->resources->LoadTexture("Assets/asteroids.png")->index);
 	for (size_t i = 2; i < MaxTextures; i++)
 		batch.textures.emplace_back(0.0f);
@@ -134,8 +125,6 @@ bool ModuleRenderer::CleanUp()
 	glDeleteVertexArrays(1, &quadVAO);
 	glDeleteBuffers(1, &quadVBO);
 	glDeleteBuffers(1, &quadIBO);
-
-	glDeleteTextures(1, &default_tex);
 
 	delete[] batch.quad_buffer;
 

@@ -3,7 +3,10 @@
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
 #include "ModuleRenderer.h"
+#include "ModuleScene.h"
+#include "ComponentCamera.h"
 
+#include "glm/include/glm/gtx/transform.hpp"
 #include "ImGui/imgui.h"
 #include "imGui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -121,6 +124,7 @@ bool ModuleInput::PreUpdate(float dt)
 				App->window->SetHeigth(e.window.data2, false);
 				App->gui->is_update_pos = true;
 				App->renderer->UpdateViewportSize();
+				if (App->scene->main_camera != nullptr) App->scene->main_camera->UpdateMatrices();
 				break;
 			}
 			break;

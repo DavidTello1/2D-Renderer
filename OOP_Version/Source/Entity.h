@@ -1,9 +1,10 @@
 #pragma once
-#include "Globals.h"
+#include "Component.h"
 
 #include <vector>
 
-//class Component;
+typedef unsigned long long UID;
+typedef unsigned int uint;
 
 class Entity
 {
@@ -13,13 +14,13 @@ public:
 
 	UID GetUID() { return uid; }
 
-	//Component* GetComponent(Component::Type component);
-	//Component* AddComponent(Component::Type component);
-	//void DeleteComponent(Component::Type component);
-	//bool HasComponent(Component::Type component);
+	Component* AddComponent(Component::Type component);
+	void DeleteComponent(Component::Type component);
+	Component* GetComponent(Component::Type component) const;
+
+	void Draw(uint shader);
 
 private:
+	std::vector<Component*> components;
 	UID uid = 0;
-
-	//std::vector<Component*> components;
 };

@@ -16,8 +16,17 @@ ModuleResources::~ModuleResources()
 
 bool ModuleResources::Start()
 {
-    //LoadTexture("Assets/asteroids.png"); // Load Texture
-	LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER"); // Load Default Shader
+    // Default Shader
+	default_shader = LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER"); 
+
+    // Default Texture (white 1x1)
+    glCreateTextures(GL_TEXTURE_2D, 1, &default_tex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    uint32_t color = 0xffffffff;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
 
     return true;;
 }
@@ -53,6 +62,8 @@ bool ModuleResources::CleanUp()
     for (uint i = 0; i < shaders.size(); ++i)
         delete(shaders[i]);
     shaders.clear();
+
+    glDeleteTextures(1, &default_tex);
 
     return true;
 }
@@ -227,13 +238,6 @@ GLuint ModuleResources::CreateTexture(Image image)
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.size.x, image.size.y, 0, dataFormat, dataType, image.pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
-
-    //glCreateTextures(GL_TEXTURE_2D, 1, &default_tex);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
 
     return texHandle;
 }

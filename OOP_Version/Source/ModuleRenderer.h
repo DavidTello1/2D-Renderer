@@ -1,7 +1,6 @@
 #pragma once
 #include "Module.h"
 
-#include <array>
 #include "glm/include/glm/glm.hpp"
 
 struct Texture;
@@ -66,10 +65,6 @@ public:
 	GLuint quadVAO = 0;
 	GLuint quadVBO = 0;
 	GLuint quadIBO = 0;
-
-	// Default Texture
-	GLuint default_tex = 0;
-	uint32_t default_tex_slot = 0;
 
 	// Batch
 	Batch batch;

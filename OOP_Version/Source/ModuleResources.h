@@ -67,4 +67,7 @@ public:
 public:
 	std::vector<Texture*> textures;
 	std::vector<Shader*> shaders;
+
+	GLuint default_shader = 0;
+	GLuint default_tex = 0;
 };
