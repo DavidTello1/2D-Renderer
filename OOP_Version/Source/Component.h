@@ -12,6 +12,7 @@ public:
 		RENDERER,
 		SPRITE,
 		COLLIDER,
+		ANIMATION,
 		ASTEROID,
 		UNKNOWN
 	};

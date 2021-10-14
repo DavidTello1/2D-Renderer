@@ -8,7 +8,6 @@
 #include "Imgui/imgui.h"
 #include "Glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
-#include "glm/include/glm/gtx/transform.hpp"
 
 #pragma comment(lib, "glew/libx86/glew32.lib")
 #pragma comment (lib, "glu32.lib")    // link OpenGL Utility lib
@@ -85,8 +84,7 @@ bool ModuleRenderer::Init()
 	// Init Textures
 	batch.textures.reserve(MaxTextures);
 	batch.textures.push_back(App->resources->default_tex);
-	batch.textures.push_back(App->resources->LoadTexture("Assets/asteroids.png")->index);
-	for (size_t i = 2; i < MaxTextures; i++)
+	for (size_t i = 1; i < MaxTextures; i++)
 		batch.textures.emplace_back(0.0f);
 
 	return ret;

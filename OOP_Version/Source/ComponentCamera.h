@@ -11,13 +11,20 @@ public:
 
 	static inline Component::Type GetType() { return Component::Type::CAMERA; }
 
-	glm::vec2 GetPosition() const { return position; }
+	const glm::vec2& GetPosition() const { return position; }
 	void SetPosition(glm::vec2 pos) { position = pos; }
 
-	float GetZoom() const { return zoom; }
+	const float& GetZoom() const { return zoom; }
 	void SetZoom(float zoom_) { zoom = zoom_; }
 
-	glm::mat4 GetViewProjMatrix() const { return ViewMatrix * ProjectionMatrix; }
+	const float& GetZoomSpeed() const { return zoom_speed; }
+	void SetZoomSpeed(float speed) { zoom_speed = speed; }
+
+	const float& GetMoveSpeed() const { return move_speed; }
+	void SetMoveSpeed(float speed) { move_speed = speed; }
+
+
+	const glm::mat4& GetViewProjMatrix() const { return ViewMatrix * ProjectionMatrix; }
 	void UpdateMatrices() { UpdateViewMatrix(); UpdateProjectionMatrix(); }
 
 private:
@@ -25,10 +32,13 @@ private:
 	void UpdateProjectionMatrix();
 
 private:
-	glm::vec2 position;
-	float zoom;
+	glm::vec2 position = glm::vec2(0.0f);
+	float zoom = 0.0f;
 
-	glm::mat4 ViewMatrix;
-	glm::mat4 ProjectionMatrix;
+	float move_speed = 0.0f;
+	float zoom_speed = 0.0f;
+
+	glm::mat4 ViewMatrix = glm::mat4(1.0f);
+	glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
 };
 

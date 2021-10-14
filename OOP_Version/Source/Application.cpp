@@ -107,8 +107,8 @@ void Application::FinishUpdate()
 	if (capped_ms > 0 && (last_frame_ms < capped_ms))
 		SDL_Delay(capped_ms - last_frame_ms);
 
-	//// notify the editor
-	//editor->LogFPS((float)last_fps, (float)last_frame_ms);
+	// log fps
+	gui->AddFPS((float)last_fps, (float)last_frame_ms);
 }
 
 // ---------------------------------------------

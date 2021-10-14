@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 
+#define FPS_LOG_SIZE 100
 #define PANEL_WIDTH 185
 #define PANEL_HEIGHT 185
 #define YELLOW { 1.00f, 1.00f, 0.00f , 1.00f}
@@ -12,6 +13,7 @@ public:
 	virtual ~ModuleGUI();
 
 	bool Init() override;
+	bool Start() override;
 	bool PreUpdate(float dt) override;
 	bool Update(float dt) override;
 	bool PostUpdate(float dt) override;
@@ -20,10 +22,18 @@ public:
 	void Draw();
 	void DrawInfo();
 
+	void AddFPS(float fps, float ms);
+
 public:
 	bool is_update_pos = false;
 	bool is_debug = false;
 
 private:
 	int num_asteroids = 0;
+
+	int move_speed = 0;
+	int zoom_speed = 0;
+
+	std::vector<float> fps_log;
+	std::vector<float> ms_log;
 };

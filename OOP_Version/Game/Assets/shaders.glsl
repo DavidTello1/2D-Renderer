@@ -33,7 +33,6 @@ in vec2 vTexCoord;
 in float vTexIndex;
 
 uniform sampler2D uTextures[32];
-//uniform sampler2D uTexture;
 
 layout (location = 0) out vec4 oColor;
 
@@ -41,9 +40,6 @@ void main()
 {
 	int index = int(vTexIndex);
 	oColor	  = texture(uTextures[index], vTexCoord) * vColor;
-	//oColor	  = texture(uTexture, vTexCoord) * vColor;
-
-	//oColor = vColor;
 }
 
 #endif

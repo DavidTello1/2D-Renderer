@@ -5,17 +5,17 @@
 #include "ModuleScene.h"
 #include "ModuleRenderer.h"
 
-#include "ModuleResources.h" //
+#include "ComponentCamera.h"
 
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-ModuleGUI::ModuleGUI(bool start_enabled) : Module("ModuleGUI", start_enabled)
+ModuleGUI::ModuleGUI(bool start_enabled) : Module("ModuleGUI", start_enabled), fps_log(FPS_LOG_SIZE), ms_log(FPS_LOG_SIZE)
 {
 	is_debug = false;
-	num_asteroids = 0;
+	num_asteroids = 1;
 }
 
 // Destructor
@@ -39,6 +39,14 @@ bool ModuleGUI::Init()
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->context);
 	ImGui_ImplOpenGL3_Init();
+
+	return true;
+}
+
+bool ModuleGUI::Start()
+{
+	move_speed = App->scene->main_camera->GetMoveSpeed();
+	zoom_speed = App->scene->main_camera->GetZoomSpeed();
 
 	return true;
 }
@@ -97,62 +105,118 @@ void ModuleGUI::DrawInfo()
 		is_update_pos = false;
 	}
 
-	if (ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
+	if (ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::Columns(2, "columns", false);
 
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
 		ImGui::Text("FPS:");
-		ImGui::Text("Asteroids:");
-		ImGui::Text("World Size:");
 		ImGui::NextColumn();
 
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
 		ImGui::TextColored(YELLOW, "%d", App->GetFPS());
+		ImGui::SameLine();
+		ImGui::SetCursorPos(ImVec2(PANEL_WIDTH - 25.0f, ImGui::GetCursorPosY() - 5.0f));
+		static int dir = ImGuiDir_Down;
+		if (ImGui::ArrowButton("##Histogram", dir))
+		{
+			if (dir == ImGuiDir_Up)
+				dir = ImGuiDir_Down;
+			else 
+				dir = ImGuiDir_Up;
+		}
+		ImGui::Columns(1);
+
+		if (dir == ImGuiDir_Up)
+		{
+			char title[25];
+			sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
+			ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(PANEL_WIDTH - 15.0f, 50));
+			sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
+			ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(PANEL_WIDTH - 15.0f, 50));
+			ImGui::Separator();
+		}
+		else
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 1.0f);
+
+		ImGui::Columns(2, "columns1", false);
+		ImGui::Text("Asteroids:");
+		ImGui::Text("World Size:");
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
+		ImGui::Text("Debug Mode");
+		ImGui::NextColumn();
+
 		ImGui::TextColored(YELLOW, "0"); //Number of asteroids
 		ImGui::TextColored(YELLOW, "0"); //World width
 		ImGui::SameLine(0,0);
 		ImGui::Text("x");
 		ImGui::SameLine(0,0);
 		ImGui::TextColored(YELLOW, "0"); //world height
-		
+		ImGui::Checkbox("##Debug Mode", &is_debug);
 		ImGui::Columns(1);
-		ImGui::NewLine();
 
-		ImGui::Checkbox("Debug Mode", &is_debug);
-		ImGui::NewLine();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
+		if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		{
+			ImGui::Columns(2, "columns2", false);
 
-		ImGui::SetNextItemWidth(100);
-		ImGui::InputInt("Asteroids", &num_asteroids, 1, 10);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::Text("Move Speed");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::Text("Zoom Speed");
+			ImGui::NextColumn();
 
-		float width = ImGui::GetContentRegionAvailWidth() / 2;
+			if (ImGui::InputInt("##Move Speed", &move_speed, 0))
+				App->scene->main_camera->SetMoveSpeed((float)move_speed);
+			if (ImGui::InputInt("##Zoom Speed", &zoom_speed, 0))
+				App->scene->main_camera->SetZoomSpeed((float)zoom_speed);
 
+			ImGui::Columns(1);
+			ImGui::Separator();
+		}
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+		ImGui::Columns(2, "columns3", false);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+		ImGui::Text("Asteroids");
+		ImGui::NextColumn();
+
+		ImGui::InputInt("##Asteroids", &num_asteroids, 0);
+		ImGui::Columns(1);
+
+		float width = (PANEL_WIDTH - 16.0f) / 2;
 		if (ImGui::Button("Add", ImVec2(width, 0)))
 		{
-			//for (uint i = 0; i < num_asteroids; ++i)
-			//{
-			//	InstantiateEntity();
-			//}
-			num_asteroids = 0;
+			App->scene->AddAsteroids(num_asteroids);
+			num_asteroids = 1;
 		}
 		ImGui::SameLine(0,1);
 
 		if (ImGui::Button("Delete", ImVec2(width, 0)))
 		{
-			//if (num_asteroids >= entities.size())
-			//{
-			//	App->scene->DeleteAllEntities();
-			//}
-			//else
-			//{
-			//	for (uint i = 0; i < num_asteroids; ++i)
-			//	{
-			//		Entity* entity = entities[0];
-			//		App->scene->DeleteEntity(entity);
-			//	}
-			//}
-			num_asteroids = 0;
+			if (num_asteroids >= App->scene->entities.size())
+				num_asteroids = App->scene->entities.size();
+			App->scene->DeleteAsteroids(num_asteroids);
+			num_asteroids = 1;
 		}
-
-		ImGui::Image((ImTextureID)App->resources->textures[0]->index, { 20,20 });
 	}
 	ImGui::End();
+}
+
+void ModuleGUI::AddFPS(float fps, float ms)
+{
+	static uint count = 0;
+	if (count == FPS_LOG_SIZE)
+	{
+		for (uint i = 0; i < FPS_LOG_SIZE - 1; ++i)
+		{
+			fps_log[i] = fps_log[i + 1];
+			ms_log[i] = ms_log[i + 1];
+		}
+	}
+	else
+		++count;
+
+	fps_log[count - 1] = fps;
+	ms_log[count - 1] = ms;
 }

@@ -6,6 +6,9 @@
 
 ComponentCamera::ComponentCamera(Entity* entity, glm::vec2 pos, float zoom_) : position(pos), zoom(zoom_), Component(Component::Type::CAMERA, entity)
 {
+	move_speed = 5.0f;
+	zoom_speed = 1.0f;
+
 	UpdateMatrices();
 }
 

@@ -5,7 +5,8 @@
 #include "ComponentRenderer.h"
 #include "ComponentSprite.h"
 #include "ComponentCollider.h"
-//#include "ComponentAsteroid.h"
+#include "ComponentAnimation.h"
+#include "ComponentAsteroid.h"
 
 Component* Entity::AddComponent(Component::Type type)
 {
@@ -17,7 +18,8 @@ Component* Entity::AddComponent(Component::Type type)
 	case Component::Type::RENDERER:		component = new ComponentRenderer(this);	break;
 	case Component::Type::SPRITE:		component = new ComponentSprite(this);		break;
 	case Component::Type::COLLIDER:		component = new ComponentCollider(this);	break;
-	case Component::Type::ASTEROID:		/*component = new ComponentAsteroid(this);	break;*/ return nullptr;
+	case Component::Type::ANIMATION:	component = new ComponentAnimation(this);	break;
+	case Component::Type::ASTEROID:		component = new ComponentAsteroid(this);	break;
 	case Component::Type::UNKNOWN:		return nullptr;
 	}
 	components.push_back(component);
