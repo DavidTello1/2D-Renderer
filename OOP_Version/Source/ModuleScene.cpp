@@ -28,14 +28,7 @@ bool ModuleScene::Init()
 
 bool ModuleScene::Start()
 {
-	Entity* entity = CreateEntity();
-	entity->AddComponent(Component::Type::TRANSFORM);
-	entity->AddComponent(Component::Type::RENDERER);
-	ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
-
-	Texture* tex = App->resources->LoadTexture("Assets/asteroids.png");
-	sprite->SetTexture(tex->index);
-	sprite->SetSize(glm::vec2(100.0f));
+	AddAsteroids(1);
 
 	return true;
 }

@@ -45,8 +45,8 @@ bool ModuleGUI::Init()
 
 bool ModuleGUI::Start()
 {
-	move_speed = App->scene->main_camera->GetMoveSpeed();
-	zoom_speed = App->scene->main_camera->GetZoomSpeed();
+	move_speed = (int)App->scene->main_camera->GetMoveSpeed();
+	zoom_speed = (int)App->scene->main_camera->GetZoomSpeed();
 
 	return true;
 }
@@ -146,12 +146,12 @@ void ModuleGUI::DrawInfo()
 		ImGui::Text("Debug Mode");
 		ImGui::NextColumn();
 
-		ImGui::TextColored(YELLOW, "0"); //Number of asteroids
-		ImGui::TextColored(YELLOW, "0"); //World width
+		ImGui::TextColored(YELLOW, "%d", App->scene->entities.size() - 1); //Number of asteroids (-1 because of camera entity)
+		ImGui::TextColored(YELLOW, "0"); //World width ***
 		ImGui::SameLine(0,0);
 		ImGui::Text("x");
 		ImGui::SameLine(0,0);
-		ImGui::TextColored(YELLOW, "0"); //world height
+		ImGui::TextColored(YELLOW, "0"); //world height ***
 		ImGui::Checkbox("##Debug Mode", &is_debug);
 		ImGui::Columns(1);
 
@@ -192,9 +192,9 @@ void ModuleGUI::DrawInfo()
 		}
 		ImGui::SameLine(0,1);
 
-		if (ImGui::Button("Delete", ImVec2(width, 0)))
+		if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->entities.size() > 1)
 		{
-			if (num_asteroids >= App->scene->entities.size())
+			if (num_asteroids >= (int)App->scene->entities.size())
 				num_asteroids = App->scene->entities.size();
 			App->scene->DeleteAsteroids(num_asteroids);
 			num_asteroids = 1;
@@ -203,7 +203,7 @@ void ModuleGUI::DrawInfo()
 	ImGui::End();
 }
 
-void ModuleGUI::AddFPS(float fps, float ms)
+void ModuleGUI::LogFPS(float fps, float ms)
 {
 	static uint count = 0;
 	if (count == FPS_LOG_SIZE)

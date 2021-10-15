@@ -108,7 +108,7 @@ void Application::FinishUpdate()
 		SDL_Delay(capped_ms - last_frame_ms);
 
 	// log fps
-	gui->AddFPS((float)last_fps, (float)last_frame_ms);
+	gui->LogFPS((float)last_fps, (float)last_frame_ms);
 }
 
 // ---------------------------------------------

@@ -3,6 +3,9 @@
 
 #include "glm/include/glm/glm.hpp"
 
+#define DEFAULT_MOVE_SPEED 5
+#define DEFAULT_ZOOM_SPEED 1
+
 class ComponentCamera : public Component
 {
 public:
@@ -23,9 +26,8 @@ public:
 	const float& GetMoveSpeed() const { return move_speed; }
 	void SetMoveSpeed(float speed) { move_speed = speed; }
 
-
-	const glm::mat4& GetViewProjMatrix() const { return ViewMatrix * ProjectionMatrix; }
-	void UpdateMatrices() { UpdateViewMatrix(); UpdateProjectionMatrix(); }
+	const glm::mat4& GetViewProjMatrix() const { return ViewProjMatrix; }
+	void UpdateMatrices() { UpdateViewMatrix(); UpdateProjectionMatrix(); ViewProjMatrix = ViewMatrix * ProjectionMatrix; }
 
 private:
 	void UpdateViewMatrix();
@@ -40,5 +42,7 @@ private:
 
 	glm::mat4 ViewMatrix = glm::mat4(1.0f);
 	glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
+
+	glm::mat4 ViewProjMatrix = glm::mat4(1.0f);
 };
 

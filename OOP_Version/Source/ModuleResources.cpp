@@ -17,8 +17,7 @@ ModuleResources::~ModuleResources()
 bool ModuleResources::Start()
 {
     // Default Shader
-	LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER"); 
-    default_shader = shaders[0]->index;
+    default_shader = shaders[LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER")]->index;
 
     // Default Texture (white 1x1)
     glCreateTextures(GL_TEXTURE_2D, 1, &default_tex);

@@ -22,7 +22,7 @@ public:
 	void Draw();
 	void DrawInfo();
 
-	void AddFPS(float fps, float ms);
+	void LogFPS(float fps, float ms);
 
 public:
 	bool is_update_pos = false;
