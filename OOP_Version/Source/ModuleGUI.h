@@ -31,8 +31,8 @@ public:
 private:
 	int num_asteroids = 0;
 
-	int move_speed = 0;
-	int zoom_speed = 0;
+	float move_speed = 0.0f;
+	float zoom_speed = 0.0f;
 
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;

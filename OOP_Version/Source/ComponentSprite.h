@@ -18,14 +18,12 @@ public:
 	static inline Component::Type GetType() { return Component::Type::SPRITE; }
 
 	const uint& GetTexture() const { return texture; }
-	void SetTexture(uint index) { texture = index; }
-
 	const uint& GetShader() const { return shader; }
-	void SetShader(uint index) { shader = index; }
-
 	const glm::vec2& GetSize() const { return size; }
-	void SetSize(glm::vec2 new_size) { size = new_size; }
 
+	void SetTexture(uint index) { texture = index; }
+	void SetShader(uint index) { shader = index; }
+	void SetSize(glm::vec2 new_size) { size = new_size; }
 	void SetPosition(glm::vec2 pos) { position = pos; }
 
 private:

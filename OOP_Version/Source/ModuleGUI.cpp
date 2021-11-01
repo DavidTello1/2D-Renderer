@@ -45,8 +45,8 @@ bool ModuleGUI::Init()
 
 bool ModuleGUI::Start()
 {
-	move_speed = (int)App->scene->main_camera->GetMoveSpeed();
-	zoom_speed = (int)App->scene->main_camera->GetZoomSpeed();
+	move_speed = App->scene->main_camera->GetMoveSpeed();
+	zoom_speed = App->scene->main_camera->GetZoomSpeed();
 
 	return true;
 }
@@ -166,10 +166,10 @@ void ModuleGUI::DrawInfo()
 			ImGui::Text("Zoom Speed");
 			ImGui::NextColumn();
 
-			if (ImGui::InputInt("##Move Speed", &move_speed, 0))
-				App->scene->main_camera->SetMoveSpeed((float)move_speed);
-			if (ImGui::InputInt("##Zoom Speed", &zoom_speed, 0))
-				App->scene->main_camera->SetZoomSpeed((float)zoom_speed);
+			if (ImGui::InputFloat("##Move Speed", &move_speed, 0))
+				App->scene->main_camera->SetMoveSpeed(move_speed);
+			if (ImGui::InputFloat("##Zoom Speed", &zoom_speed, 0))
+				App->scene->main_camera->SetZoomSpeed(zoom_speed);
 
 			ImGui::Columns(1);
 			ImGui::Separator();

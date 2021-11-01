@@ -85,7 +85,7 @@ bool ModuleRenderer::Init()
 	batch.textures.reserve(MaxTextures);
 	batch.textures.push_back(App->resources->default_tex);
 	for (size_t i = 1; i < MaxTextures; i++)
-		batch.textures.emplace_back(0.0f);
+		batch.textures.emplace(batch.textures.begin() + i, 0.0f);
 
 	return ret;
 }

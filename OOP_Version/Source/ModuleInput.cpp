@@ -114,6 +114,7 @@ bool ModuleInput::PreUpdate(float dt)
 
 		case SDL_MOUSEWHEEL:
 			mouse_wheel = e.wheel.y;
+			if (App->scene->main_camera != nullptr) App->scene->main_camera->OnZoom(mouse_wheel);
 			break;
 
 		case SDL_WINDOWEVENT:
@@ -124,7 +125,7 @@ bool ModuleInput::PreUpdate(float dt)
 				App->window->SetHeigth(e.window.data2, false);
 				App->gui->is_update_pos = true;
 				App->renderer->UpdateViewportSize();
-				if (App->scene->main_camera != nullptr) App->scene->main_camera->UpdateMatrices();
+				if (App->scene->main_camera != nullptr) App->scene->main_camera->OnResize(App->window->GetWidth(), App->window->GetHeight());
 				break;
 			}
 			break;
