@@ -13,7 +13,7 @@
 
 #include "mmgr/mmgr.h"
 
-ModuleScene::ModuleScene(bool start_enabled) : Module("ModuleScene", start_enabled)
+ModuleScene::ModuleScene(bool start_enabled) : Module("ModuleScene", start_enabled), world_width(WORLD_WIDTH), world_height(WORLD_HEIGHT)
 {
 }
 

@@ -2,8 +2,8 @@
 #include "Module.h"
 
 #define FPS_LOG_SIZE 100
-#define PANEL_WIDTH 185
-#define PANEL_HEIGHT 185
+#define PANEL_WIDTH 186
+#define PANEL_HEIGHT 266
 
 class ModuleGUI : public Module
 {
@@ -32,6 +32,9 @@ private:
 
 	float move_speed = 0.0f;
 	float zoom_speed = 0.0f;
+
+	int world_width = 0;
+	int world_height = 0;
 
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;

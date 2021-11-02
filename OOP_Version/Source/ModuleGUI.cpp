@@ -50,6 +50,9 @@ bool ModuleGUI::Start()
 	move_speed = App->scene->main_camera->GetMoveSpeed();
 	zoom_speed = App->scene->main_camera->GetZoomSpeed();
 
+	world_width = App->scene->GetWorldWidth();
+	world_height = App->scene->GetWorldHeight();
+
 	return true;
 }
 
@@ -100,7 +103,7 @@ void ModuleGUI::Draw()
 
 void ModuleGUI::DrawInfo()
 {
-	ImGui::SetNextWindowSize(ImVec2(PANEL_WIDTH, PANEL_HEIGHT), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(PANEL_WIDTH, 0), ImGuiCond_Always);
 	if (is_update_pos)
 	{
 		ImGui::SetNextWindowPos(ImVec2((float)App->window->GetWidth() - PANEL_WIDTH - 3, 3));
@@ -137,22 +140,30 @@ void ModuleGUI::DrawInfo()
 			sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
 			ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(PANEL_WIDTH - 15.0f, 50));
 			ImGui::Separator();
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
 		}
 		else
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 1.0f);
 
 		ImGui::Columns(2, "columns1", false);
 		ImGui::Text("Asteroids");
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.0f);
+		ImGui::Text("World Size");
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
 		ImGui::Text("Debug Mode");
 		ImGui::NextColumn();
 
 		ImGui::TextColored(YELLOW, "%d", App->scene->entities.size() - 1); //Number of asteroids (-1 because of camera entity)
+		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldWidth());
+		ImGui::SameLine(0, 0);
+		ImGui::Text("x");
+		ImGui::SameLine(0, 0);
+		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldHeight());
 		if (ImGui::Checkbox("##Debug Mode", &is_debug))
 			App->scene->SwitchDebug();
 		ImGui::Columns(1);
 
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
 		if (ImGui::TreeNodeEx("Render Stats", ImGuiTreeNodeFlags_NoTreePushOnOpen))
 		{
 			static int quads = 0; // Quads***
@@ -169,10 +180,11 @@ void ModuleGUI::DrawInfo()
 			ImGui::TextColored(YELLOW, "%d", quads * 4);
 			ImGui::TextColored(YELLOW, "%d", quads * 6);
 
+			ImGui::Separator();
 			ImGui::Columns(1);
 		}
 
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 		if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_NoTreePushOnOpen))
 		{
 			ImGui::Columns(2, "columns3", false);
@@ -189,31 +201,46 @@ void ModuleGUI::DrawInfo()
 				App->scene->main_camera->SetZoomSpeed(zoom_speed);
 
 			ImGui::Columns(1);
+			ImGui::Separator();
 		}
 
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
-		ImGui::Columns(2, "columns4", false);
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
-		ImGui::Text("Asteroids");
-		ImGui::NextColumn();
-
-		ImGui::InputInt("##Asteroids", &num_asteroids, 0);
-		ImGui::Columns(1);
-
-		float width = (PANEL_WIDTH - 16.0f) / 2;
-		if (ImGui::Button("Add", ImVec2(width, 0)))
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
+		if (ImGui::TreeNodeEx("World", ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			App->scene->AddAsteroids(num_asteroids);
-			num_asteroids = 1;
-		}
-		ImGui::SameLine(0,1);
+			ImGui::Columns(2, "columns3", false);
 
-		if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->entities.size() > 1)
-		{
-			if (num_asteroids >= (int)App->scene->entities.size())
-				num_asteroids = App->scene->entities.size();
-			App->scene->DeleteAsteroids(num_asteroids);
-			num_asteroids = 1;
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::Text("Width");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::Text("Height");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8.0f);
+			ImGui::Text("Asteroids");
+			ImGui::NextColumn();
+
+			if (ImGui::InputInt("##World Width", &world_width, 0))
+				App->scene->SetWorldWidth(world_width);
+			if (ImGui::InputInt("##World Height", &world_height, 0))
+				App->scene->SetWorldHeight(world_height);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
+			ImGui::InputInt("##Asteroids", &num_asteroids, 0);
+
+			ImGui::Columns(1);
+
+			float width = (PANEL_WIDTH - 16.0f) / 2;
+			if (ImGui::Button("Add", ImVec2(width, 0)))
+			{
+				App->scene->AddAsteroids(num_asteroids);
+				num_asteroids = 1;
+			}
+			ImGui::SameLine(0, 1);
+
+			if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->entities.size() > 1)
+			{
+				if (num_asteroids >= (int)App->scene->entities.size())
+					num_asteroids = App->scene->entities.size();
+				App->scene->DeleteAsteroids(num_asteroids);
+				num_asteroids = 1;
+			}
 		}
 	}
 	ImGui::End();
