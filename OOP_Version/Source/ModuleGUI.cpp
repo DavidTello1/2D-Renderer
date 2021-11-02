@@ -12,6 +12,8 @@
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include "mmgr/mmgr.h"
+
 ModuleGUI::ModuleGUI(bool start_enabled) : Module("ModuleGUI", start_enabled), fps_log(FPS_LOG_SIZE), ms_log(FPS_LOG_SIZE)
 {
 	is_debug = false;
@@ -110,7 +112,7 @@ void ModuleGUI::DrawInfo()
 		ImGui::Columns(2, "columns", false);
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
-		ImGui::Text("FPS:");
+		ImGui::Text("FPS");
 		ImGui::NextColumn();
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
@@ -140,25 +142,40 @@ void ModuleGUI::DrawInfo()
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 1.0f);
 
 		ImGui::Columns(2, "columns1", false);
-		ImGui::Text("Asteroids:");
-		ImGui::Text("World Size:");
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
+		ImGui::Text("Asteroids");
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
 		ImGui::Text("Debug Mode");
 		ImGui::NextColumn();
 
 		ImGui::TextColored(YELLOW, "%d", App->scene->entities.size() - 1); //Number of asteroids (-1 because of camera entity)
-		ImGui::TextColored(YELLOW, "0"); //World width ***
-		ImGui::SameLine(0,0);
-		ImGui::Text("x");
-		ImGui::SameLine(0,0);
-		ImGui::TextColored(YELLOW, "0"); //world height ***
-		ImGui::Checkbox("##Debug Mode", &is_debug);
+		if (ImGui::Checkbox("##Debug Mode", &is_debug))
+			App->scene->SwitchDebug();
 		ImGui::Columns(1);
 
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+		if (ImGui::TreeNodeEx("Render Stats", ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		{
+			static int quads = 0; // Quads***
+			ImGui::Columns(2, "columns2", false);
+
+			ImGui::Text("DrawCalls");
+			ImGui::Text("Quads");
+			ImGui::Text("Vertices");
+			ImGui::Text("Indices");
+			ImGui::NextColumn();
+
+			ImGui::TextColored(YELLOW, "%d", 0); // Draw Calls ***
+			ImGui::TextColored(YELLOW, "%d", quads);
+			ImGui::TextColored(YELLOW, "%d", quads * 4);
+			ImGui::TextColored(YELLOW, "%d", quads * 6);
+
+			ImGui::Columns(1);
+		}
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 		if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_NoTreePushOnOpen))
 		{
-			ImGui::Columns(2, "columns2", false);
+			ImGui::Columns(2, "columns3", false);
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("Move Speed");
@@ -166,18 +183,17 @@ void ModuleGUI::DrawInfo()
 			ImGui::Text("Zoom Speed");
 			ImGui::NextColumn();
 
-			if (ImGui::InputFloat("##Move Speed", &move_speed, 0))
+			if (ImGui::InputFloat("##Move Speed", &move_speed))
 				App->scene->main_camera->SetMoveSpeed(move_speed);
-			if (ImGui::InputFloat("##Zoom Speed", &zoom_speed, 0))
+			if (ImGui::InputFloat("##Zoom Speed", &zoom_speed))
 				App->scene->main_camera->SetZoomSpeed(zoom_speed);
 
 			ImGui::Columns(1);
-			ImGui::Separator();
 		}
 
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-		ImGui::Columns(2, "columns3", false);
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
+		ImGui::Columns(2, "columns4", false);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
 		ImGui::Text("Asteroids");
 		ImGui::NextColumn();
 

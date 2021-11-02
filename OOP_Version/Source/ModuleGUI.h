@@ -4,7 +4,6 @@
 #define FPS_LOG_SIZE 100
 #define PANEL_WIDTH 185
 #define PANEL_HEIGHT 185
-#define YELLOW { 1.00f, 1.00f, 0.00f , 1.00f}
 
 class ModuleGUI : public Module
 {

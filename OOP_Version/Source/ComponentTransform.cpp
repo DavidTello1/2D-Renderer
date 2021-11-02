@@ -4,11 +4,6 @@
 
 #include "glm/include/glm/gtc/type_ptr.hpp"
 
-ComponentTransform::ComponentTransform(Entity* entity, glm::vec2 pos, glm::vec2 scale_, float rot) : position(pos), scale(scale_), rotation(rot), Component(Component::Type::TRANSFORM, entity)
-{
-	UpdateTransform();
-}
-
 void ComponentTransform::UpdateTransform()
 {
 	glm::vec2 pos = glm::vec2(position.x / App->window->GetWidth(), position.y / App->window->GetHeight());

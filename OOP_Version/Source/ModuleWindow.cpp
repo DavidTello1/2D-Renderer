@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 
+#include "mmgr/mmgr.h"
+
 ModuleWindow::ModuleWindow(bool start_enabled) : Module("ModuleWindow", start_enabled)
 {
 }

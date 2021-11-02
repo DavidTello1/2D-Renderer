@@ -50,9 +50,11 @@ public:
 	void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 	void DrawQuad(const glm::vec2& position, const glm::vec2& size, uint32_t texture);
 
+	void DrawCircle(const glm::vec2& center, const float radius, const glm::vec4& color);
+
 	void UpdateViewportSize();
 
-private:
+public:
 	static const size_t MaxTextures = 32;
 	static const size_t MaxQuadCount = 10000;
 	static const size_t MaxVertexCount = MaxQuadCount * 4;

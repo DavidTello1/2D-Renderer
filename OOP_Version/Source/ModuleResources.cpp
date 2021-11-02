@@ -6,6 +6,8 @@
 #include <fstream>
 #include "stb/stb_image.h"
 
+#include "mmgr/mmgr.h"
+
 ModuleResources::ModuleResources(bool start_enabled) : Module("ModuleResources", start_enabled)
 {
 }

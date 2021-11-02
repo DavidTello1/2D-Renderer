@@ -13,6 +13,7 @@ public:
 	virtual ~Entity() {};
 
 	UID GetUID() { return uid; }
+	const std::vector<Component*>& GetComponents() const { return components; }
 
 	Component* AddComponent(Component::Type component);
 	void DeleteComponent(Component::Type component);

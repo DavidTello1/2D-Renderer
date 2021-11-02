@@ -384,9 +384,6 @@
     <ClInclude Include="ComponentCamera.h">
       <Filter>Sources\GameObjects\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentCollider.h">
-      <Filter>Sources\GameObjects\Components</Filter>
-    </ClInclude>
     <ClInclude Include="ComponentRenderer.h">
       <Filter>Sources\GameObjects\Components</Filter>
     </ClInclude>
@@ -394,6 +391,12 @@
       <Filter>Sources\GameObjects\Components</Filter>
     </ClInclude>
     <ClInclude Include="ComponentAsteroid.h">
+      <Filter>Sources\GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentRectCollider.h">
+      <Filter>Sources\GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentCircleCollider.h">
       <Filter>Sources\GameObjects\Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -455,9 +458,6 @@
     <ClCompile Include="ComponentCamera.cpp">
       <Filter>Sources\GameObjects\Components</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentCollider.cpp">
-      <Filter>Sources\GameObjects\Components</Filter>
-    </ClCompile>
     <ClCompile Include="ComponentRenderer.cpp">
       <Filter>Sources\GameObjects\Components</Filter>
     </ClCompile>
@@ -468,6 +468,12 @@
       <Filter>Sources\GameObjects\Components</Filter>
     </ClCompile>
     <ClCompile Include="ComponentTransform.cpp">
+      <Filter>Sources\GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentCircleCollider.cpp">
+      <Filter>Sources\GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentRectCollider.cpp">
       <Filter>Sources\GameObjects\Components</Filter>
     </ClCompile>
   </ItemGroup>

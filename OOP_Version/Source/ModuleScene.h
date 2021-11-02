@@ -2,6 +2,7 @@
 #include "Module.h"
 
 #include <vector>
+#include "glm/include/glm/glm.hpp"
 
 class Entity;
 class ComponentCamera;
@@ -19,6 +20,10 @@ public:
 
 	void Draw();
 
+	// --- Demo
+	const bool& IsDebug() const { return is_debug; }
+	void SwitchDebug() { is_debug = !is_debug; }
+	void DrawGrid(float grid_size);
 	void AddAsteroids(int num);
 	void DeleteAsteroids(int num);
 
@@ -29,4 +34,9 @@ private:
 public:
 	ComponentCamera* main_camera = nullptr;
 	std::vector<Entity*> entities;
+
+	// --- Demo
+private:
+	bool is_debug = false;
+	float grid_size = 5.0f;
 };

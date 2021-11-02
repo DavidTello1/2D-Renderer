@@ -6,11 +6,9 @@
 #include <algorithm>
 #include "glm/include/glm/gtc/type_ptr.hpp"
 
-ComponentCamera::ComponentCamera(Entity* entity, glm::vec3 pos, float zoom_) : position(pos), zoom(zoom_), ViewMatrix(1.0f), Component(Component::Type::CAMERA, entity)
+ComponentCamera::ComponentCamera(Entity* entity) : position(0.0f), rotation(0.0f), zoom(1.0f), move_speed(DEFAULT_MOVE_SPEED), 
+	zoom_speed(DEFAULT_ZOOM_SPEED), Component(Component::Type::CAMERA, entity)
 {
-	move_speed = DEFAULT_MOVE_SPEED;
-	zoom_speed = DEFAULT_ZOOM_SPEED;
-
 	OnResize(App->window->GetWidth(), App->window->GetHeight());
 	UpdateViewMatrix();
 }
@@ -62,15 +60,15 @@ void ComponentCamera::OnUpdate(float dt)
 		SetPosition(tmp_pos);
 }
 
-void ComponentCamera::OnResize(float width, float height)
+void ComponentCamera::OnResize(int width, int height)
 {
 	UpdateProjectionMatrix(0, width * zoom, 0, height * zoom);
 }
 
-void ComponentCamera::OnZoom(float new_zoom)
+void ComponentCamera::OnZoom(int new_zoom)
 {
-	float width = App->window->GetWidth();
-	float height = App->window->GetHeight();
+	int width = App->window->GetWidth();
+	int height = App->window->GetHeight();
 
 	zoom -= new_zoom * zoom_speed;
 	zoom = std::max(zoom, zoom_speed);

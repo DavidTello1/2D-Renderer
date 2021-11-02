@@ -78,7 +78,8 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentAsteroid.h" />
     <ClInclude Include="ComponentCamera.h" />
-    <ClInclude Include="ComponentCollider.h" />
+    <ClInclude Include="ComponentCircleCollider.h" />
+    <ClInclude Include="ComponentRectCollider.h" />
     <ClInclude Include="ComponentRenderer.h" />
     <ClInclude Include="ComponentSprite.h" />
     <ClInclude Include="ComponentTransform.h" />
@@ -197,7 +198,8 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ComponentAsteroid.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
-    <ClCompile Include="ComponentCollider.cpp" />
+    <ClCompile Include="ComponentCircleCollider.cpp" />
+    <ClCompile Include="ComponentRectCollider.cpp" />
     <ClCompile Include="ComponentRenderer.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
     <ClCompile Include="Entity.cpp" />

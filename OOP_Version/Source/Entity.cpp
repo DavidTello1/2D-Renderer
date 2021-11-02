@@ -4,21 +4,25 @@
 #include "ComponentCamera.h"
 #include "ComponentRenderer.h"
 #include "ComponentSprite.h"
-#include "ComponentCollider.h"
+#include "ComponentRectCollider.h"
+#include "ComponentCircleCollider.h"
 #include "ComponentAsteroid.h"
+
+#include "mmgr/mmgr.h"
 
 Component* Entity::AddComponent(Component::Type type)
 {
 	Component* component;
 	switch (type)
 	{
-	case Component::Type::TRANSFORM:	component = new ComponentTransform(this);	break;
-	case Component::Type::CAMERA:		component = new ComponentCamera(this);		break;
-	case Component::Type::RENDERER:		component = new ComponentRenderer(this);	break;
-	case Component::Type::SPRITE:		component = new ComponentSprite(this);		break;
-	case Component::Type::COLLIDER:		component = new ComponentCollider(this);	break;
-	case Component::Type::ASTEROID:		component = new ComponentAsteroid(this);	break;
-	case Component::Type::UNKNOWN:		return nullptr;
+	case Component::Type::TRANSFORM:		component = new ComponentTransform(this);		break;
+	case Component::Type::CAMERA:			component = new ComponentCamera(this);			break;
+	case Component::Type::RENDERER:			component = new ComponentRenderer(this);		break;
+	case Component::Type::SPRITE:			component = new ComponentSprite(this);			break;
+	case Component::Type::RECT_COLLIDER:	component = new ComponentRectCollider(this);	break;
+	case Component::Type::CIRCLE_COLLIDER:	component = new ComponentCircleCollider(this);	break;
+	case Component::Type::ASTEROID:			component = new ComponentAsteroid(this);		break;
+	case Component::Type::UNKNOWN:			return nullptr;
 	}
 	components.push_back(component);
 	return component;

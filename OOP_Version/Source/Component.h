@@ -11,7 +11,8 @@ public:
 		CAMERA,
 		RENDERER,
 		SPRITE,
-		COLLIDER,
+		RECT_COLLIDER,
+		CIRCLE_COLLIDER,
 		ASTEROID,
 		UNKNOWN
 	};
@@ -22,6 +23,8 @@ public:
 
 	Component::Type GetType() const { return type; }
 	Entity* GetEntity() const { return entity; }
+
+	virtual void OnUpdate(float dt) {};
 
 private:
 	mutable Component::Type type;

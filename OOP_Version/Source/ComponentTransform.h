@@ -6,7 +6,7 @@
 class ComponentTransform : public Component
 {
 public:
-	ComponentTransform(Entity* entity, glm::vec2 pos = glm::vec2(0.0f), glm::vec2 scale_ = glm::vec2(1.0f), float rot = 0.0f);
+	ComponentTransform(Entity* entity) : position(0.0f), scale(1.0f), rotation(0.0f), Component(Component::Type::TRANSFORM, entity) { UpdateTransform(); }
 	~ComponentTransform() {};
 
 	static inline Component::Type GetType() { return Component::Type::TRANSFORM; }

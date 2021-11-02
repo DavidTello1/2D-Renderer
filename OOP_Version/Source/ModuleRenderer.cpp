@@ -13,6 +13,8 @@
 #pragma comment (lib, "glu32.lib")    // link OpenGL Utility lib
 #pragma comment (lib, "opengl32.lib") // link Microsoft OpenGL lib
 
+#include "mmgr/mmgr.h"
+
 ModuleRenderer::ModuleRenderer(bool start_enabled) : Module("ModuleRenderer", start_enabled)
 {
 	context = NULL;
@@ -245,6 +247,10 @@ void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, 
 	batch.quad_buffer_ptr++;
 
 	batch.index_count += 6;
+}
+
+void ModuleRenderer::DrawCircle(const glm::vec2& center, const float radius, const glm::vec4& color)
+{
 }
 
 void ModuleRenderer::UpdateViewportSize()
