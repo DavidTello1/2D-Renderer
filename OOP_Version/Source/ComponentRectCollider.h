@@ -24,7 +24,6 @@ public:
 	void SetOffset(glm::vec2 offset_) { offset = offset_; }
 
 	Entity* GetCollision();
-	void ShowCollider(); // Debug Draw
 
 private:
 	glm::vec2 position = glm::vec2(0.0f);

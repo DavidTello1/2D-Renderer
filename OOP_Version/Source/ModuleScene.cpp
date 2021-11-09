@@ -32,11 +32,51 @@ bool ModuleScene::Init()
 
 bool ModuleScene::Start()
 {
+	// Create Background
+	Entity* bg = CreateEntity();
+	bg->AddComponent(Component::Type::RENDERER);
+	ComponentTransform* transform = (ComponentTransform*)bg->AddComponent(Component::Type::TRANSFORM);
+	transform->SetPosition(glm::vec2(0.0f));
+	transform->SetScale(glm::vec2(WORLD_SCALE));
+	background = (ComponentSprite*)bg->AddComponent(Component::Type::SPRITE);
+	background->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
+	background->SetSize(glm::vec2(world_width, world_height));
+
+	// Create World Boundaries
+	Entity* top = CreateEntity();
+	top->AddComponent(Component::Type::RENDERER);
+	transform = (ComponentTransform*)top->AddComponent(Component::Type::TRANSFORM);
+	b_top = (ComponentRectCollider*)top->AddComponent(Component::Type::RECT_COLLIDER);
+	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, -BOUNDARIES_SIZE));
+	b_top->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+
+	Entity* bottom = CreateEntity();
+	bottom->AddComponent(Component::Type::RENDERER);
+	transform = (ComponentTransform*)bottom->AddComponent(Component::Type::TRANSFORM);
+	b_bottom = (ComponentRectCollider*)bottom->AddComponent(Component::Type::RECT_COLLIDER);
+	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+	b_bottom->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+
+	Entity* left = CreateEntity();
+	left->AddComponent(Component::Type::RENDERER);
+	transform = (ComponentTransform*)left->AddComponent(Component::Type::TRANSFORM);
+	b_left = (ComponentRectCollider*)left->AddComponent(Component::Type::RECT_COLLIDER);
+	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, 0.0f));
+	b_left->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+
+	Entity* right = CreateEntity();
+	right->AddComponent(Component::Type::RENDERER);
+	transform = (ComponentTransform*)right->AddComponent(Component::Type::TRANSFORM);
+	b_right = (ComponentRectCollider*)right->AddComponent(Component::Type::RECT_COLLIDER);
+	transform->SetPosition(glm::vec2(world_width * WORLD_SCALE, 0.0f));
+	b_right->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+
+	// ---- Asteroid Testing ---
 	Entity* entity = CreateEntity();
 	entity->AddComponent(Component::Type::RENDERER);
 
-	ComponentTransform* transform = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
-	transform->SetPosition(glm::vec2(100.0f, 100.0f));
+	ComponentTransform* transf = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
+	transf->SetPosition(glm::vec2(0.0f, 0.0f));
 
 	ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
 	sprite->SetTexture(App->resources->LoadTexture("Assets/asteroids.png")->index);
@@ -77,7 +117,6 @@ void ModuleScene::Draw()
 		entity->Draw(shader);
 }
 
-//--------------------------------------
 Entity* ModuleScene::CreateEntity()
 {
 	Entity* entity = new Entity();
@@ -99,9 +138,29 @@ void ModuleScene::DeleteEntity(Entity* entity)
 }
 
 //--------------------------------------
+void ModuleScene::DrawAxis()
+{
+}
+
 void ModuleScene::DrawGrid(float grid_size)
 {
 
+}
+
+void ModuleScene::DebugDraw()
+{
+}
+
+void ModuleScene::UpdateWorldSize()
+{
+	// Update Background Size
+	background->SetSize(glm::vec2(world_width, world_height));
+
+	// Update Boundaries Size
+	b_top->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+	b_bottom->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+	b_left->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+	b_right->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
 }
 
 void ModuleScene::AddAsteroids(int num)
@@ -135,5 +194,5 @@ void ModuleScene::AddAsteroids(int num)
 void ModuleScene::DeleteAsteroids(int num)
 {
 	for (int i = 0; i < num; ++i)
-		DeleteEntity(entities.front());
+		DeleteEntity(entities[BASE_ENTITIES - 1]); // start from asteroids position in vector to not delete base entities
 }

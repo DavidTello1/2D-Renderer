@@ -1,5 +1,8 @@
 #include "Entity.h"
 
+#include "Application.h"
+#include "ModuleScene.h"
+
 #include "ComponentTransform.h"
 #include "ComponentCamera.h"
 #include "ComponentRenderer.h"
@@ -51,5 +54,10 @@ void Entity::Draw(uint shader)
 {
 	ComponentRenderer* renderer = (ComponentRenderer*)GetComponent(Component::Type::RENDERER);
 	if (renderer != nullptr)
+	{
 		renderer->Draw(shader);
+
+		if (App->scene->IsDebug())
+			renderer->DrawDebug(shader);
+	}
 }

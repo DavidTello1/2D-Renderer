@@ -1,12 +1,13 @@
-#include "Application.h"
 #include "ModuleInput.h"
+
+#include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
 #include "ModuleRenderer.h"
 #include "ModuleScene.h"
+
 #include "ComponentCamera.h"
 
-#include "glm/include/glm/gtx/transform.hpp"
 #include "ImGui/imgui.h"
 #include "imGui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"

@@ -3,7 +3,7 @@
 
 #include "glm/include/glm/glm.hpp"
 
-#define DEFAULT_MOVE_SPEED 100
+#define DEFAULT_MOVE_SPEED 200
 #define DEFAULT_ZOOM_SPEED 0.25
 
 class ComponentCamera : public Component

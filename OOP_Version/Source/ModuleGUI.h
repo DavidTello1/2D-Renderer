@@ -29,8 +29,9 @@ public:
 
 private:
 	int num_asteroids = 0;
+	int seed = 0;
 
-	float move_speed = 0.0f;
+	int move_speed = 0;
 	float zoom_speed = 0.0f;
 
 	int world_width = 0;

@@ -103,11 +103,17 @@ bool ModuleRenderer::PreUpdate(float dt)
 
 bool ModuleRenderer::PostUpdate(float dt)
 {
+	// Grid & Axis
+	//***
+
 	// Render Scene
 	BeginBatch();
 	App->scene->Draw();
 	EndBatch();
 	Render();
+
+	// Debug Draw
+	//***
 
 	// Render ImGui
 	App->gui->Draw();

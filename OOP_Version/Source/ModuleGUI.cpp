@@ -195,10 +195,12 @@ void ModuleGUI::DrawInfo()
 			ImGui::Text("Zoom Speed");
 			ImGui::NextColumn();
 
-			if (ImGui::InputFloat("##Move Speed", &move_speed))
+			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
+			if (ImGui::InputInt("##Move Speed", &move_speed, 0))
 				App->scene->main_camera->SetMoveSpeed(move_speed);
 			if (ImGui::InputFloat("##Zoom Speed", &zoom_speed))
 				App->scene->main_camera->SetZoomSpeed(zoom_speed);
+			ImGui::PopStyleColor();
 
 			ImGui::Columns(1);
 			ImGui::Separator();
@@ -214,15 +216,21 @@ void ModuleGUI::DrawInfo()
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("Height");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8.0f);
+			ImGui::Text("Seed");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("Asteroids");
 			ImGui::NextColumn();
 
+			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
 			if (ImGui::InputInt("##World Width", &world_width, 0))
 				App->scene->SetWorldWidth(world_width);
 			if (ImGui::InputInt("##World Height", &world_height, 0))
 				App->scene->SetWorldHeight(world_height);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
+			if (ImGui::InputInt("##Seed", &seed, 0))
+				App->scene->SetSeed((uint)seed);
 			ImGui::InputInt("##Asteroids", &num_asteroids, 0);
+			ImGui::PopStyleColor();
 
 			ImGui::Columns(1);
 
