@@ -29,7 +29,7 @@ public:
 	bool CleanUp() override;
 
 	void Draw();
-	void DebugDraw();
+	void DrawDebug(uint shader);
 
 	// --- Demo
 	void DrawAxis();

@@ -58,6 +58,6 @@ void Entity::Draw(uint shader)
 		renderer->Draw(shader);
 
 		if (App->scene->IsDebug())
-			renderer->DrawDebug(shader);
+			App->scene->DrawDebug(shader);
 	}
 }

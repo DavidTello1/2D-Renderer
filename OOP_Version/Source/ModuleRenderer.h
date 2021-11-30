@@ -17,20 +17,6 @@ struct Vertex
 	float tex_index;
 };
 
-struct Batch
-{
-	// Vertices
-	Vertex* quad_buffer = nullptr;
-	Vertex* quad_buffer_ptr = nullptr;
-
-	// Textures
-	std::vector<float> textures;
-	uint32_t texture_slot_index = 1;
-
-	// Index
-	uint32_t index_count = 0;
-};
-
 // -------------------------------------------
 class ModuleRenderer : public Module
 {
@@ -43,9 +29,7 @@ public:
 	bool PostUpdate(float dt) override;
 	bool CleanUp() override;
 
-	void BeginBatch();
-	void EndBatch();
-	void Render();
+	//void Render();
 
 	void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 	void DrawQuad(const glm::vec2& position, const glm::vec2& size, uint32_t texture);
@@ -67,7 +51,4 @@ public:
 	GLuint quadVAO = 0;
 	GLuint quadVBO = 0;
 	GLuint quadIBO = 0;
-
-	// Batch
-	Batch batch;
 };

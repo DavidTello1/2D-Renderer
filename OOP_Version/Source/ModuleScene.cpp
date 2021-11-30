@@ -110,11 +110,8 @@ bool ModuleScene::CleanUp()
 
 void ModuleScene::Draw()
 {
-	GLuint shader = App->resources->default_shader;
-	glUseProgram(shader);
-
 	for (Entity* entity : entities)
-		entity->Draw(shader);
+		entity->Draw(App->resources->default_shader);
 }
 
 Entity* ModuleScene::CreateEntity()
@@ -147,8 +144,50 @@ void ModuleScene::DrawGrid(float grid_size)
 
 }
 
-void ModuleScene::DebugDraw()
+void ModuleScene::DrawDebug(uint shader)
 {
+	for (Entity* entity : entities)
+	{
+		ComponentTransform* transform = (ComponentTransform*)entity->GetComponent(Component::Type::TRANSFORM);
+		if (transform == nullptr)
+			return;
+
+		ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
+		if (collider != nullptr)
+		{
+			glm::vec4 color;
+			if (collider->GetCollision() == nullptr)
+				color = BLUE;
+			else
+				color = RED;
+			color.a = 0.5f;
+
+			glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->main_camera->GetViewProjMatrix());
+			glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&transform->GetTransform());
+			glUniform1iv(glGetUniformLocation(shader, "uTexture"), 1, (GLint*)&App->resources->default_tex);
+
+			//App->renderer->DrawCircle(collider->GetCenter(), collider->GetRadius(), color);
+		}
+		else
+		{
+			ComponentRectCollider* collider = (ComponentRectCollider*)entity->GetComponent(Component::Type::RECT_COLLIDER);
+			if (collider != nullptr)
+			{
+				glm::vec4 color;
+				if (collider->GetCollision() == nullptr)
+					color = BLUE;
+				else
+					color = RED;
+				color.a = 0.5f;
+
+				glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->main_camera->GetViewProjMatrix());
+				glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&transform->GetTransform());
+				glUniform1iv(glGetUniformLocation(shader, "uTexture"), 1, (GLint*)&App->resources->default_tex);
+
+				//App->renderer->DrawQuad(collider->GetPosition(), collider->GetSize(), color);
+			}
+		}
+	}
 }
 
 void ModuleScene::UpdateWorldSize()
