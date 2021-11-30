@@ -17,11 +17,12 @@ public:
 	const float& GetRotation() const { return rotation; }
 
 	void SetPosition(glm::vec2 pos) { position = pos; UpdateTransform(); }
-	void SetScale(glm::vec2 scale_) { scale = scale_; UpdateTransform(); }
+	void SetScale(glm::vec2 size) { scale = Normalize(size); UpdateTransform(); }
 	void SetRotation(float rot) { rotation = rot; UpdateTransform(); }
 	   
 private:
 	void UpdateTransform();
+	glm::vec2 Normalize(glm::vec2 vec);
 
 private:
 	glm::vec2 position = glm::vec2(0.0f);

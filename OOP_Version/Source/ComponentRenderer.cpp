@@ -12,7 +12,6 @@
 #include "ComponentRectCollider.h"
 
 #include "Glew/include/glew.h"
-#include "glm/include/glm/gtc/type_ptr.hpp"
 
 void ComponentRenderer::Draw(GLuint shader)
 {

@@ -6,9 +6,12 @@
 
 void ComponentTransform::UpdateTransform()
 {
-	//glm::vec2 pos = glm::vec2(position.x * App->window->GetWidth(), position.y * App->window->GetHeight());
-
-	transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f)) *
+	transform = glm::translate(glm::mat4(1.0f), glm::vec3(Normalize(position), 0.0f)) *
 		glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f)) *
 		glm::scale(glm::mat4(1.0f), glm::vec3(scale, 1.0f));
+}
+
+glm::vec2 ComponentTransform::Normalize(glm::vec2 vec)
+{
+	return glm::vec2(vec.x / App->window->GetWidth(), vec.y / App->window->GetHeight());
 }

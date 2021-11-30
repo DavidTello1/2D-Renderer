@@ -32,14 +32,14 @@ bool ModuleScene::Init()
 
 bool ModuleScene::Start()
 {
-	//// Create Background
-	//Entity* bg = CreateEntity();
-	//bg->AddComponent(Component::Type::RENDERER);
-	//ComponentTransform* transform = (ComponentTransform*)bg->AddComponent(Component::Type::TRANSFORM);
-	//transform->SetPosition(glm::vec2(0.0f));
+	// Create Background
+	Entity* bg = CreateEntity();
+	bg->AddComponent(Component::Type::RENDERER);
+	ComponentTransform* transform = (ComponentTransform*)bg->AddComponent(Component::Type::TRANSFORM);
+	transform->SetPosition(glm::vec2(100.0, 200.0f));
 	//transform->SetScale(glm::vec2(WORLD_SCALE));
-	//background = (ComponentSprite*)bg->AddComponent(Component::Type::SPRITE);
-	//background->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
+	background = (ComponentSprite*)bg->AddComponent(Component::Type::SPRITE);
+	background->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
 	//background->SetSize(glm::vec2(world_width, world_height));
 
 	//// Create World Boundaries
@@ -77,6 +77,7 @@ bool ModuleScene::Start()
 
 	ComponentTransform* transf = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
 	transf->SetPosition(glm::vec2(0.0f, 0.0f));
+	transf->SetScale(glm::vec2(200.0f));
 
 	ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
 	sprite->SetTexture(App->resources->LoadTexture("Assets/asteroids.png")->index);
