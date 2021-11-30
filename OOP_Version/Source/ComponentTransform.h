@@ -17,7 +17,7 @@ public:
 	const float& GetRotation() const { return rotation; }
 
 	void SetPosition(glm::vec2 pos) { position = pos; UpdateTransform(); }
-	void SetScale(glm::vec2 scale_) { scale = scale_; }
+	void SetScale(glm::vec2 scale_) { scale = scale_; UpdateTransform(); }
 	void SetRotation(float rot) { rotation = rot; UpdateTransform(); }
 	   
 private:

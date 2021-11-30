@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleScene.h"
 #include "ModuleRenderer.h"
+#include "ModuleResources.h" //
 
 #include "ComponentCamera.h"
 
@@ -112,6 +113,8 @@ void ModuleGUI::DrawInfo()
 
 	if (ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
 	{
+		ImGui::Image((ImTextureID)App->resources->LoadTexture("Assets/asteroids.png")->index, { 100,100 }); //***
+
 		ImGui::Columns(2, "columns", false);
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);

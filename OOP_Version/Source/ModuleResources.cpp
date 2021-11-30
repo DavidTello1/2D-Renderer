@@ -108,7 +108,7 @@ GLuint ModuleResources::CreateShader(std::string source, const char* name)
     GLsizei infoLogSize;
     GLint   success;
 
-    char versionString[] = "#version 430\n";
+    char versionString[] = "#version 330\n";
     char shaderNameDefine[128];
     sprintf_s(shaderNameDefine, "#define %s\n", name);
     char vertexShaderDefine[] = "#define VERTEX\n";
@@ -239,7 +239,6 @@ GLuint ModuleResources::CreateTexture(Image image)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.size.x, image.size.y, 0, dataFormat, dataType, image.pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
     return texHandle;
 }

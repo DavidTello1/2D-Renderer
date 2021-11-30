@@ -8,13 +8,17 @@
 layout(location = 0) in vec3 aPosition;
 layout(location = 1) in vec2 aTexCoord;
 
+uniform mat4 uTransform;
+//uniform mat4 uViewProj;
+
 out vec2 vTexCoord;
 
 void main()
 {
 	vTexCoord = aTexCoord;
 
-	gl_Position = vec4(aPosition, 1.0);
+	//gl_Position = uTransform * uViewProj * vec4(aPosition, 1.0);
+	gl_Position = uTransform * vec4(aPosition, 1.0);
 }
 
 #elif defined(FRAGMENT) ///////////////////////////////////////////////
@@ -27,6 +31,7 @@ out vec4 oColor;
 
 void main()
 {
+	//oColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 	oColor = texture(uTexture, vTexCoord);
 }
 
