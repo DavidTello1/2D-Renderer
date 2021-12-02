@@ -13,6 +13,16 @@
 
 #include "mmgr/mmgr.h"
 
+Entity::~Entity()
+{
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it) 
+	{
+		if (*it) 
+			delete* it;
+	}
+	components.clear();
+}
+
 Component* Entity::AddComponent(Component::Type type)
 {
 	Component* component;

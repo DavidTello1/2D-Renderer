@@ -10,7 +10,7 @@ class Entity
 {
 public:
 	Entity() {};
-	virtual ~Entity() {};
+	virtual ~Entity();
 
 	UID GetUID() { return uid; }
 	const std::vector<Component*>& GetComponents() const { return components; }

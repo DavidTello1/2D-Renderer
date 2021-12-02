@@ -33,43 +33,35 @@ bool ModuleScene::Init()
 
 bool ModuleScene::Start()
 {
-	// Create Background
+	// Create Background & Boundaries
 	Entity* bg = CreateEntity();
 	bg->AddComponent(Component::Type::RENDERER);
 	ComponentTransform* transform = (ComponentTransform*)bg->AddComponent(Component::Type::TRANSFORM);
 	transform->SetPosition(glm::vec2(0.0f, 0.0f));
 	background = (ComponentSprite*)bg->AddComponent(Component::Type::SPRITE);
 	background->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
-	background->SetSize(glm::vec2(150.0f));
 
-	//// Create World Boundaries
-	//Entity* top = CreateEntity();
-	//top->AddComponent(Component::Type::RENDERER);
-	//transform = (ComponentTransform*)top->AddComponent(Component::Type::TRANSFORM);
-	//b_top = (ComponentRectCollider*)top->AddComponent(Component::Type::RECT_COLLIDER);
-	//transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, -BOUNDARIES_SIZE));
-	//b_top->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+	b_top = CreateEntity();
+	b_top->AddComponent(Component::Type::RENDERER);
+	b_top->AddComponent(Component::Type::TRANSFORM);
+	b_top->AddComponent(Component::Type::RECT_COLLIDER);
 
-	//Entity* bottom = CreateEntity();
-	//bottom->AddComponent(Component::Type::RENDERER);
-	//transform = (ComponentTransform*)bottom->AddComponent(Component::Type::TRANSFORM);
-	//b_bottom = (ComponentRectCollider*)bottom->AddComponent(Component::Type::RECT_COLLIDER);
-	//transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, world_height * WORLD_SCALE));
-	//b_bottom->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+	b_bottom = CreateEntity();
+	b_bottom->AddComponent(Component::Type::RENDERER);
+	b_bottom->AddComponent(Component::Type::TRANSFORM);
+	b_bottom->AddComponent(Component::Type::RECT_COLLIDER);
 
-	//Entity* left = CreateEntity();
-	//left->AddComponent(Component::Type::RENDERER);
-	//transform = (ComponentTransform*)left->AddComponent(Component::Type::TRANSFORM);
-	//b_left = (ComponentRectCollider*)left->AddComponent(Component::Type::RECT_COLLIDER);
-	//transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, 0.0f));
-	//b_left->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+	b_left = CreateEntity();
+	b_left->AddComponent(Component::Type::RENDERER);
+	b_left->AddComponent(Component::Type::TRANSFORM);
+	b_left->AddComponent(Component::Type::RECT_COLLIDER);
 
-	//Entity* right = CreateEntity();
-	//right->AddComponent(Component::Type::RENDERER);
-	//transform = (ComponentTransform*)right->AddComponent(Component::Type::TRANSFORM);
-	//b_right = (ComponentRectCollider*)right->AddComponent(Component::Type::RECT_COLLIDER);
-	//transform->SetPosition(glm::vec2(world_width * WORLD_SCALE, 0.0f));
-	//b_right->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+	b_right = CreateEntity();
+	b_right->AddComponent(Component::Type::RENDERER);
+	b_right->AddComponent(Component::Type::TRANSFORM);
+	b_right->AddComponent(Component::Type::RECT_COLLIDER);
+
+	UpdateWorldSize();
 
 	// ---- Asteroid Testing ---
 	Entity* entity = CreateEntity();
@@ -189,14 +181,29 @@ void ModuleScene::DrawDebug()
 
 void ModuleScene::UpdateWorldSize()
 {
-	// Update Background Size
-	background->SetSize(glm::vec2(world_width, world_height));
+	// Update Background
+	background->SetSize(glm::vec2(world_width * WORLD_SCALE, world_height * WORLD_SCALE));
 
-	// Update Boundaries Size
-	b_top->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
-	b_bottom->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
-	b_left->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
-	b_right->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+	// Update Boundaries
+	ComponentTransform* transform = (ComponentTransform*)b_top->GetComponent(Component::Type::TRANSFORM);
+	ComponentRectCollider* collider = (ComponentRectCollider*)b_top->GetComponent(Component::Type::RECT_COLLIDER);
+	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, -BOUNDARIES_SIZE));
+	collider->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+
+	transform = (ComponentTransform*)b_bottom->GetComponent(Component::Type::TRANSFORM);
+	collider = (ComponentRectCollider*)b_bottom->GetComponent(Component::Type::RECT_COLLIDER);
+	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+	collider->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+
+	transform = (ComponentTransform*)b_left->GetComponent(Component::Type::TRANSFORM);
+	collider = (ComponentRectCollider*)b_left->GetComponent(Component::Type::RECT_COLLIDER);
+	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, 0.0f));
+	collider->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+
+	transform = (ComponentTransform*)b_right->GetComponent(Component::Type::TRANSFORM);
+	collider = (ComponentRectCollider*)b_right->GetComponent(Component::Type::RECT_COLLIDER);
+	transform->SetPosition(glm::vec2(world_width * WORLD_SCALE, 0.0f));
+	collider->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
 }
 
 void ModuleScene::AddAsteroids(int num)

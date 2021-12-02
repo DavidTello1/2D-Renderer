@@ -22,7 +22,8 @@ bool ModuleResources::Start()
     default_shader = shaders[LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER")]->index;
 
     // Default Texture (white 1x1)
-    glCreateTextures(GL_TEXTURE_2D, 1, &default_tex);
+    glGenTextures(1, &default_tex);
+    glBindTexture(GL_TEXTURE_2D, default_tex);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

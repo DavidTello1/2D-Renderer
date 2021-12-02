@@ -7,10 +7,10 @@
 typedef unsigned int uint;
 
 #define BASE_ENTITIES 6 //camera + background + boundaries(4)
-#define WORLD_SCALE 100
+#define WORLD_SCALE 50
 #define WORLD_WIDTH 10
 #define WORLD_HEIGHT 10
-#define BOUNDARIES_SIZE 200
+#define BOUNDARIES_SIZE 100
 
 class Entity;
 class ComponentCamera;
@@ -62,10 +62,10 @@ public:
 
 	// --- Demo
 	ComponentSprite* background = nullptr;
-	ComponentRectCollider* b_top = nullptr;
-	ComponentRectCollider* b_bottom = nullptr;
-	ComponentRectCollider* b_left = nullptr;
-	ComponentRectCollider* b_right = nullptr;
+	Entity* b_top = nullptr;
+	Entity* b_bottom = nullptr;
+	Entity* b_left = nullptr;
+	Entity* b_right = nullptr;
 
 private:
 	bool is_debug = false;
