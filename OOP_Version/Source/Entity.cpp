@@ -1,8 +1,5 @@
 #include "Entity.h"
 
-#include "Application.h"
-#include "ModuleScene.h"
-
 #include "ComponentTransform.h"
 #include "ComponentCamera.h"
 #include "ComponentRenderer.h"
@@ -64,10 +61,5 @@ void Entity::Draw()
 {
 	ComponentRenderer* renderer = (ComponentRenderer*)GetComponent(Component::Type::RENDERER);
 	if (renderer != nullptr)
-	{
 		renderer->Draw();
-
-		if (App->scene->IsDebug())
-			App->scene->DrawDebug();
-	}
 }

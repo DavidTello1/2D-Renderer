@@ -96,7 +96,8 @@ bool ModuleRenderer::PostUpdate(float dt)
 	App->scene->Draw();
 
 	// Debug Draw
-	//***
+	if (App->scene->IsDebug())
+		App->scene->DrawDebug();
 
 	// Render ImGui
 	App->gui->Draw();
