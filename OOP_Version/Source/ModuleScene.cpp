@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "ModuleResources.h"
+#include "ModuleRenderer.h"
 
 #include "Entity.h"
 #include "ComponentCamera.h"
@@ -36,11 +37,10 @@ bool ModuleScene::Start()
 	Entity* bg = CreateEntity();
 	bg->AddComponent(Component::Type::RENDERER);
 	ComponentTransform* transform = (ComponentTransform*)bg->AddComponent(Component::Type::TRANSFORM);
-	transform->SetPosition(glm::vec2(100.0, 200.0f));
-	//transform->SetScale(glm::vec2(WORLD_SCALE));
+	transform->SetPosition(glm::vec2(0.0, 200.0f));
 	background = (ComponentSprite*)bg->AddComponent(Component::Type::SPRITE);
 	background->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
-	//background->SetSize(glm::vec2(world_width, world_height));
+	background->SetSize(glm::vec2(100.0f));
 
 	//// Create World Boundaries
 	//Entity* top = CreateEntity();
@@ -76,8 +76,7 @@ bool ModuleScene::Start()
 	entity->AddComponent(Component::Type::RENDERER);
 
 	ComponentTransform* transf = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
-	transf->SetPosition(glm::vec2(0.0f, 0.0f));
-	transf->SetScale(glm::vec2(200.0f));
+	transf->SetPosition(glm::vec2(1070.0f, 0.0f));
 
 	ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
 	sprite->SetTexture(App->resources->LoadTexture("Assets/asteroids.png")->index);
@@ -112,7 +111,7 @@ bool ModuleScene::CleanUp()
 void ModuleScene::Draw()
 {
 	for (Entity* entity : entities)
-		entity->Draw(App->resources->default_shader);
+		entity->Draw();
 }
 
 Entity* ModuleScene::CreateEntity()
@@ -145,13 +144,18 @@ void ModuleScene::DrawGrid(float grid_size)
 
 }
 
-void ModuleScene::DrawDebug(uint shader)
+const glm::mat4& ModuleScene::GetViewProjMatrix() const
+{
+	return App->scene->main_camera->GetViewProjMatrix();
+}
+
+void ModuleScene::DrawDebug()
 {
 	for (Entity* entity : entities)
 	{
 		ComponentTransform* transform = (ComponentTransform*)entity->GetComponent(Component::Type::TRANSFORM);
 		if (transform == nullptr)
-			return;
+			continue;
 
 		ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
 		if (collider != nullptr)
@@ -162,10 +166,6 @@ void ModuleScene::DrawDebug(uint shader)
 			else
 				color = RED;
 			color.a = 0.5f;
-
-			glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->main_camera->GetViewProjMatrix());
-			glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&transform->GetTransform());
-			glUniform1iv(glGetUniformLocation(shader, "uTexture"), 1, (GLint*)&App->resources->default_tex);
 
 			//App->renderer->DrawCircle(collider->GetCenter(), collider->GetRadius(), color);
 		}
@@ -181,11 +181,7 @@ void ModuleScene::DrawDebug(uint shader)
 					color = RED;
 				color.a = 0.5f;
 
-				glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->main_camera->GetViewProjMatrix());
-				glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&transform->GetTransform());
-				glUniform1iv(glGetUniformLocation(shader, "uTexture"), 1, (GLint*)&App->resources->default_tex);
-
-				//App->renderer->DrawQuad(collider->GetPosition(), collider->GetSize(), color);
+				App->renderer->DrawQuad(App->resources->default_shader, collider->GetPosition(), collider->GetSize(), color);
 			}
 		}
 	}

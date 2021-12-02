@@ -21,7 +21,6 @@ public:
 
 	void SetPosition(glm::vec3 pos) { position = pos; UpdateViewMatrix(); }
 	void SetRotation(float rot) { rotation = rot; UpdateViewMatrix(); }
-	void SetZoom(float zoom_) { zoom = zoom_; }
 
 	void OnResize(int width, int height);
 	void OnZoom(int zoom);

@@ -9,16 +9,14 @@ layout(location = 0) in vec3 aPosition;
 layout(location = 1) in vec2 aTexCoord;
 
 uniform mat4 uTransform;
-//uniform mat4 uViewProj;
+uniform mat4 uViewProj;
 
 out vec2 vTexCoord;
 
 void main()
 {
 	vTexCoord = aTexCoord;
-
-	//gl_Position = uTransform * uViewProj * vec4(aPosition, 1.0);
-	gl_Position = uTransform * vec4(aPosition, 1.0);
+	gl_Position = uViewProj * uTransform * vec4(aPosition, 1.0);
 }
 
 #elif defined(FRAGMENT) ///////////////////////////////////////////////
@@ -26,13 +24,13 @@ void main()
 in vec2 vTexCoord;
 
 uniform sampler2D uTexture;
+uniform vec4 uColor;
 
 out vec4 oColor;
 
 void main()
 {
-	//oColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-	oColor = texture(uTexture, vTexCoord);
+	oColor = texture(uTexture, vTexCoord) * uColor;
 }
 
 #endif

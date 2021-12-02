@@ -19,7 +19,7 @@ public:
 	void DeleteComponent(Component::Type component);
 	Component* GetComponent(Component::Type component) const;
 
-	void Draw(uint shader);
+	void Draw();
 
 private:
 	std::vector<Component*> components;

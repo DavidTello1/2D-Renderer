@@ -29,7 +29,7 @@ public:
 	bool CleanUp() override;
 
 	void Draw();
-	void DrawDebug(uint shader);
+	void DrawDebug();
 
 	// --- Demo
 	void DrawAxis();
@@ -39,6 +39,7 @@ public:
 	void SwitchDebug() { is_debug = !is_debug; }
 
 	const uint& GetSeed() const { return seed; }
+	const glm::mat4& GetViewProjMatrix() const;
 	const int& GetWorldWidth() const { return world_width; }
 	const int& GetWorldHeight() const { return world_height; }
 

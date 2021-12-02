@@ -7,16 +7,6 @@ struct Texture;
 typedef void* SDL_GLContext;
 typedef unsigned int GLuint;
 
-#define MAX_TEXTURES 32;
-
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec4 color;
-	glm::vec2 tex_coords;
-	float tex_index;
-};
-
 // -------------------------------------------
 class ModuleRenderer : public Module
 {
@@ -31,8 +21,8 @@ public:
 
 	//void Render();
 
-	void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-	void DrawQuad(const glm::vec2& position, const glm::vec2& size, uint32_t texture);
+	void DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
+	void DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture);
 
 	void DrawCircle(const glm::vec2& center, const float radius, const glm::vec4& color);
 

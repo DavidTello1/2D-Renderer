@@ -13,6 +13,6 @@ public:
 
 	static inline Component::Type GetType() { return Component::Type::RENDERER; }
 
-	void Draw(GLuint shader_index);
+	void Draw();
 };
 

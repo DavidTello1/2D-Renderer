@@ -50,14 +50,14 @@ Component* Entity::GetComponent(Component::Type component) const
 	return nullptr;
 }
 
-void Entity::Draw(uint shader)
+void Entity::Draw()
 {
 	ComponentRenderer* renderer = (ComponentRenderer*)GetComponent(Component::Type::RENDERER);
 	if (renderer != nullptr)
 	{
-		renderer->Draw(shader);
+		renderer->Draw();
 
 		if (App->scene->IsDebug())
-			App->scene->DrawDebug(shader);
+			App->scene->DrawDebug();
 	}
 }

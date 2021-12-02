@@ -24,7 +24,8 @@ void ComponentCamera::UpdateViewMatrix()
 
 void ComponentCamera::UpdateProjectionMatrix(float left, float right, float bottom, float top)
 {
-	ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+	ProjectionMatrix = glm::ortho(left, right, bottom, top);
 	ViewProjMatrix = ProjectionMatrix * ViewMatrix;
 }
 
@@ -35,13 +36,13 @@ void ComponentCamera::OnUpdate(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_DOWN || 
 		App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT) // Up
 	{
-		tmp_pos.y += move_speed * dt;
+		tmp_pos.y -= move_speed * dt;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_DOWN || 
 		App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT) // Down
 	{
-		tmp_pos.y -= move_speed * dt;
+		tmp_pos.y += move_speed * dt;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_DOWN || 
@@ -62,7 +63,7 @@ void ComponentCamera::OnUpdate(float dt)
 
 void ComponentCamera::OnResize(int width, int height)
 {
-	UpdateProjectionMatrix(0, width * zoom, 0, height * zoom);
+	UpdateProjectionMatrix(0, width * zoom, height * zoom, 0);
 }
 
 void ComponentCamera::OnZoom(int new_zoom)
@@ -72,6 +73,5 @@ void ComponentCamera::OnZoom(int new_zoom)
 
 	zoom -= new_zoom * zoom_speed;
 	zoom = std::max(zoom, zoom_speed);
-	UpdateProjectionMatrix(0, width * zoom, 0, height * zoom);
-	UpdateViewMatrix();
+	OnResize(width, height);
 }
