@@ -6,7 +6,7 @@
 #include "ModuleRenderer.h"
 #include "ModuleScene.h"
 
-#include "ComponentCamera.h"
+#include "ComponentCameraController.h"
 
 #include "ImGui/imgui.h"
 #include "imGui/imgui_impl_sdl.h"

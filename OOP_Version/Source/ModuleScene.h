@@ -13,7 +13,7 @@ typedef unsigned int uint;
 #define BOUNDARIES_SIZE 100
 
 class Entity;
-class ComponentCamera;
+class ComponentCameraController;
 class ComponentSprite;
 class ComponentRectCollider;
 
@@ -58,7 +58,7 @@ private:
 
 public:
 	std::vector<Entity*> entities;
-	ComponentCamera* main_camera = nullptr;
+	ComponentCameraController* main_camera = nullptr;
 
 	// --- Demo
 	ComponentSprite* background = nullptr;

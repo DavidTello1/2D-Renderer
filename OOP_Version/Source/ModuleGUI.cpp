@@ -4,9 +4,8 @@
 #include "ModuleWindow.h"
 #include "ModuleScene.h"
 #include "ModuleRenderer.h"
-#include "ModuleResources.h" //
 
-#include "ComponentCamera.h"
+#include "ComponentCameraController.h"
 
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
@@ -113,8 +112,6 @@ void ModuleGUI::DrawInfo()
 
 	if (ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Image((ImTextureID)App->resources->LoadTexture("Assets/asteroids.png")->index, { 100,100 }); //***
-
 		ImGui::Columns(2, "columns", false);
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
@@ -156,7 +153,7 @@ void ModuleGUI::DrawInfo()
 		ImGui::Text("Debug Mode");
 		ImGui::NextColumn();
 
-		ImGui::TextColored(YELLOW, "%d", App->scene->entities.size() - 1); //Number of asteroids (-1 because of camera entity)
+		ImGui::TextColored(YELLOW, "%d", App->scene->entities.size() - BASE_ENTITIES);
 		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldWidth());
 		ImGui::SameLine(0, 0);
 		ImGui::Text("x");

@@ -6,6 +6,7 @@
 
 #include "Entity.h"
 #include "ComponentCamera.h"
+#include "ComponentCameraController.h"
 #include "ComponentTransform.h"
 #include "ComponentSprite.h"
 #include "ComponentRectCollider.h"
@@ -26,7 +27,8 @@ bool ModuleScene::Init()
 {
 	// Create Main Camera
 	Entity* cam = CreateEntity();
-	main_camera = (ComponentCamera*)cam->AddComponent(Component::Type::CAMERA);
+	cam->AddComponent(Component::Type::CAMERA);
+	main_camera = (ComponentCameraController*)cam->AddComponent(Component::Type::CAMERA_CONTROLLER);
 
 	return true;
 }
@@ -138,7 +140,7 @@ void ModuleScene::DrawGrid(float grid_size)
 
 const glm::mat4& ModuleScene::GetViewProjMatrix() const
 {
-	return App->scene->main_camera->GetViewProjMatrix();
+	return App->scene->main_camera->GetCamera()->GetViewProjMatrix();
 }
 
 void ModuleScene::DrawDebug()
