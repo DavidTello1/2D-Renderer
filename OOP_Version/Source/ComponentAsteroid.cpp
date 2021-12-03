@@ -3,7 +3,6 @@
 #include "Entity.h"
 #include "ComponentTransform.h"
 #include "ComponentCircleCollider.h"
-#include "ComponentRectCollider.h" //
 
 void ComponentAsteroid::OnUpdate(float dt)
 {
@@ -13,7 +12,7 @@ void ComponentAsteroid::OnUpdate(float dt)
 	if (transform == nullptr)
 		return;
 
-	ComponentRectCollider* collider = (ComponentRectCollider*)entity->GetComponent(Component::Type::RECT_COLLIDER); //***CHANGE TO CIRCLE
+	ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
 	if (collider == nullptr)
 		return;
 
@@ -34,10 +33,10 @@ void ComponentAsteroid::SetRandomValues()
 void ComponentAsteroid::OnCollision()
 {
 	Entity* entity = GetEntity();
-	ComponentRectCollider* collider = (ComponentRectCollider*)entity->GetComponent(Component::Type::RECT_COLLIDER); //***CHANGE TO CIRCLE
+	ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
 
 	Entity* entity2 = collider->GetCollision();
-	ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->GetComponent(Component::Type::ASTEROID); //***CHANGE TO CIRCLE
+	ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->GetComponent(Component::Type::ASTEROID);
 
 	//// Maths
 	//direction = asteroid->GetDirection() * asteroid->GetSpeed(); //not correct

@@ -70,11 +70,14 @@ bool ModuleScene::Start()
 	entity->AddComponent(Component::Type::RENDERER);
 
 	ComponentTransform* transf = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
-	transf->SetPosition(glm::vec2(500.0f, 500.0f));
+	transf->SetPosition(glm::vec2(200.0f));
 
 	ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
 	sprite->SetTexture(App->resources->LoadTexture("Assets/asteroids.png")->index);
 	sprite->SetSize(glm::vec2(100.0f));
+
+	ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->AddComponent(Component::Type::CIRCLE_COLLIDER);
+	collider->SetRadius(sprite->GetSize().x * transform->GetScale().x / 2);
 
 	return true;
 }
@@ -161,7 +164,7 @@ void ModuleScene::DrawDebug()
 				color = RED;
 			color.a = 0.5f;
 
-			//App->renderer->DrawCircle(collider->GetCenter(), collider->GetRadius(), color);
+			App->renderer->DrawCircle(App->resources->default_shader, collider->GetCenter(), collider->GetRadius(), color);
 		}
 		else
 		{
@@ -227,8 +230,8 @@ void ModuleScene::AddAsteroids(int num)
 		sprite->SetSize(glm::vec2(100.0f));
 		sprite->SetOffset(glm::vec2(0.0f, 0.0f)); //***CHANGE TO RANDOM (1-3)
 
-		ComponentRectCollider* collider = (ComponentRectCollider*)entity->AddComponent(Component::Type::RECT_COLLIDER); //***CHANGE TO CIRCLE
-		collider->SetSize(sprite->GetSize() * transform->GetScale());
+		ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->AddComponent(Component::Type::CIRCLE_COLLIDER);
+		collider->SetRadius(sprite->GetSize().x * transform->GetScale().x / 2);
 
 		ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->AddComponent(Component::Type::ASTEROID);
 		asteroid->direction = glm::vec2(1.0f, 0.0f);

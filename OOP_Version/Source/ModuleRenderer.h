@@ -30,7 +30,7 @@ public:
 	void DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 	void DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture);
 
-	void DrawCircle(const glm::vec2& center, const float radius, const glm::vec4& color);
+	void DrawCircle(const GLuint shader, const glm::vec2& center, const float radius, const glm::vec4& color);
 
 	void UpdateViewportSize();
 
