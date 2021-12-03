@@ -154,19 +154,19 @@ void ModuleGUI::DrawInfo()
 		ImGui::NextColumn();
 
 		ImGui::TextColored(YELLOW, "%d", App->scene->entities.size() - BASE_ENTITIES);
-		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldWidth());
+		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldWidth() / WORLD_SCALE);
 		ImGui::SameLine(0, 0);
 		ImGui::Text("x");
 		ImGui::SameLine(0, 0);
-		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldHeight());
+		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldHeight() / WORLD_SCALE);
 		if (ImGui::Checkbox("##Debug Mode", &is_debug))
 			App->scene->SwitchDebug();
 		ImGui::Columns(1);
 
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
 		if (ImGui::TreeNodeEx("Render Stats", ImGuiTreeNodeFlags_NoTreePushOnOpen))
 		{
-			static int quads = 0; // Quads***
+			int quads = App->renderer->GetStats().quad_count;
 			ImGui::Columns(2, "columns2", false);
 
 			ImGui::Text("DrawCalls");
@@ -175,7 +175,7 @@ void ModuleGUI::DrawInfo()
 			ImGui::Text("Indices");
 			ImGui::NextColumn();
 
-			ImGui::TextColored(YELLOW, "%d", 0); // Draw Calls ***
+			ImGui::TextColored(YELLOW, "%d", App->renderer->GetStats().draw_calls);
 			ImGui::TextColored(YELLOW, "%d", quads);
 			ImGui::TextColored(YELLOW, "%d", quads * 4);
 			ImGui::TextColored(YELLOW, "%d", quads * 6);

@@ -7,6 +7,12 @@ struct Texture;
 typedef void* SDL_GLContext;
 typedef unsigned int GLuint;
 
+struct RenderStats
+{
+	uint quad_count = 0;
+	uint draw_calls = 0;
+};
+
 // -------------------------------------------
 class ModuleRenderer : public Module
 {
@@ -28,6 +34,8 @@ public:
 
 	void UpdateViewportSize();
 
+	const RenderStats& GetStats() const { return stats; }
+
 public:
 	static const size_t MaxTextures = 32;
 	static const size_t MaxQuadCount = 10000;
@@ -37,8 +45,10 @@ public:
 public:
 	SDL_GLContext context;
 
-	// Quad
+private:
 	GLuint quadVAO = 0;
 	GLuint quadVBO = 0;
 	GLuint quadIBO = 0;
+
+	RenderStats stats;
 };

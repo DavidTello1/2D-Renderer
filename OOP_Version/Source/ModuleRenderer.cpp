@@ -84,6 +84,10 @@ bool ModuleRenderer::PreUpdate(float dt)
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Reset Stats
+	stats.draw_calls = 0;
+	stats.quad_count = 0;
+
 	return true;
 }
 
@@ -137,6 +141,9 @@ void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, co
 
 	glBindVertexArray(App->renderer->quadVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	stats.draw_calls++;
+	stats.quad_count++;
 }
 
 void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture)
@@ -157,6 +164,9 @@ void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, co
 
 	glBindVertexArray(App->renderer->quadVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	stats.draw_calls++;
+	stats.quad_count++;
 }
 
 void ModuleRenderer::DrawCircle(const glm::vec2& center, const float radius, const glm::vec4& color)
