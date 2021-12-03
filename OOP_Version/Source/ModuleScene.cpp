@@ -184,28 +184,28 @@ void ModuleScene::DrawDebug()
 void ModuleScene::UpdateWorldSize()
 {
 	// Update Background
-	background->SetSize(glm::vec2(world_width * WORLD_SCALE, world_height * WORLD_SCALE));
+	background->SetSize(glm::vec2(world_width, world_height ));
 
 	// Update Boundaries
 	ComponentTransform* transform = (ComponentTransform*)b_top->GetComponent(Component::Type::TRANSFORM);
 	ComponentRectCollider* collider = (ComponentRectCollider*)b_top->GetComponent(Component::Type::RECT_COLLIDER);
 	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, -BOUNDARIES_SIZE));
-	collider->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+	collider->SetSize(glm::vec2(world_width + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
 
 	transform = (ComponentTransform*)b_bottom->GetComponent(Component::Type::TRANSFORM);
 	collider = (ComponentRectCollider*)b_bottom->GetComponent(Component::Type::RECT_COLLIDER);
-	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, world_height * WORLD_SCALE));
-	collider->SetSize(glm::vec2(world_width * WORLD_SCALE + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, world_height));
+	collider->SetSize(glm::vec2(world_width + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
 
 	transform = (ComponentTransform*)b_left->GetComponent(Component::Type::TRANSFORM);
 	collider = (ComponentRectCollider*)b_left->GetComponent(Component::Type::RECT_COLLIDER);
 	transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, 0.0f));
-	collider->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+	collider->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height));
 
 	transform = (ComponentTransform*)b_right->GetComponent(Component::Type::TRANSFORM);
 	collider = (ComponentRectCollider*)b_right->GetComponent(Component::Type::RECT_COLLIDER);
-	transform->SetPosition(glm::vec2(world_width * WORLD_SCALE, 0.0f));
-	collider->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height * WORLD_SCALE));
+	transform->SetPosition(glm::vec2(world_width, 0.0f));
+	collider->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height));
 }
 
 void ModuleScene::AddAsteroids(int num)

@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
+#include "ModuleScene.h"
 
 #include "Entity.h"
 #include "ComponentCamera.h"
@@ -21,30 +22,49 @@ ComponentCameraController::ComponentCameraController(Entity* entity)
 
 void ComponentCameraController::OnUpdate(float dt)
 {
+	float world_width = App->scene->GetWorldWidth();
+	float world_height = App->scene->GetWorldHeight();
+
 	glm::vec3 tmp_pos = camera->GetPosition();
 
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_DOWN ||
-		App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT) // Up
+	if (App->window->GetWidth() > world_width) // Center X Axis
+		tmp_pos.x = (world_width - App->window->GetWidth()) / 2;
+	else
 	{
-		tmp_pos.y -= move_speed * dt;
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_DOWN ||
+			App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT) // Left
+		{
+			tmp_pos.x -= move_speed * dt;
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_DOWN ||
+			App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT) // Right
+		{
+			tmp_pos.x += move_speed * dt;
+		}
+
+		if (tmp_pos.x < 0) tmp_pos.x = 0;
+		else if (tmp_pos.x > world_width) tmp_pos.x = world_width;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_DOWN ||
-		App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT) // Down
+	if (App->window->GetHeight() > world_height) // Center Y Axis
+		tmp_pos.y = (world_height - App->window->GetHeight()) / 2;
+	else
 	{
-		tmp_pos.y += move_speed * dt;
-	}
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_DOWN ||
+			App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT) // Up
+		{
+			tmp_pos.y -= move_speed * dt;
+		}
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_DOWN ||
-		App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT) // Left
-	{
-		tmp_pos.x -= move_speed * dt;
-	}
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_DOWN ||
+			App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT) // Down
+		{
+			tmp_pos.y += move_speed * dt;
+		}
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_DOWN ||
-		App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT) // Right
-	{
-		tmp_pos.x += move_speed * dt;
+		if (tmp_pos.y < 0) tmp_pos.y = 0;
+		else if (tmp_pos.y > world_height) tmp_pos.y = world_height;
 	}
 
 	if (tmp_pos != camera->GetPosition())

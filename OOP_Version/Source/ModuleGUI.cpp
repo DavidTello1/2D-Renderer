@@ -50,8 +50,8 @@ bool ModuleGUI::Start()
 	move_speed = App->scene->main_camera->GetMoveSpeed();
 	zoom_speed = App->scene->main_camera->GetZoomSpeed();
 
-	world_width = App->scene->GetWorldWidth();
-	world_height = App->scene->GetWorldHeight();
+	world_width = App->scene->GetWorldWidth() / WORLD_SCALE;
+	world_height = App->scene->GetWorldHeight() / WORLD_SCALE;
 
 	return true;
 }

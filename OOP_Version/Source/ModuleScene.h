@@ -7,9 +7,8 @@
 typedef unsigned int uint;
 
 #define BASE_ENTITIES 6 //camera + background + boundaries(4)
-#define WORLD_SCALE 50
-#define WORLD_WIDTH 10
-#define WORLD_HEIGHT 10
+#define WORLD_WIDTH 500
+#define WORLD_HEIGHT 500
 #define BOUNDARIES_SIZE 100
 
 class Entity;

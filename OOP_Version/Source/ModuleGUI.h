@@ -4,6 +4,7 @@
 #define FPS_LOG_SIZE 100
 #define PANEL_WIDTH 186
 #define PANEL_HEIGHT 266
+#define WORLD_SCALE 50
 
 class ModuleGUI : public Module
 {
