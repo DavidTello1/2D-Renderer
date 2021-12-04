@@ -169,14 +169,14 @@ void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, co
 	stats.quad_count++;
 }
 
-void ModuleRenderer::DrawCircle(const GLuint shader, const glm::vec2& center, const float radius, const glm::vec4& color)
+void ModuleRenderer::DrawCircle(const GLuint shader, const glm::vec2& position, const float diameter, const glm::vec4& color)
 {
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->GetViewProjMatrix());
 
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(center.x - radius, center.y - radius, 0.0f));
-	model = glm::scale(model, glm::vec3(radius * 2, radius * 2, 1.0f));
+	model = glm::translate(model, glm::vec3(position, 0.0f));
+	model = glm::scale(model, glm::vec3(diameter, diameter, 1.0f));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
 
 	glActiveTexture(GL_TEXTURE0);

@@ -16,6 +16,8 @@ public:
 	static inline Component::Type GetType() { return Component::Type::CIRCLE_COLLIDER; }
 
 	const bool& IsColliding() const { return is_colliding; }
+	glm::vec2 GetPosition();
+
 	const glm::vec2& GetCenter() const { return center; }
 	const float& GetRadius() const { return radius; }
 	const glm::vec2& GetOffset() const { return offset; }

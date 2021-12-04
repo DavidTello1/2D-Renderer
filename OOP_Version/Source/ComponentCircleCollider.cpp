@@ -24,10 +24,23 @@ void ComponentCircleCollider::OnUpdate(float dt)
 	glm::vec2 pos = transform->GetPosition();
 	glm::vec2 size = sprite->GetSize();
 
-	center = glm::vec2(pos.x + size.x / 2 + offset.x, pos.y + size.y / 2 + offset.y);
+	radius = size.x / 2;
+	center = glm::vec2(pos.x + radius + offset.x, pos.y + radius + offset.y);
 
 	if (GetCollision() != nullptr)
 		is_colliding = true;
+}
+
+glm::vec2 ComponentCircleCollider::GetPosition()
+{
+	glm::vec2 pos = glm::vec2(0.0f);
+
+	Entity* entity = GetEntity();
+	ComponentTransform* transform = (ComponentTransform*)entity->GetComponent(Component::Type::TRANSFORM);
+	if (transform != nullptr)
+		pos = transform->GetPosition() + offset;
+
+	return pos;
 }
 
 Entity* ComponentCircleCollider::GetCollision()
