@@ -27,8 +27,8 @@ void ComponentCameraController::OnUpdate(float dt)
 
 	glm::vec3 tmp_pos = camera->GetPosition();
 
-	if (App->window->GetWidth() > world_width) // Center X Axis
-		tmp_pos.x = (world_width - App->window->GetWidth()) / 2;
+	if (App->window->GetWidth() * zoom > world_width) // Center X Axis
+		tmp_pos.x = (world_width - App->window->GetWidth() * zoom) / 2;
 	else
 	{
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_DOWN ||
@@ -45,11 +45,11 @@ void ComponentCameraController::OnUpdate(float dt)
 
 		// Camera Limits (X Axis)
 		if (tmp_pos.x < 0) tmp_pos.x = 0;
-		else if (tmp_pos.x > world_width - App->window->GetWidth()) tmp_pos.x = world_width - App->window->GetWidth(); //*** ADAPT TO ZOOM
+		else if (tmp_pos.x > world_width - App->window->GetWidth() * zoom) tmp_pos.x = world_width - App->window->GetWidth() * zoom;
 	}
 
-	if (App->window->GetHeight() > world_height) // Center Y Axis
-		tmp_pos.y = (world_height - App->window->GetHeight()) / 2;
+	if (App->window->GetHeight() * zoom > world_height) // Center Y Axis
+		tmp_pos.y = (world_height - App->window->GetHeight() * zoom) / 2;
 	else
 	{
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_DOWN ||
@@ -66,7 +66,7 @@ void ComponentCameraController::OnUpdate(float dt)
 
 		// Camera Limits (Y Axis)
 		if (tmp_pos.y < 0) tmp_pos.y = 0;
-		else if (tmp_pos.y > world_height - App->window->GetHeight()) tmp_pos.y = world_height - App->window->GetHeight(); //*** ADAPT TO ZOOM
+		else if (tmp_pos.y > world_height - App->window->GetHeight() * zoom) tmp_pos.y = world_height - App->window->GetHeight() * zoom;
 	}
 
 	if (tmp_pos != camera->GetPosition())
