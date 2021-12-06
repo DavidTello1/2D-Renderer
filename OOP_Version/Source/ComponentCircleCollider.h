@@ -23,6 +23,7 @@ public:
 	const float& GetRadius() const { return radius; }
 	const glm::vec2& GetOffset() const { return offset; }
 
+	void SetCenter(glm::vec2 new_center) { center = new_center; }
 	void SetRadius(float radius_) { radius = radius_; }
 	void SetOffset(glm::vec2 offset_) { offset = offset_; }
 
@@ -31,6 +32,13 @@ public:
 
 private:
 	void DoCollisions();
+
+public:
+	glm::vec2 dist = glm::vec2(0.0f);
+	bool isBoundariesCollision = false;
+	bool isStatic = false;
+
+	float radius_collision = 0.0f;
 
 private:
 	glm::vec2 center = glm::vec2(0.0f);

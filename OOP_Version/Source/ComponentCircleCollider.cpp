@@ -13,6 +13,8 @@
 void ComponentCircleCollider::OnUpdate(float dt)
 {
 	is_colliding = false;
+	isBoundariesCollision = false;
+	dist = glm::vec2(0.0f);
 
 	Entity* entity = GetEntity();
 	ComponentTransform* transform = (ComponentTransform*)entity->GetComponent(Component::Type::TRANSFORM);
@@ -23,10 +25,9 @@ void ComponentCircleCollider::OnUpdate(float dt)
 	if (sprite == nullptr)
 		return;
 
-	glm::vec2 pos = transform->GetPosition();
 	glm::vec2 size = sprite->GetSize();
-
-	center = glm::vec2(pos.x + radius + offset.x, pos.y + radius + offset.y);
+	glm::vec2 pos = transform->GetPosition();
+	center = glm::vec2(pos + radius + offset);
 
 	// Check for Collisions
 	DoCollisions();
@@ -46,9 +47,9 @@ glm::vec2 ComponentCircleCollider::GetPosition()
 
 bool ComponentCircleCollider::CheckCollision(ComponentCircleCollider* collider) // Circle-Circle Collision
 {
-	float dx = this->center.x - collider->center.x;
-	float dy = this->center.y - collider->center.y;
-	float distance = glm::sqrt(dx * dx + dy * dy);
+	dist.x = this->center.x - collider->center.x;
+	dist.y = this->center.y - collider->center.y;
+	float distance = glm::sqrt(dist.x * dist.x + dist.y * dist.y);
 
 	if (distance < this->radius + collider->radius) 
 	{
@@ -61,15 +62,13 @@ bool ComponentCircleCollider::CheckCollision(ComponentCircleCollider* collider) 
 bool ComponentCircleCollider::CheckCollision(ComponentRectCollider* collider) // Circle-Rect Collision
 {
 	// Find the closest point to the circle within the rectangle
-	float closestX = glm::clamp(this->center.x, collider->GetPosition().x, collider->GetPosition().x + collider->GetSize().x);
-	float closestY = glm::clamp(this->center.y, collider->GetPosition().y, collider->GetPosition().y + collider->GetSize().y);
+	glm::vec2 closest = glm::clamp(this->center, collider->GetPosition(), collider->GetPosition() + collider->GetSize());
 
 	// Calculate the distance between the circle's center and this closest point
-	float distanceX = this->center.x - closestX;
-	float distanceY = this->center.y - closestY;
+	dist = this->center - closest;
 
 	// If the distance is less than the circle's radius, an intersection occurs
-	float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+	float distanceSquared = (dist.x * dist.x) + (dist.y * dist.y);
 	if (distanceSquared < (this->radius * this->radius))
 	{
 		is_colliding = true;
@@ -91,7 +90,7 @@ void ComponentCircleCollider::DoCollisions()
 			// Has Circle Collider
 			if (CheckCollision(cCollider) == true) //has collided
 			{
-				//...
+				this->radius_collision = cCollider->radius;
 				return;
 			}
 		}
@@ -104,6 +103,7 @@ void ComponentCircleCollider::DoCollisions()
 				if (CheckCollision(rCollider) == true) //has collided
 				{
 					// Bounce
+					isBoundariesCollision = true;
 					return;
 				}
 			}

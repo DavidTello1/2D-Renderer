@@ -3,10 +3,13 @@
 
 #include "glm/include/glm/glm.hpp"
 
+class ComponentTransform;
+class ComponentCircleCollider;
+
 class ComponentAsteroid : public Component
 {
 public:
-	ComponentAsteroid(Entity* entity) : direction(0.0f), speed(0.0f), Component(Component::Type::ASTEROID, entity) {};
+	ComponentAsteroid(Entity* entity) : direction(0.0f), velocity(0.0f), Component(Component::Type::ASTEROID, entity) {};
 	~ComponentAsteroid() {};
 
 	static inline Component::Type GetType() { return Component::Type::ASTEROID; }
@@ -14,17 +17,18 @@ public:
 	void OnUpdate(float dt) override;
 
 	const glm::vec2& GetDirection() const { return direction; }
-	const float& GetSpeed() const { return speed; }
+	const glm::vec2& GetVelocity() const { return velocity; }
 
 	void SetDirection(glm::vec2 dir) { direction = dir; }
-	void SetSpeed(float speed_) { speed = speed_; }
+	void SetVelocity(glm::vec2 vel) { velocity = vel; }
 
 	void SetRandomValues();
 
-	void OnCollision();
+	void OnCollision(ComponentCircleCollider* collider, ComponentTransform* transform);
+	void OnCollision2(ComponentCircleCollider* collider, ComponentTransform* transform);
 
 public:
 	glm::vec2 direction = glm::vec2(0.0f);
-	float speed = 0.0f;
+	glm::vec2 velocity = glm::vec2(0.0f);
 };
 

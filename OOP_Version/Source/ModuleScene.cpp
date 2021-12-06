@@ -71,7 +71,6 @@ bool ModuleScene::Start()
 
 	ComponentTransform* transf = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
 	transf->SetPosition(glm::vec2(200.0f));
-	transf->SetScale(glm::vec2(0.5f));
 
 	ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
 	sprite->SetTexture(App->resources->LoadTexture("Assets/asteroids.png")->index);
@@ -79,6 +78,11 @@ bool ModuleScene::Start()
 
 	ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->AddComponent(Component::Type::CIRCLE_COLLIDER);
 	collider->SetRadius(sprite->GetSize().x * transform->GetScale().x / 2);
+	collider->isStatic = true;
+
+	//ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->AddComponent(Component::Type::ASTEROID);
+	//asteroid->direction = glm::vec2(1.0f, 1.0f);
+	//asteroid->velocity = glm::vec2(100.0f, 50.0f);
 
 	return true;
 }
@@ -236,8 +240,8 @@ void ModuleScene::AddAsteroids(int num)
 		collider->SetRadius(sprite->GetSize().x * transform->GetScale().x / 2);
 
 		ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->AddComponent(Component::Type::ASTEROID);
-		asteroid->direction = glm::vec2(1.0f, 0.0f);
-		asteroid->speed = 100.0f;
+		asteroid->direction = glm::vec2(1.0f, 1.0f);
+		asteroid->velocity = glm::vec2(100.0f, 50.0f);
 	}
 }
 

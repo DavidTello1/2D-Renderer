@@ -81,7 +81,7 @@ void ComponentRectCollider::DoCollisions()
 				// Has Rect Collider
 				if (CheckCollision(rCollider) == true) //has collided
 				{
-					// Bounce
+					//...
 					return;
 				}
 			}
