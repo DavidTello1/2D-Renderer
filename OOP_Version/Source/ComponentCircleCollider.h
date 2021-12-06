@@ -4,6 +4,7 @@
 #include "glm/include/glm/glm.hpp"
 
 class Entity;
+class ComponentRectCollider;
 
 class ComponentCircleCollider : public Component
 {
@@ -25,7 +26,11 @@ public:
 	void SetRadius(float radius_) { radius = radius_; }
 	void SetOffset(glm::vec2 offset_) { offset = offset_; }
 
-	Entity* GetCollision();
+	bool CheckCollision(ComponentCircleCollider* collider);
+	bool CheckCollision(ComponentRectCollider* collider);
+
+private:
+	void DoCollisions();
 
 private:
 	glm::vec2 center = glm::vec2(0.0f);

@@ -147,6 +147,7 @@ const glm::mat4& ModuleScene::GetViewProjMatrix() const
 	return App->scene->main_camera->GetCamera()->GetViewProjMatrix();
 }
 
+//--------------------------------------
 void ModuleScene::DrawDebug()
 {
 	for (Entity* entity : entities)
@@ -159,10 +160,10 @@ void ModuleScene::DrawDebug()
 		if (collider != nullptr)
 		{
 			glm::vec4 color;
-			if (collider->GetCollision() == nullptr)
-				color = BLUE;
-			else
+			if (collider->IsColliding())
 				color = RED;
+			else
+				color = BLUE;
 			color.a = 0.5f;
 
 			App->renderer->DrawCircle(App->resources->default_shader, collider->GetPosition(), collider->GetRadius() * 2 * transform->GetScale().x, color);
@@ -173,10 +174,10 @@ void ModuleScene::DrawDebug()
 			if (collider != nullptr)
 			{
 				glm::vec4 color;
-				if (collider->GetCollision() == nullptr)
-					color = BLUE;
-				else
+				if (collider->IsColliding())
 					color = RED;
+				else
+					color = BLUE;
 				color.a = 0.5f;
 
 				App->renderer->DrawQuad(App->resources->default_shader, collider->GetPosition(), collider->GetSize() * transform->GetScale(), color);

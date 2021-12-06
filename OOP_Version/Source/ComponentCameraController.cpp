@@ -22,8 +22,8 @@ ComponentCameraController::ComponentCameraController(Entity* entity)
 
 void ComponentCameraController::OnUpdate(float dt)
 {
-	float world_width = App->scene->GetWorldWidth();
-	float world_height = App->scene->GetWorldHeight();
+	float world_width = (float)App->scene->GetWorldWidth();
+	float world_height = (float)App->scene->GetWorldHeight();
 
 	glm::vec3 tmp_pos = camera->GetPosition();
 
@@ -43,8 +43,9 @@ void ComponentCameraController::OnUpdate(float dt)
 			tmp_pos.x += move_speed * dt;
 		}
 
+		// Camera Limits (X Axis)
 		if (tmp_pos.x < 0) tmp_pos.x = 0;
-		else if (tmp_pos.x > world_width) tmp_pos.x = world_width;
+		else if (tmp_pos.x > world_width - App->window->GetWidth()) tmp_pos.x = world_width - App->window->GetWidth(); //*** ADAPT TO ZOOM
 	}
 
 	if (App->window->GetHeight() > world_height) // Center Y Axis
@@ -63,8 +64,9 @@ void ComponentCameraController::OnUpdate(float dt)
 			tmp_pos.y += move_speed * dt;
 		}
 
+		// Camera Limits (Y Axis)
 		if (tmp_pos.y < 0) tmp_pos.y = 0;
-		else if (tmp_pos.y > world_height) tmp_pos.y = world_height;
+		else if (tmp_pos.y > world_height - App->window->GetHeight()) tmp_pos.y = world_height - App->window->GetHeight(); //*** ADAPT TO ZOOM
 	}
 
 	if (tmp_pos != camera->GetPosition())

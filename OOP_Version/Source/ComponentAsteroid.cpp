@@ -32,11 +32,11 @@ void ComponentAsteroid::SetRandomValues()
 
 void ComponentAsteroid::OnCollision()
 {
-	Entity* entity = GetEntity();
-	ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
+	//Entity* entity = GetEntity();
+	//ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
 
-	Entity* entity2 = collider->GetCollision();
-	ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->GetComponent(Component::Type::ASTEROID);
+	//Entity* entity2 = collider->GetCollision();
+	//ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->GetComponent(Component::Type::ASTEROID);
 
 	//// Maths
 	//direction = asteroid->GetDirection() * asteroid->GetSpeed(); //not correct

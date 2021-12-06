@@ -47,7 +47,7 @@ bool ModuleGUI::Init()
 
 bool ModuleGUI::Start()
 {
-	move_speed = App->scene->main_camera->GetMoveSpeed();
+	move_speed = (int)App->scene->main_camera->GetMoveSpeed();
 	zoom_speed = App->scene->main_camera->GetZoomSpeed();
 
 	world_width = App->scene->GetWorldWidth() / WORLD_SCALE;
@@ -197,7 +197,7 @@ void ModuleGUI::DrawInfo()
 
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
 			if (ImGui::InputInt("##Move Speed", &move_speed, 0))
-				App->scene->main_camera->SetMoveSpeed(move_speed);
+				App->scene->main_camera->SetMoveSpeed((float)move_speed);
 			if (ImGui::InputFloat("##Zoom Speed", &zoom_speed))
 				App->scene->main_camera->SetZoomSpeed(zoom_speed);
 			ImGui::PopStyleColor();
@@ -223,9 +223,9 @@ void ModuleGUI::DrawInfo()
 
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
 			if (ImGui::InputInt("##World Width", &world_width, 0))
-				App->scene->SetWorldWidth(world_width);
+				App->scene->SetWorldWidth(world_width * WORLD_SCALE);
 			if (ImGui::InputInt("##World Height", &world_height, 0))
-				App->scene->SetWorldHeight(world_height);
+				App->scene->SetWorldHeight(world_height * WORLD_SCALE);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
 			if (ImGui::InputInt("##Seed", &seed, 0))
 				App->scene->SetSeed((uint)seed);

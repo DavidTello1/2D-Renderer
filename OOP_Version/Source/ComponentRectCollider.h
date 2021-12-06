@@ -4,6 +4,7 @@
 #include "glm/include/glm/glm.hpp"
 
 class Entity;
+class ComponentCircleCollider;
 
 class ComponentRectCollider : public Component
 {
@@ -23,7 +24,11 @@ public:
 	void SetSize(glm::vec2 size_) { size = size_; }
 	void SetOffset(glm::vec2 offset_) { offset = offset_; }
 
-	Entity* GetCollision();
+	bool CheckCollision(ComponentCircleCollider* collider);
+	bool CheckCollision(ComponentRectCollider* collider);
+
+private:
+	void DoCollisions();
 
 private:
 	glm::vec2 position = glm::vec2(0.0f);
