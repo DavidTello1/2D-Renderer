@@ -2,6 +2,7 @@
 #include "Module.h"
 
 #include <vector>
+#include "PCG/pcg_basic.h"
 #include "glm/include/glm/glm.hpp"
 
 typedef unsigned int uint;
@@ -30,24 +31,29 @@ public:
 	void Draw();
 	void DrawDebug();
 
-	// --- Demo
+	// --- Demo ---
+
+	// RNG
+	pcg32_random_t& GetRNG() { return rng; }
+
+	// Debug Drawing
 	void DrawAxis();
 	void DrawGrid(float grid_size);
 	
 	const bool& IsDebug() const { return is_debug; }
 	void SwitchDebug() { is_debug = !is_debug; }
 
-	const uint& GetSeed() const { return seed; }
+	// World
 	const glm::mat4& GetViewProjMatrix() const;
 	const int& GetWorldWidth() const { return world_width; }
 	const int& GetWorldHeight() const { return world_height; }
 
-	void SetSeed(uint new_seed) { seed = new_seed; }
 	void SetWorldWidth(int width) { world_width = width; UpdateWorldSize(); }
 	void SetWorldHeight(int height) { world_height = height; UpdateWorldSize(); }
 
 	void UpdateWorldSize();
 
+	// Asteroids
 	void AddAsteroids(int num);
 	void DeleteAsteroids(int num);
 
@@ -70,5 +76,6 @@ private:
 	bool is_debug = false;
 	float grid_size = 5.0f;
 	int world_width, world_height = 0;
-	uint seed = 0;
+
+	pcg32_random_t rng;
 };

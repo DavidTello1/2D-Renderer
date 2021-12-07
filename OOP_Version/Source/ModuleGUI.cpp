@@ -215,8 +215,6 @@ void ModuleGUI::DrawInfo()
 			ImGui::Text("Width");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("Height");
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8.0f);
-			ImGui::Text("Seed");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("Asteroids");
 			ImGui::NextColumn();
@@ -227,8 +225,6 @@ void ModuleGUI::DrawInfo()
 			if (ImGui::InputInt("##World Height", &world_height, 0))
 				App->scene->SetWorldHeight(world_height * WORLD_SCALE);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
-			if (ImGui::InputInt("##Seed", &seed, 0))
-				App->scene->SetSeed((uint)seed);
 			ImGui::InputInt("##Asteroids", &num_asteroids, 0);
 			ImGui::PopStyleColor();
 

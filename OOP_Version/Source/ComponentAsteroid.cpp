@@ -1,10 +1,13 @@
 #include "ComponentAsteroid.h"
 
+#include "Application.h"
+#include "ModuleScene.h"
+
 #include "Entity.h"
 #include "ComponentTransform.h"
 #include "ComponentCircleCollider.h"
 
-#include <math.h>
+#include "PCG/pcg_basic.h"
 
 void ComponentAsteroid::OnUpdate(float dt)
 {
@@ -26,13 +29,26 @@ void ComponentAsteroid::OnUpdate(float dt)
 			OnCollision2(collider, transform);
 	}
 
-	transform->SetPosition(transform->GetPosition() * direction + velocity * dt);
+	transform->SetPosition(transform->GetPosition() + velocity * dt);
 }
 
 void ComponentAsteroid::SetRandomValues()
 {
-	//direction = ...
-	//speed = ...
+	// Velocity X
+	velocity.x = pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_VELOCITY + 1);
+	if (velocity.x < MIN_VELOCITY)
+		velocity.x = MIN_VELOCITY;
+
+	if (pcg32_boundedrand_r(&App->scene->GetRNG(), 2) == 0)
+		velocity.x *= -1;
+
+	// Velocity Y
+	velocity.y = pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_VELOCITY + 1);
+	if (velocity.y < MIN_VELOCITY)
+		velocity.y = MIN_VELOCITY;
+
+	if (pcg32_boundedrand_r(&App->scene->GetRNG(), 2) == 0)
+		velocity.y *= -1;
 }
 
 void ComponentAsteroid::OnCollision(ComponentCircleCollider* collider, ComponentTransform* transform)

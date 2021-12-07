@@ -25,6 +25,9 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
+	// Seed the RNG
+	pcg32_srandom_r(&rng, 42u, 54u); // seed with a fixed constant
+
 	// Create Main Camera
 	Entity* cam = CreateEntity();
 	cam->AddComponent(Component::Type::CAMERA);
@@ -65,24 +68,24 @@ bool ModuleScene::Start()
 
 	UpdateWorldSize();
 
-	// ---- Asteroid Testing ---
-	Entity* entity = CreateEntity();
-	entity->AddComponent(Component::Type::RENDERER);
+	//// ---- Asteroid Testing ---
+	//Entity* entity = CreateEntity();
+	//entity->AddComponent(Component::Type::RENDERER);
 
-	ComponentTransform* transf = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
-	transf->SetPosition(glm::vec2(200.0f));
+	//ComponentTransform* transf = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
+	//transf->SetPosition(glm::vec2(200.0f));
 
-	ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
-	sprite->SetTexture(App->resources->LoadTexture("Assets/asteroids.png")->index);
-	sprite->SetSize(glm::vec2(200.0f));
+	//ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
+	//sprite->SetTexture(App->resources->LoadTexture("Assets/asteroids.png")->index);
+	//sprite->SetSize(glm::vec2(200.0f));
 
-	ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->AddComponent(Component::Type::CIRCLE_COLLIDER);
-	collider->SetRadius(sprite->GetSize().x * transform->GetScale().x / 2);
-	collider->isStatic = true;
+	//ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->AddComponent(Component::Type::CIRCLE_COLLIDER);
+	//collider->SetRadius(sprite->GetSize().x * transform->GetScale().x / 2);
+	//collider->isStatic = true;
 
-	//ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->AddComponent(Component::Type::ASTEROID);
-	//asteroid->direction = glm::vec2(1.0f, 1.0f);
-	//asteroid->velocity = glm::vec2(100.0f, 50.0f);
+	////ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->AddComponent(Component::Type::ASTEROID);
+	////asteroid->direction = glm::vec2(1.0f, 1.0f);
+	////asteroid->velocity = glm::vec2(100.0f, 50.0f);
 
 	return true;
 }
@@ -225,11 +228,6 @@ void ModuleScene::AddAsteroids(int num)
 		entity->AddComponent(Component::Type::RENDERER);
 
 		ComponentTransform* transform = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
-		float pos_x = 20.0f * i;
-		float pos_y = 50.0f * i;
-
-		transform->SetPosition(glm::vec2(pos_x, pos_y));
-		transform->SetScale(glm::vec2(1.0f));
 
 		ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
 		sprite->SetTexture(App->resources->LoadTexture("Assets/asteroids.png")->index); //***CHANGE TO RANDOM (1-3)
@@ -240,8 +238,16 @@ void ModuleScene::AddAsteroids(int num)
 		collider->SetRadius(sprite->GetSize().x * transform->GetScale().x / 2);
 
 		ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->AddComponent(Component::Type::ASTEROID);
-		asteroid->direction = glm::vec2(1.0f, 1.0f);
-		asteroid->velocity = glm::vec2(100.0f, 50.0f);
+		asteroid->SetRandomValues();
+
+		glm::vec2 pos;
+		pos.x = pcg32_boundedrand_r(&rng, world_width - sprite->GetSize().x * transform->GetScale().x - BOUNDARIES_SIZE);
+		pos.y = pcg32_boundedrand_r(&rng, world_height - sprite->GetSize().y * transform->GetScale().y - BOUNDARIES_SIZE);
+
+		if (pos.x == 0) pos.x = BOUNDARIES_SIZE;
+		if (pos.y == 0) pos.y = BOUNDARIES_SIZE;
+
+		transform->SetPosition(pos);
 	}
 }
 
