@@ -13,6 +13,8 @@
 #include "ComponentCircleCollider.h"
 #include "ComponentAsteroid.h"
 
+#include "glm/include/glm/gtc/type_ptr.hpp"
+
 #include "mmgr/mmgr.h"
 
 ModuleScene::ModuleScene(bool start_enabled) : Module("ModuleScene", start_enabled), world_width(WORLD_WIDTH), world_height(WORLD_HEIGHT)
@@ -173,7 +175,8 @@ void ModuleScene::DrawDebug()
 				color = BLUE;
 			color.a = 0.5f;
 
-			App->renderer->DrawCircle(App->resources->default_shader, collider->GetPosition(), collider->GetRadius() * 2 * transform->GetScale().x, color);
+			App->renderer->DrawCircle(App->resources->default_shader, collider->GetPosition(), 
+				collider->GetRadius() * 2 * transform->GetScale().x, color);
 		}
 		else
 		{
@@ -187,7 +190,8 @@ void ModuleScene::DrawDebug()
 					color = BLUE;
 				color.a = 0.5f;
 
-				App->renderer->DrawQuad(App->resources->default_shader, collider->GetPosition(), collider->GetSize() * transform->GetScale(), color);
+				App->renderer->DrawQuad(App->resources->default_shader, collider->GetPosition(),
+					collider->GetSize() * transform->GetScale(), App->resources->default_tex, color);
 			}
 		}
 	}
@@ -240,6 +244,7 @@ void ModuleScene::AddAsteroids(int num)
 		ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->AddComponent(Component::Type::ASTEROID);
 		asteroid->SetRandomValues();
 
+		// Position Limits
 		glm::vec2 pos;
 		pos.x = pcg32_boundedrand_r(&rng, world_width - sprite->GetSize().x * transform->GetScale().x - BOUNDARIES_SIZE);
 		pos.y = pcg32_boundedrand_r(&rng, world_height - sprite->GetSize().y * transform->GetScale().y - BOUNDARIES_SIZE);

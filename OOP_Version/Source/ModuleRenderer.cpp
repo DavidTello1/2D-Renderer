@@ -123,18 +123,27 @@ bool ModuleRenderer::CleanUp()
 }
 
 //--------------------------------
-void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
+	const glm::vec4& color, const float& rotation, const glm::vec2& center)
 {
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->GetViewProjMatrix());
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
+	if (center != glm::vec2(0.0f))
+	{
+		model = glm::translate(model, glm::vec3(center, 0.0f));
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-center, 0.0f));
+	}
+	else
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(size, 1.0f));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, App->resources->default_tex);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(glGetUniformLocation(shader, "uTexture"), 0);
 
 	glUniform4f(glGetUniformLocation(shader, "uColor"), color.r, color.g, color.b, color.a);
@@ -146,30 +155,7 @@ void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, co
 	stats.quad_count++;
 }
 
-void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture)
-{
-	glUseProgram(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->GetViewProjMatrix());
-
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(position, 0.0f));
-	model = glm::scale(model, glm::vec3(size, 1.0f));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(glGetUniformLocation(shader, "uTexture"), 0);
-
-	glUniform4f(glGetUniformLocation(shader, "uColor"), 1.0f, 1.0f, 1.0f, 1.0f);
-
-	glBindVertexArray(App->renderer->quadVAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	stats.draw_calls++;
-	stats.quad_count++;
-}
-
-void ModuleRenderer::DrawCircle(const GLuint shader, const glm::vec2& position, const float diameter, const glm::vec4& color)
+void ModuleRenderer::DrawCircle(const GLuint shader, const glm::vec2& position, const float& diameter, const glm::vec4& color)
 {
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->GetViewProjMatrix());
