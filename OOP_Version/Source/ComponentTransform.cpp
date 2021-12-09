@@ -1,6 +1,4 @@
 #include "ComponentTransform.h"
-#include "Application.h"
-#include "ModuleWindow.h"
 
 #include "glm/include/glm/gtc/type_ptr.hpp"
 

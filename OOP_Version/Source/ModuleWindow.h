@@ -25,8 +25,8 @@ public:
 	void SetWidth(uint width, bool update_size = true);
 	void SetHeigth(uint height, bool update_size = true);
 
-	uint GetRefreshRate() const;
-	void GetMaxMinSize(uint& min_width, uint& min_height, uint& max_width, uint& max_height) const;
+	uint GetRefreshRate() const; //*** NOT USED (MAYBE DELETE)
+	void GetMaxMinSize(uint& min_width, uint& min_height, uint& max_width, uint& max_height) const; //*** NOT USED (MAYBE DELETE)
 
 private:
 	SDL_Window* window = nullptr; //The window we'll be rendering to

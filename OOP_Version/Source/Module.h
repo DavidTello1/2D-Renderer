@@ -1,6 +1,7 @@
 #pragma once
-
+#include "Globals.h"
 #include <string>
+
 #define MODULE_NAME_LENGTH 25
 
 class Module

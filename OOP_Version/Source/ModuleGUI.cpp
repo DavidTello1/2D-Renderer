@@ -1,7 +1,9 @@
-#include "Application.h"
 #include "ModuleGUI.h"
+
+#include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
+#include "ModuleSceneBase.h"
 #include "ModuleScene.h"
 #include "ModuleRenderer.h"
 
@@ -39,7 +41,7 @@ bool ModuleGUI::Init()
 
 	ImGui::StyleColorsDark();
 
-	ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->context);
+	ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->GetContext());
 	ImGui_ImplOpenGL3_Init();
 
 	return true;
@@ -47,8 +49,8 @@ bool ModuleGUI::Init()
 
 bool ModuleGUI::Start()
 {
-	move_speed = (int)App->scene->main_camera->GetMoveSpeed();
-	zoom_speed = App->scene->main_camera->GetZoomSpeed();
+	move_speed = (int)App->scene_base->GetMainCamera()->GetMoveSpeed();
+	zoom_speed = App->scene_base->GetMainCamera()->GetZoomSpeed();
 
 	world_width = App->scene->GetWorldWidth() / WORLD_SCALE;
 	world_height = App->scene->GetWorldHeight() / WORLD_SCALE;
@@ -73,7 +75,7 @@ bool ModuleGUI::Update(float dt)
 
 bool ModuleGUI::PostUpdate(float dt)
 {
-	if (App->input->close)
+	if (App->input->close) //***SHOULD THIS BE HERE?
 		return false;
 
 	return true;
@@ -153,14 +155,14 @@ void ModuleGUI::DrawInfo()
 		ImGui::Text("Debug Mode");
 		ImGui::NextColumn();
 
-		ImGui::TextColored(YELLOW, "%d", App->scene->entities.size() - BASE_ENTITIES);
+		ImGui::TextColored(YELLOW, "%d", App->scene->GetEntities().size() - BASE_ENTITIES);
 		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldWidth() / WORLD_SCALE);
 		ImGui::SameLine(0, 0);
 		ImGui::Text("x");
 		ImGui::SameLine(0, 0);
 		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldHeight() / WORLD_SCALE);
 		if (ImGui::Checkbox("##Debug Mode", &is_debug))
-			App->scene->SwitchDebug();
+			App->scene_base->SwitchDebug();
 		ImGui::Columns(1);
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
@@ -197,9 +199,9 @@ void ModuleGUI::DrawInfo()
 
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
 			if (ImGui::InputInt("##Move Speed", &move_speed, 0))
-				App->scene->main_camera->SetMoveSpeed((float)move_speed);
+				App->scene_base->GetMainCamera()->SetMoveSpeed((float)move_speed);
 			if (ImGui::InputFloat("##Zoom Speed", &zoom_speed))
-				App->scene->main_camera->SetZoomSpeed(zoom_speed);
+				App->scene_base->GetMainCamera()->SetZoomSpeed(zoom_speed);
 			ImGui::PopStyleColor();
 
 			ImGui::Columns(1);
@@ -220,9 +222,9 @@ void ModuleGUI::DrawInfo()
 			ImGui::NextColumn();
 
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
-			if (ImGui::InputInt("##World Width", &world_width, 0))
+			if (ImGui::DragInt("##World Width", &world_width, 1.0f, 1, 1000))
 				App->scene->SetWorldWidth(world_width * WORLD_SCALE);
-			if (ImGui::InputInt("##World Height", &world_height, 0))
+			if (ImGui::DragInt("##World Height", &world_height, 1.0f, 1, 1000))
 				App->scene->SetWorldHeight(world_height * WORLD_SCALE);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
 			ImGui::InputInt("##Asteroids", &num_asteroids, 0);
@@ -238,10 +240,10 @@ void ModuleGUI::DrawInfo()
 			}
 			ImGui::SameLine(0, 1);
 
-			if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->entities.size() > 1)
+			if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->GetEntities().size() > 1)
 			{
-				if (num_asteroids >= (int)App->scene->entities.size())
-					num_asteroids = App->scene->entities.size();
+				if (num_asteroids >= (int)App->scene->GetEntities().size())
+					num_asteroids = App->scene->GetEntities().size();
 				App->scene->DeleteAsteroids(num_asteroids);
 				num_asteroids = 1;
 			}

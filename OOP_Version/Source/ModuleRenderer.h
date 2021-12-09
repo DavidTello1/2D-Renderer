@@ -5,7 +5,6 @@
 
 struct Texture;
 typedef void* SDL_GLContext;
-typedef unsigned int GLuint;
 
 struct RenderStats
 {
@@ -26,29 +25,21 @@ public:
 	bool CleanUp() override;
 
 	//void Render();
-
-	void DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
-		const glm::vec4& color = glm::vec4(1.0f), const float& rotation = 0.0f, const glm::vec2& center = glm::vec2(0.0f));
-
-	void DrawCircle(const GLuint shader, const glm::vec2& center, const float& radius, const glm::vec4& color);
-
 	void UpdateViewportSize();
-
+	const SDL_GLContext& GetContext() const { return context; }
 	const RenderStats& GetStats() const { return stats; }
 
-public:
-	static const size_t MaxTextures = 32;
-	static const size_t MaxQuadCount = 10000;
-	static const size_t MaxVertexCount = MaxQuadCount * 4;
-	static const size_t MaxIndexCount = MaxQuadCount * 6;
+	void DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
+		const glm::vec4& color = glm::vec4(1.0f), const float& rotation = 0.0f, const glm::vec2& center = glm::vec2(0.0f)); //*** CLEAN
 
-public:
-	SDL_GLContext context;
+	void DrawCircle(const uint shader, const glm::vec2& center, const float& radius, const glm::vec4& color);
 
 private:
-	GLuint quadVAO = 0;
-	GLuint quadVBO = 0;
-	GLuint quadIBO = 0;
-
+	SDL_GLContext context;
 	RenderStats stats;
+
+	uint quadVAO = 0;
+	uint quadVBO = 0;
+	uint quadIBO = 0;
+
 };

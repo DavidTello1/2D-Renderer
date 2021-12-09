@@ -2,10 +2,6 @@
 #include "Module.h"
 
 #include <vector>
-#include "PCG/pcg_basic.h"
-#include "glm/include/glm/glm.hpp"
-
-typedef unsigned int uint;
 
 #define BASE_ENTITIES 6 //camera + background + boundaries(4)
 #define WORLD_WIDTH 500
@@ -15,7 +11,6 @@ typedef unsigned int uint;
 class Entity;
 class ComponentCameraController;
 class ComponentSprite;
-class ComponentRectCollider;
 
 class ModuleScene : public Module
 {
@@ -31,20 +26,11 @@ public:
 	void Draw();
 	void DrawDebug();
 
+	const std::vector<Entity*>& GetEntities() const { return entities; }
+
+
 	// --- Demo ---
-
-	// RNG
-	pcg32_random_t& GetRNG() { return rng; }
-
-	// Debug Drawing
-	void DrawAxis();
-	void DrawGrid(float grid_size);
-	
-	const bool& IsDebug() const { return is_debug; }
-	void SwitchDebug() { is_debug = !is_debug; }
-
 	// World
-	const glm::mat4& GetViewProjMatrix() const;
 	const int& GetWorldWidth() const { return world_width; }
 	const int& GetWorldHeight() const { return world_height; }
 
@@ -61,21 +47,16 @@ private:
 	Entity* CreateEntity();
 	void DeleteEntity(Entity* entity);
 
-public:
+private:
 	std::vector<Entity*> entities;
-	ComponentCameraController* main_camera = nullptr;
 
 	// --- Demo
+	int world_width = 0;
+	int world_height = 0;
+
 	ComponentSprite* background = nullptr;
 	Entity* b_top = nullptr;
 	Entity* b_bottom = nullptr;
 	Entity* b_left = nullptr;
 	Entity* b_right = nullptr;
-
-private:
-	bool is_debug = false;
-	float grid_size = 5.0f;
-	int world_width, world_height = 0;
-
-	pcg32_random_t rng;
 };

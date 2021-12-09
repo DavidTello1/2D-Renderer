@@ -1,15 +1,17 @@
 #include "Application.h"
+
 #include "Module.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ModuleGUI.h"
-#include "ModuleScene.h"
 #include "ModuleResources.h"
+#include "ModuleSceneBase.h"
+#include "ModuleScene.h"
 #include "ModuleRenderer.h"
 
 #include <windows.h>
 
-//#include "mmgr/mmgr.h"
+#include "mmgr/mmgr.h"
 
 Application::Application()
 {
@@ -24,6 +26,7 @@ Application::Application()
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(gui = new ModuleGUI());
 	modules.push_back(resources = new ModuleResources());
+	modules.push_back(scene_base = new ModuleSceneBase());
 	modules.push_back(scene = new ModuleScene());
 	modules.push_back(renderer = new ModuleRenderer());
 }

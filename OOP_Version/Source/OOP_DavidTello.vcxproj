@@ -106,6 +106,7 @@
     <ClInclude Include="ModuleRenderer.h" />
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleScene.h" />
+    <ClInclude Include="ModuleSceneBase.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="PCG\pcg_basic.h" />
     <ClInclude Include="SDL\include\begin_code.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="ModuleRenderer.cpp" />
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
+    <ClCompile Include="ModuleSceneBase.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="PCG\pcg_basic.c" />
     <ClCompile Include="mmgr\mmgr.cpp" />

@@ -1,10 +1,6 @@
 #pragma once
 #include "Component.h"
 
-struct Shader;
-
-typedef unsigned int GLuint;
-
 class ComponentRenderer : public Component
 {
 public:

@@ -16,20 +16,20 @@ public:
 
 	static inline Component::Type GetType() { return Component::Type::SPRITE; }
 
-	const uint& GetTexture() const { return texture; }
 	const uint& GetShader() const { return shader; }
+	const uint& GetTexture() const { return texture; }
 	const glm::vec2& GetSize() const { return size; }
 	const glm::vec2& GetOffset() const { return offset; }
 
-	void SetTexture(uint index) { texture = index; }
 	void SetShader(uint index) { shader = index; }
+	void SetTexture(uint index) { texture = index; }
 
 	void SetSize(glm::vec2 new_size) { size = new_size; }
 	void SetOffset(glm::vec2 pos) { offset = pos; }
 
 private:
-	uint texture = 0;
 	uint shader = 0;
+	uint texture = 0;
 
 	glm::vec2 size = glm::vec2(0.0f);
 	glm::vec2 offset = glm::vec2(0.0f);

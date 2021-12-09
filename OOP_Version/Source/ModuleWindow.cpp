@@ -1,5 +1,6 @@
-#include "Application.h"
 #include "ModuleWindow.h"
+
+#include "Application.h"
 
 #include "mmgr/mmgr.h"
 

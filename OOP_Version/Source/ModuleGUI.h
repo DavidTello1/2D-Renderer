@@ -1,6 +1,8 @@
 #pragma once
 #include "Module.h"
 
+#include <vector>
+
 #define FPS_LOG_SIZE 100
 #define PANEL_WIDTH 186
 #define PANEL_HEIGHT 266
@@ -26,9 +28,10 @@ public:
 
 public:
 	bool is_update_pos = false;
-	bool is_debug = false;
 
 private:
+	bool is_debug = false;
+
 	int num_asteroids = 0;
 	int seed = 0;
 

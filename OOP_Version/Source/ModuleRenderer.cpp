@@ -1,9 +1,11 @@
-#include "Application.h"
 #include "ModuleRenderer.h"
+
+#include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
 #include "ModuleResources.h"
 #include "ModuleScene.h"
+#include "ModuleSceneBase.h"
 
 #include "Imgui/imgui.h"
 #include "Glew/include/glew.h"
@@ -100,7 +102,7 @@ bool ModuleRenderer::PostUpdate(float dt)
 	App->scene->Draw();
 
 	// Debug Draw
-	if (App->scene->IsDebug())
+	if (App->scene_base->IsDebug())
 		App->scene->DrawDebug();
 
 	// Render ImGui
@@ -123,11 +125,11 @@ bool ModuleRenderer::CleanUp()
 }
 
 //--------------------------------
-void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
+void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
 	const glm::vec4& color, const float& rotation, const glm::vec2& center)
 {
 	glUseProgram(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->GetViewProjMatrix());
+	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
@@ -155,10 +157,10 @@ void ModuleRenderer::DrawQuad(const GLuint shader, const glm::vec2& position, co
 	stats.quad_count++;
 }
 
-void ModuleRenderer::DrawCircle(const GLuint shader, const glm::vec2& position, const float& diameter, const glm::vec4& color)
+void ModuleRenderer::DrawCircle(const uint shader, const glm::vec2& position, const float& diameter, const glm::vec4& color)
 {
 	glUseProgram(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene->GetViewProjMatrix());
+	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position, 0.0f));

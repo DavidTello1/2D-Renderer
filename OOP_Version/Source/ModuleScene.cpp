@@ -1,6 +1,7 @@
 #include "ModuleScene.h"
 
 #include "Application.h"
+#include "ModuleSceneBase.h"
 #include "ModuleResources.h"
 #include "ModuleRenderer.h"
 
@@ -27,13 +28,11 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
-	// Seed the RNG
-	pcg32_srandom_r(&rng, 42u, 54u); // seed with a fixed constant
-
 	// Create Main Camera
 	Entity* cam = CreateEntity();
 	cam->AddComponent(Component::Type::CAMERA);
-	main_camera = (ComponentCameraController*)cam->AddComponent(Component::Type::CAMERA_CONTROLLER);
+	ComponentCameraController* controller = (ComponentCameraController*)cam->AddComponent(Component::Type::CAMERA_CONTROLLER);
+	App->scene_base->SetMainCamera(controller);
 
 	return true;
 }
@@ -100,9 +99,6 @@ bool ModuleScene::Update(float dt)
 			component->OnUpdate(dt);
 	}
 
-	if (is_debug)
-		DrawGrid(grid_size);
-
 	return true;
 }
 
@@ -139,21 +135,6 @@ void ModuleScene::DeleteEntity(Entity* entity)
 			break;
 		}
 	}
-}
-
-//--------------------------------------
-void ModuleScene::DrawAxis()
-{
-}
-
-void ModuleScene::DrawGrid(float grid_size)
-{
-
-}
-
-const glm::mat4& ModuleScene::GetViewProjMatrix() const
-{
-	return App->scene->main_camera->GetCamera()->GetViewProjMatrix();
 }
 
 //--------------------------------------
@@ -200,7 +181,7 @@ void ModuleScene::DrawDebug()
 void ModuleScene::UpdateWorldSize()
 {
 	// Update Background
-	background->SetSize(glm::vec2(world_width, world_height ));
+	background->SetSize(glm::vec2(world_width, world_height));
 
 	// Update Boundaries
 	ComponentTransform* transform = (ComponentTransform*)b_top->GetComponent(Component::Type::TRANSFORM);
@@ -246,8 +227,8 @@ void ModuleScene::AddAsteroids(int num)
 
 		// Position Limits
 		glm::vec2 pos;
-		pos.x = pcg32_boundedrand_r(&rng, world_width - sprite->GetSize().x * transform->GetScale().x - BOUNDARIES_SIZE);
-		pos.y = pcg32_boundedrand_r(&rng, world_height - sprite->GetSize().y * transform->GetScale().y - BOUNDARIES_SIZE);
+		pos.x = pcg32_boundedrand_r(&App->scene_base->GetRNG(), world_width - sprite->GetSize().x * transform->GetScale().x - BOUNDARIES_SIZE);
+		pos.y = pcg32_boundedrand_r(&App->scene_base->GetRNG(), world_height - sprite->GetSize().y * transform->GetScale().y - BOUNDARIES_SIZE);
 
 		if (pos.x == 0) pos.x = BOUNDARIES_SIZE;
 		if (pos.y == 0) pos.y = BOUNDARIES_SIZE;
@@ -256,7 +237,7 @@ void ModuleScene::AddAsteroids(int num)
 	}
 }
 
-void ModuleScene::DeleteAsteroids(int num)
+void ModuleScene::DeleteAsteroids(int num) //*** HAS TO BE FIXED
 {
 	for (int i = 0; i < num; ++i)
 		DeleteEntity(entities[BASE_ENTITIES - 1]); // start from asteroids position in vector to not delete base entities

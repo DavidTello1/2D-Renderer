@@ -9,6 +9,7 @@ class ModuleWindow;
 class ModuleInput;
 class ModuleGUI;
 class ModuleResources;
+class ModuleSceneBase;
 class ModuleScene;
 class ModuleRenderer;
 
@@ -35,6 +36,7 @@ public:
 	ModuleInput* input;
 	ModuleGUI* gui;
 	ModuleResources* resources;
+	ModuleSceneBase* scene_base;
 	ModuleScene* scene;
 	ModuleRenderer* renderer;
 

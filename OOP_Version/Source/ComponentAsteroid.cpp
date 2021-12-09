@@ -1,7 +1,7 @@
 #include "ComponentAsteroid.h"
 
 #include "Application.h"
-#include "ModuleScene.h"
+#include "ModuleSceneBase.h"
 
 #include "Entity.h"
 #include "ComponentTransform.h"
@@ -36,27 +36,27 @@ void ComponentAsteroid::OnUpdate(float dt)
 void ComponentAsteroid::SetRandomValues()
 {
 	// Rotation
-	rotation_speed = pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_ROTATION_SPEED + 1);
+	rotation_speed = pcg32_boundedrand_r(&App->scene_base->GetRNG(), MAX_ROTATION_SPEED + 1);
 	if (rotation_speed < MIN_ROTATION_SPEED)
 		rotation_speed = MIN_ROTATION_SPEED;
 
-	if (pcg32_boundedrand_r(&App->scene->GetRNG(), 2) == 0) // orientation
+	if (pcg32_boundedrand_r(&App->scene_base->GetRNG(), 2) == 0) // orientation
 		rotation_speed *= -1;
 
 	// Velocity X
-	velocity.x = pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_VELOCITY + 1);
+	velocity.x = pcg32_boundedrand_r(&App->scene_base->GetRNG(), MAX_VELOCITY + 1);
 	if (velocity.x < MIN_VELOCITY)
 		velocity.x = MIN_VELOCITY;
 
-	if (pcg32_boundedrand_r(&App->scene->GetRNG(), 2) == 0) // orientation
+	if (pcg32_boundedrand_r(&App->scene_base->GetRNG(), 2) == 0) // orientation
 		velocity.x *= -1;
 
 	// Velocity Y
-	velocity.y = pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_VELOCITY + 1);
+	velocity.y = pcg32_boundedrand_r(&App->scene_base->GetRNG(), MAX_VELOCITY + 1);
 	if (velocity.y < MIN_VELOCITY)
 		velocity.y = MIN_VELOCITY;
 
-	if (pcg32_boundedrand_r(&App->scene->GetRNG(), 2) == 0) // orientation
+	if (pcg32_boundedrand_r(&App->scene_base->GetRNG(), 2) == 0) // orientation
 		velocity.y *= -1;
 }
 

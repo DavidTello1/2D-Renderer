@@ -2,11 +2,7 @@
 
 #include "Application.h"
 #include "ModuleWindow.h"
-#include "ModuleGUI.h"
-#include "ModuleRenderer.h"
-#include "ModuleScene.h"
-
-#include "ComponentCameraController.h"
+#include "ModuleSceneBase.h"
 
 #include "ImGui/imgui.h"
 #include "imGui/imgui_impl_sdl.h"
@@ -117,7 +113,7 @@ bool ModuleInput::PreUpdate(float dt)
 
 		case SDL_MOUSEWHEEL:
 			mouse_wheel = e.wheel.y;
-			if (App->scene->main_camera != nullptr) App->scene->main_camera->OnZoom(mouse_wheel);
+			App->scene_base->OnMouseZoom(mouse_wheel);
 			break;
 
 		case SDL_WINDOWEVENT:
@@ -126,9 +122,7 @@ bool ModuleInput::PreUpdate(float dt)
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
 				App->window->SetWidth(e.window.data1, false);
 				App->window->SetHeigth(e.window.data2, false);
-				App->gui->is_update_pos = true;
-				App->renderer->UpdateViewportSize();
-				if (App->scene->main_camera != nullptr) App->scene->main_camera->OnResize(App->window->GetWidth(), App->window->GetHeight());
+				App->scene_base->OnWindowResize();
 				break;
 			}
 			break;

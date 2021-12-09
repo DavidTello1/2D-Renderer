@@ -1,6 +1,4 @@
 #include "ModuleResources.h"
-#include "Application.h"
-#include "ModuleRenderer.h"
 
 #include <windows.h>
 #include <fstream>

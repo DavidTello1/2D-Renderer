@@ -58,7 +58,7 @@ bool ComponentRectCollider::CheckCollision(ComponentCircleCollider* collider) //
 
 void ComponentRectCollider::DoCollisions()
 {
-	for (Entity* entity : App->scene->entities)
+	for (Entity* entity : App->scene->GetEntities())
 	{
 		if (entity == this->GetEntity())
 			continue;
