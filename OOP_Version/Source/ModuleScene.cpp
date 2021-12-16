@@ -148,11 +148,13 @@ void ModuleScene::AddAsteroids(int num)
 		transform->SetSize(glm::vec2(100.0f));
 
 		ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
-		Texture* texture = App->resources->LoadTexture("Assets/asteroids.png");
-		sprite->SetTexture(texture->index); //***CHANGE TO RANDOM (1-3)
-		sprite->SetTextureSize(texture->size);
-		sprite->SetSpriteSize(glm::vec2(74.0f));
-		sprite->SetOffset(glm::vec2(0.0f, 0.0f)); //***CHANGE TO RANDOM (1-3)
+		int tex = pcg32_boundedrand_r(&App->scene_base->GetRNG(), 3);
+		if (tex == 0)
+			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_grey.png")->index);
+		else if(tex == 1)
+			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_red.png")->index);
+		else if (tex == 2)
+			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_brown.png")->index);
 
 		ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->AddComponent(Component::Type::CIRCLE_COLLIDER);
 		collider->SetRadius(transform->GetSize().x * transform->GetScale().x / 2);
