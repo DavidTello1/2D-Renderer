@@ -261,6 +261,7 @@ Texture* ModuleResources::LoadTexture(const char* filepath)
         Texture* tex = new Texture();
         tex->index = CreateTexture(image);
         tex->filepath = filepath;
+        tex->size = image.size;
 
         textures.push_back(tex);
 

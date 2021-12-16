@@ -39,17 +39,8 @@ struct Texture
 {
 	GLuint      index;
 	std::string filepath;
+	glm::ivec2	size;
 };
-
-// --- Sprite Sheet ---
-struct SpriteSheet
-{
-	Texture		texture;
-	glm::ivec2	sheet_size;
-	glm::ivec2	sprite_size;
-	glm::ivec2	offset;
-};
-
 
 // -------------------------------------------
 class ModuleResources : public Module
@@ -71,8 +62,6 @@ public:
 
 	static GLuint CreateTexture(Image image);
 	Texture* LoadTexture(const char* filepath);
-
-	//SpriteSheet* LoadSpriteSheet(GLuint tex_index, glm::ivec2 sheet_size, glm::ivec2 sprite_size, glm::ivec2 offset);
 
 public:
 	std::vector<Texture*> textures;

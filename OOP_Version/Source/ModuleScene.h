@@ -10,7 +10,7 @@
 
 class Entity;
 class ComponentCameraController;
-class ComponentSprite;
+class ComponentTransform;
 
 class ModuleScene : public Module
 {
@@ -52,7 +52,7 @@ private:
 	int world_width = 0;
 	int world_height = 0;
 
-	ComponentSprite* background = nullptr;
+	ComponentTransform* background = nullptr;
 	Entity* b_top = nullptr;
 	Entity* b_bottom = nullptr;
 	Entity* b_left = nullptr;

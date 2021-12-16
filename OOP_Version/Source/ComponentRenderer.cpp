@@ -20,6 +20,6 @@ void ComponentRenderer::Draw()
 	if (transform == nullptr)
 		return;
 
-	App->renderer->DrawQuad(App->resources->default_shader, transform->GetPosition(), sprite->GetSize() * transform->GetScale(),
-		sprite->GetTexture(), glm::vec4(1.0f), transform->GetRotation(), sprite->GetSize() * transform->GetScale() / 2.0f);
+	App->renderer->DrawQuad(App->resources->default_shader, transform->GetPosition(), transform->GetSize() * transform->GetScale(),
+		sprite->GetTexture(), glm::vec4(1.0f), transform->GetRotation(), transform->GetSize() * transform->GetScale() / 2.0f);
 }
