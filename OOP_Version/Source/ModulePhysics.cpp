@@ -23,55 +23,55 @@ bool ModulePhysics::Start()
 
 bool ModulePhysics::Update(float dt)
 {
-	// --- Check for all possible collisions ---
-	for (ComponentRectCollider* rect1 : rect_colliders)
-	{
-		// Rect-Rect Collisions
-		for (ComponentRectCollider* rect2 : rect_colliders)
-		{
-			if (rect1 == rect2)
-				continue;
+	//// --- Check for all possible collisions ---
+	//for (ComponentRectCollider* rect1 : rect_colliders)
+	//{
+	//	// Rect-Rect Collisions
+	//	for (ComponentRectCollider* rect2 : rect_colliders)
+	//	{
+	//		if (rect1 == rect2)
+	//			continue;
 
-			//ComponentRectCollider* collider1 = (ComponentRectCollider*)rect1->GetEntity()->GetComponent(Component::Type::RECT_COLLIDER);
-			//ComponentRectCollider* collider2 = (ComponentRectCollider*)rect2->GetEntity()->GetComponent(Component::Type::RECT_COLLIDER);
-			//CheckCollision(collider1, collider2);
-		}
-		
-		// Circle-Rect Collisions
-		for (ComponentCircleCollider* circle1 : circle_colliders)
-		{
-			if (CheckCollision(circle1, rect1))
-			{
-				//ComponentAsteroid* asteroid = (ComponentAsteroid*)circle1->GetEntity()->GetComponent(Component::Type::ASTEROID);
-				//ComponentTransform* transform = (ComponentTransform*)circle1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
-				//if (asteroid != nullptr && transform != nullptr)
-				//	asteroid->OnCollision(circle1, transform);
-			}
-		}
-	}
+	//		//ComponentRectCollider* collider1 = (ComponentRectCollider*)rect1->GetEntity()->GetComponent(Component::Type::RECT_COLLIDER);
+	//		//ComponentRectCollider* collider2 = (ComponentRectCollider*)rect2->GetEntity()->GetComponent(Component::Type::RECT_COLLIDER);
+	//		//CheckCollision(collider1, collider2);
+	//	}
+	//	
+	//	// Circle-Rect Collisions
+	//	for (ComponentCircleCollider* circle1 : circle_colliders)
+	//	{
+	//		if (CheckCollision(circle1, rect1))
+	//		{
+	//			//ComponentAsteroid* asteroid = (ComponentAsteroid*)circle1->GetEntity()->GetComponent(Component::Type::ASTEROID);
+	//			//ComponentTransform* transform = (ComponentTransform*)circle1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
+	//			//if (asteroid != nullptr && transform != nullptr)
+	//			//	asteroid->OnCollision(circle1, transform);
+	//		}
+	//	}
+	//}
 
-	for (ComponentCircleCollider* circle1 : circle_colliders)
-	{
-		// Circle-Circle Collisions
-		for (ComponentCircleCollider* circle2 : circle_colliders)
-		{
-			if (circle1 == circle2)
-				continue;
+	//for (ComponentCircleCollider* circle1 : circle_colliders)
+	//{
+	//	// Circle-Circle Collisions
+	//	for (ComponentCircleCollider* circle2 : circle_colliders)
+	//	{
+	//		if (circle1 == circle2)
+	//			continue;
 
-			if (CheckCollision(circle1, circle2))
-			{
-				//ComponentAsteroid* asteroid1 = (ComponentAsteroid*)circle1->GetEntity()->GetComponent(Component::Type::ASTEROID);
-				//ComponentTransform* transform1 = (ComponentTransform*)circle1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
-				//if (asteroid1 != nullptr && transform1 != nullptr)
-				//	asteroid1->OnCollision(circle1, transform1);
+	//		if (CheckCollision(circle1, circle2))
+	//		{
+	//			//ComponentAsteroid* asteroid1 = (ComponentAsteroid*)circle1->GetEntity()->GetComponent(Component::Type::ASTEROID);
+	//			//ComponentTransform* transform1 = (ComponentTransform*)circle1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
+	//			//if (asteroid1 != nullptr && transform1 != nullptr)
+	//			//	asteroid1->OnCollision(circle1, transform1);
 
-				//ComponentAsteroid* asteroid2 = (ComponentAsteroid*)circle2->GetEntity()->GetComponent(Component::Type::ASTEROID);
-				//ComponentTransform* transform2 = (ComponentTransform*)circle2->GetEntity()->GetComponent(Component::Type::TRANSFORM);
-				//if (asteroid2 != nullptr && transform2 != nullptr)
-				//	asteroid2->OnCollision(circle2, transform2);
-			}
-		}
-	}
+	//			//ComponentAsteroid* asteroid2 = (ComponentAsteroid*)circle2->GetEntity()->GetComponent(Component::Type::ASTEROID);
+	//			//ComponentTransform* transform2 = (ComponentTransform*)circle2->GetEntity()->GetComponent(Component::Type::TRANSFORM);
+	//			//if (asteroid2 != nullptr && transform2 != nullptr)
+	//			//	asteroid2->OnCollision(circle2, transform2);
+	//		}
+	//	}
+	//}
 
 	return true;
 }

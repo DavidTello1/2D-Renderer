@@ -24,7 +24,7 @@ ComponentRectCollider::~ComponentRectCollider()
 
 void ComponentRectCollider::OnUpdate(float dt)
 {
-	is_colliding = false;
+	collision.Reset();
 
 	Entity* entity = GetEntity();
 	ComponentTransform* transform = (ComponentTransform*)entity->GetComponent(Component::Type::TRANSFORM);
@@ -42,7 +42,8 @@ bool ComponentRectCollider::CheckCollision(ComponentRectCollider* collider) // R
 	if (this->position.x < collider->position.x + collider->size.x && this->position.x + this->size.x > collider->position.x &&
 		this->position.y < collider->position.y + collider->size.y && this->position.y + this->size.y > collider->position.y)
 	{
-		is_colliding = true;
+		this->collision.has_collided = true;
+		this->collision.type = collider->GetType();
 		return true;
 
 	}
@@ -63,7 +64,8 @@ bool ComponentRectCollider::CheckCollision(ComponentCircleCollider* collider) //
 	float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
 	if (distanceSquared < (collider->GetRadius() * collider->GetRadius()))
 	{
-		is_colliding = true;
+		this->collision.has_collided = true;
+		this->collision.type = collider->GetType();
 		return true;
 	}
 	return false;
@@ -79,24 +81,14 @@ void ComponentRectCollider::DoCollisions()
 		ComponentCircleCollider* cCollider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
 		if (cCollider != nullptr)
 		{
-			// Has Circle Collider
-			if (CheckCollision(cCollider) == true) //has collided
-			{
-				//...
-				return;
-			}
+			CheckCollision(cCollider);
 		}
 		else
 		{
 			ComponentRectCollider* rCollider = (ComponentRectCollider*)entity->GetComponent(Component::Type::RECT_COLLIDER);
 			if (rCollider != nullptr)
 			{
-				// Has Rect Collider
-				if (CheckCollision(rCollider) == true) //has collided
-				{
-					//...
-					return;
-				}
+				CheckCollision(rCollider);
 			}
 		}
 	}

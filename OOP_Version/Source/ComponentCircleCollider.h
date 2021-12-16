@@ -13,7 +13,7 @@ public:
 
 	static inline Component::Type GetType() { return Component::Type::CIRCLE_COLLIDER; }
 
-	const bool& IsColliding() const { return is_colliding; }
+	const bool& IsColliding() const { return collision.has_collided; }
 	const bool& IsStatic() const { return is_static; }
 	const Collision& GetCollision() const { return collision; }
 	glm::vec2 GetPosition();
@@ -35,12 +35,6 @@ public:
 private:
 	void DoCollisions();
 
-public:
-	glm::vec2 dist = glm::vec2(0.0f);
-	bool isBoundariesCollision = false;
-
-	float radius_collision = 0.0f;
-
 private:
 	bool is_static = false;
 	Collision collision;
@@ -48,6 +42,4 @@ private:
 	glm::vec2 center = glm::vec2(0.0f);
 	float radius = 0.0f;
 	glm::vec2 offset = glm::vec2(0.0f);
-
-	bool is_colliding = false;
 };

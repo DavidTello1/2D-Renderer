@@ -13,7 +13,7 @@ public:
 
 	void OnUpdate(float dt) override;
 	
-	const bool& IsColliding() const { return is_colliding; } //***
+	const bool& IsColliding() const { return collision.has_collided; }
 	const bool& IsStatic() const { return is_static; }
 	const Collision& GetCollision() const { return collision; }
 
@@ -40,6 +40,4 @@ private:
 	glm::vec2 position = glm::vec2(0.0f);
 	glm::vec2 size = glm::vec2(0.0f);
 	glm::vec2 offset = glm::vec2(0.0f);
-
-	bool is_colliding = false; //***
 };

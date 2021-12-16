@@ -25,9 +25,7 @@ ComponentCircleCollider::~ComponentCircleCollider()
 
 void ComponentCircleCollider::OnUpdate(float dt)
 {
-	is_colliding = false;
-	isBoundariesCollision = false;
-	dist = glm::vec2(0.0f);
+	collision.Reset();
 
 	Entity* entity = GetEntity();
 	ComponentTransform* transform = (ComponentTransform*)entity->GetComponent(Component::Type::TRANSFORM);
@@ -60,13 +58,15 @@ glm::vec2 ComponentCircleCollider::GetPosition()
 
 bool ComponentCircleCollider::CheckCollision(ComponentCircleCollider* collider) // Circle-Circle Collision
 {
-	dist.x = this->center.x - collider->center.x;
-	dist.y = this->center.y - collider->center.y;
+	glm::vec2 dist = this->center - collider->center;
 	float distance = glm::sqrt(dist.x * dist.x + dist.y * dist.y);
 
 	if (distance < this->radius + collider->radius) 
 	{
-		is_colliding = true;
+		this->collision.has_collided = true;
+		this->collision.distance = dist;
+		this->collision.type = collider->GetType();
+		this->collision.other_radius = collider->GetRadius();
 		return true;
 	}
 	return false;
@@ -78,13 +78,15 @@ bool ComponentCircleCollider::CheckCollision(ComponentRectCollider* collider) //
 	glm::vec2 closest = glm::clamp(this->center, collider->GetPosition(), collider->GetPosition() + collider->GetSize());
 
 	// Calculate the distance between the circle's center and this closest point
-	dist = this->center - closest;
+	glm::vec2 dist = this->center - closest;
 
 	// If the distance is less than the circle's radius, an intersection occurs
 	float distanceSquared = (dist.x * dist.x) + (dist.y * dist.y);
 	if (distanceSquared < (this->radius * this->radius))
 	{
-		is_colliding = true;
+		this->collision.has_collided = true;
+		this->collision.distance = dist;
+		this->collision.type = collider->GetType();
 		return true;
 	}
 	return false;
@@ -100,25 +102,14 @@ void ComponentCircleCollider::DoCollisions()
 		ComponentCircleCollider* cCollider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
 		if (cCollider != nullptr)
 		{
-			// Has Circle Collider
-			if (CheckCollision(cCollider) == true) //has collided
-			{
-				this->radius_collision = cCollider->radius;
-				return;
-			}
+			CheckCollision(cCollider);
 		}
 		else
 		{
 			ComponentRectCollider* rCollider = (ComponentRectCollider*)entity->GetComponent(Component::Type::RECT_COLLIDER);
 			if (rCollider != nullptr)
 			{
-				// Has Rect Collider
-				if (CheckCollision(rCollider) == true) //has collided
-				{
-					// Bounce
-					isBoundariesCollision = true;
-					return;
-				}
+				CheckCollision(rCollider);
 			}
 		}
 	}

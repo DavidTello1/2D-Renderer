@@ -23,9 +23,9 @@ void ComponentAsteroid::OnUpdate(float dt)
 
 	if (collider->IsColliding() && !collider->IsStatic())
 	{
-		if (collider->isBoundariesCollision)
+		if (collider->GetCollision().type == Component::Type::RECT_COLLIDER)
 			OnCollision(collider, transform);
-		else
+		else if (collider->GetCollision().type == Component::Type::CIRCLE_COLLIDER)
 			OnCollision2(collider, transform);
 	}
 
@@ -62,6 +62,8 @@ void ComponentAsteroid::SetRandomValues()
 
 void ComponentAsteroid::OnCollision(ComponentCircleCollider* collider, ComponentTransform* transform)
 {
+	Collision collision = collider->GetCollision();
+
 	// Get Direction
 	float max = 0.0f;
 	uint direction = -1;
@@ -73,7 +75,7 @@ void ComponentAsteroid::OnCollision(ComponentCircleCollider* collider, Component
 	};
 	for (uint i = 0; i < 4; i++)
 	{
-		float dot_product = glm::dot(glm::normalize(collider->dist), compass[i]);
+		float dot_product = glm::dot(glm::normalize(collision.distance), compass[i]);
 		if (dot_product > max)
 		{
 			max = dot_product;
@@ -86,7 +88,7 @@ void ComponentAsteroid::OnCollision(ComponentCircleCollider* collider, Component
 	{
 		velocity.x = -velocity.x; // reverse horizontal velocity
 
-		float distance = glm::sqrt(collider->dist.x * collider->dist.x + collider->dist.y * collider->dist.y);
+		float distance = glm::sqrt(collision.distance.x * collision.distance.x + collision.distance.y * collision.distance.y);
 		float overlap = collider->GetRadius() - distance;
 		if (std::isnan(overlap)) overlap = 0;
 		if (overlap > 0)
@@ -109,7 +111,7 @@ void ComponentAsteroid::OnCollision(ComponentCircleCollider* collider, Component
 	{
 		velocity.y = -velocity.y; // reverse vertical velocity
 
-		float distance = glm::sqrt(collider->dist.x * collider->dist.x + collider->dist.y * collider->dist.y);
+		float distance = glm::sqrt(collision.distance.x * collision.distance.x + collision.distance.y * collision.distance.y);
 		float overlap = collider->GetRadius() - distance;
 		if (std::isnan(overlap)) overlap = 0;
 		if (overlap > 0)
@@ -132,20 +134,20 @@ void ComponentAsteroid::OnCollision(ComponentCircleCollider* collider, Component
 void ComponentAsteroid::OnCollision2(ComponentCircleCollider* collider, ComponentTransform* transform)
 {
 	// --- Static Collisions (fixes overlaping) ---
+	Collision collision = collider->GetCollision();
 
 	// Distance between ball centers
-	float distance = glm::sqrt(collider->dist.x * collider->dist.x + collider->dist.y * collider->dist.y);
+	float distance = glm::sqrt(collision.distance.x * collision.distance.x + collision.distance.y * collision.distance.y);
 
 	// Calculate displacement required
-	float overlap = 0.5f * (distance - collider->GetRadius() - collider->radius_collision);
+	float overlap = 0.5f * (distance - collider->GetRadius() - collision.other_radius);
 
 	// Displace Current Ball away from collision
 	glm::vec2 center = collider->GetCenter();
-	center.x -= overlap * collider->dist.x / distance;
-	center.y -= overlap * collider->dist.y / distance;
+	center -= overlap * collision.distance / distance;
 	collider->SetCenter(center);
 
-	glm::vec2 pos1 = glm::vec2(collider->GetCenter() - collider->GetRadius() - collider->GetOffset());
+	glm::vec2 pos1 = glm::vec2(center - collider->GetRadius() - collider->GetOffset());
 	transform->SetPosition(pos1);
 
 
@@ -160,7 +162,7 @@ void ComponentAsteroid::OnCollision2(ComponentCircleCollider* collider, Componen
 	};
 	for (uint i = 0; i < 4; i++)
 	{
-		float dot_product = glm::dot(glm::normalize(collider->dist), compass[i]);
+		float dot_product = glm::dot(glm::normalize(collision.distance), compass[i]);
 		if (dot_product > max)
 		{
 			max = dot_product;
