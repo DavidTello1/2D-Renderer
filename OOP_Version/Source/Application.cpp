@@ -7,6 +7,7 @@
 #include "ModuleResources.h"
 #include "ModuleSceneBase.h"
 #include "ModuleScene.h"
+#include "ModulePhysics.h"
 #include "ModuleRenderer.h"
 
 #include <windows.h>
@@ -28,6 +29,7 @@ Application::Application()
 	modules.push_back(resources = new ModuleResources());
 	modules.push_back(scene_base = new ModuleSceneBase());
 	modules.push_back(scene = new ModuleScene());
+	modules.push_back(physics = new ModulePhysics());
 	modules.push_back(renderer = new ModuleRenderer());
 }
 

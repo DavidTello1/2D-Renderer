@@ -38,6 +38,6 @@ private:
 
 	pcg32_random_t rng;
 	bool is_debug = false;
-	float grid_size = 5.0f;
+	int grid_size = 5;
 };
 

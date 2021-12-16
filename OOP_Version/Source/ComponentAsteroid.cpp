@@ -21,7 +21,7 @@ void ComponentAsteroid::OnUpdate(float dt)
 	if (collider == nullptr)
 		return;
 
-	if (collider->IsColliding() && !collider->isStatic)
+	if (collider->IsColliding() && !collider->IsStatic())
 	{
 		if (collider->isBoundariesCollision)
 			OnCollision(collider, transform);

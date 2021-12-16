@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
 #include "ModuleResources.h"
+#include "ModulePhysics.h"
 #include "ModuleScene.h"
 #include "ModuleSceneBase.h"
 
@@ -95,15 +96,15 @@ bool ModuleRenderer::PreUpdate(float dt)
 
 bool ModuleRenderer::PostUpdate(float dt)
 {
-	// Grid & Axis
-	//***
-
 	// Render Scene
 	App->scene->Draw();
 
 	// Debug Draw
 	if (App->scene_base->IsDebug())
-		App->scene->DrawDebug();
+	{
+		App->scene_base->Draw();
+		App->physics->DrawColliders();
+	}
 
 	// Render ImGui
 	App->gui->Draw();

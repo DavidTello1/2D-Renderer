@@ -34,6 +34,19 @@ public:
 
 	void DrawCircle(const uint shader, const glm::vec2& center, const float& radius, const glm::vec4& color);
 
+	// DrawQuad (texture)
+	// DrawQuad (color)
+	// DrawQuad (texture + color)
+
+	// DrawRotatedQuad (texture)
+	// DrawRotatedQuad (color)
+	// DrawRotatedQuad (texture + color)
+
+	// DrawCircle (color)
+
+	// DrawLine (color + thickness)
+
+
 private:
 	SDL_GLContext context;
 	RenderStats stats;

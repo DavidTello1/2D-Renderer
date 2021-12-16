@@ -4,11 +4,24 @@
 #include "Application.h"
 #include "ModuleRenderer.h"
 #include "ModuleScene.h"
+#include "ModulePhysics.h"
 
 #include "Entity.h"
 #include "ComponentTransform.h"
 #include "ComponentSprite.h"
 #include "ComponentRectCollider.h"
+
+ComponentCircleCollider::ComponentCircleCollider(Entity* entity) :
+	Component(Component::Type::CIRCLE_COLLIDER, entity), center(0.0f), radius(0.0f), offset(0.0f)
+{
+	App->physics->AddCollider(this);
+	collision.Reset();
+}
+
+ComponentCircleCollider::~ComponentCircleCollider()
+{
+	App->physics->RemoveCollider(this);
+}
 
 void ComponentCircleCollider::OnUpdate(float dt)
 {

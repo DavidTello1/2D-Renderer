@@ -3,9 +3,6 @@
 
 #include <vector>
 
-typedef unsigned long long UID;
-typedef unsigned int uint;
-
 class Entity
 {
 public:

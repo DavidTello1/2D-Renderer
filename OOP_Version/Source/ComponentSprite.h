@@ -3,8 +3,6 @@
 
 #include "glm/include/glm/glm.hpp"
 
-typedef unsigned int uint;
-
 struct Texture;
 struct Shader;
 
@@ -23,7 +21,6 @@ public:
 
 	void SetShader(uint index) { shader = index; }
 	void SetTexture(uint index) { texture = index; }
-
 	void SetSize(glm::vec2 new_size) { size = new_size; }
 	void SetOffset(glm::vec2 pos) { offset = pos; }
 

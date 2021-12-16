@@ -138,46 +138,6 @@ void ModuleScene::DeleteEntity(Entity* entity)
 }
 
 //--------------------------------------
-void ModuleScene::DrawDebug()
-{
-	for (Entity* entity : entities)
-	{
-		ComponentTransform* transform = (ComponentTransform*)entity->GetComponent(Component::Type::TRANSFORM);
-		if (transform == nullptr)
-			continue;
-
-		ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
-		if (collider != nullptr)
-		{
-			glm::vec4 color;
-			if (collider->IsColliding())
-				color = RED;
-			else
-				color = BLUE;
-			color.a = 0.5f;
-
-			App->renderer->DrawCircle(App->resources->default_shader, collider->GetPosition(), 
-				collider->GetRadius() * 2 * transform->GetScale().x, color);
-		}
-		else
-		{
-			ComponentRectCollider* collider = (ComponentRectCollider*)entity->GetComponent(Component::Type::RECT_COLLIDER);
-			if (collider != nullptr)
-			{
-				glm::vec4 color;
-				if (collider->IsColliding())
-					color = RED;
-				else
-					color = BLUE;
-				color.a = 0.5f;
-
-				App->renderer->DrawQuad(App->resources->default_shader, collider->GetPosition(),
-					collider->GetSize() * transform->GetScale(), App->resources->default_tex, color);
-			}
-		}
-	}
-}
-
 void ModuleScene::UpdateWorldSize()
 {
 	// Update Background

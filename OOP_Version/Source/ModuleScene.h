@@ -24,10 +24,8 @@ public:
 	bool CleanUp() override;
 
 	void Draw();
-	void DrawDebug();
 
 	const std::vector<Entity*>& GetEntities() const { return entities; }
-
 
 	// --- Demo ---
 	// World
