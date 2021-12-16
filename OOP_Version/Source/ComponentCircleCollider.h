@@ -29,10 +29,6 @@ public:
 	void SetRadius(float radius_) { radius = radius_; }
 	void SetOffset(glm::vec2 offset_) { offset = offset_; }
 
-	bool CheckCollision(ComponentCircleCollider* collider);
-	bool CheckCollision(ComponentRectCollider* collider);
-	void DoCollisions();
-
 private:
 	bool is_static = false;
 	Collision collision;

@@ -23,15 +23,39 @@ bool ModulePhysics::Start()
 
 bool ModulePhysics::Update(float dt)
 {
-	// --- Check for all possible collisions ---
+	// --- Rect Colliders ---
 	for (ComponentRectCollider* rect1 : rect_colliders)
 	{
-		rect1->DoCollisions();
+		for (ComponentRectCollider* rect2 : rect_colliders) // Rect-Rect Collisions
+		{
+			if (rect1 == rect2)
+				continue;
+
+			if (CheckCollision(rect1, rect2))
+				break;
+		}
+		for (ComponentCircleCollider* circle1 : circle_colliders) // Rect-Circle Collisions
+		{
+			if (CheckCollision(circle1, rect1))
+				break;
+		}
 	}
 
 	for (ComponentCircleCollider* circle1 : circle_colliders)
 	{
-		circle1->DoCollisions();
+		for (ComponentCircleCollider* circle2 : circle_colliders) // Circle-Circle Collisions
+		{
+			if (circle1 == circle2)
+				continue;
+
+			if (CheckCollision(circle1, circle2))
+				break;
+		}
+		for (ComponentRectCollider* rect1 : rect_colliders) // Rect-Circle Collisions
+		{
+			if (CheckCollision(circle1, rect1))
+				break;
+		}
 
 		// Update Asteroid
 		ComponentAsteroid* asteroid = (ComponentAsteroid*)circle1->GetEntity()->GetComponent(Component::Type::ASTEROID);
@@ -153,104 +177,89 @@ int ModulePhysics::Exists(ComponentCircleCollider* collider)
 	return -1;
 }
 
-////--------------------------------------
-//// --- COLLISION DETECTION ---
-//bool ModulePhysics::CheckCollision(ComponentRectCollider* collider1, ComponentRectCollider* collider2) // Rect - Rect
-//{
-//	Collision collision1;
-//	collision1.Reset();
-//	glm::vec2 pos1 = collider1->GetPosition();
-//	glm::vec2 size1 = collider1->GetSize();
-//
-//	Collision collision2;
-//	collision2.Reset();
-//	glm::vec2 pos2 = collider2->GetPosition();
-//	glm::vec2 size2 = collider2->GetSize();
-//
-//	//***GET DISTANCE
-//
-//	if (pos1.x < pos2.x + size2.x && pos1.x + size1.x > pos2.x && 
-//		pos1.y < pos2.y + size2.y && pos1.y + size1.y > pos2.y)
-//	{
-//		collision1.has_collided = true;
-//		//collision1.distance = dist;
-//		collision1.type = collider2->GetType();
-//		collider1->SetCollision(collision1);
-//
-//		collision2.has_collided = true;
-//		//collision2.distance = dist;
-//		collision2.type = collider1->GetType();
-//		collider2->SetCollision(collision2);
-//
-//		return true;
-//	}
-//	return false;
-//}
-//
-//bool ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, ComponentCircleCollider* collider2) // Circle - Circle
-//{
-//	Collision collision1;
-//	collision1.Reset();
-//	glm::vec2 center1 = collider1->GetCenter();
-//	float radius1 = collider1->GetRadius();
-//
-//	Collision collision2;
-//	collision2.Reset();
-//	glm::vec2 center2 = collider2->GetCenter();
-//	float radius2 = collider2->GetRadius();
-//
-//
-//	glm::vec2 dist = center1 - center2;
-//	float distance = glm::sqrt(dist.x * dist.x + dist.y * dist.y);
-//
-//	if (distance < radius1 + radius2)
-//	{
-//		collision1.has_collided = true;
-//		collision1.distance = dist;
-//		collision1.type = collider2->GetType();
-//		collision1.other_radius = collider2->GetRadius();
-//		collider1->SetCollision(collision1);
-//
-//		collision2.has_collided = true;
-//		collision2.distance = dist;
-//		collision2.type = collider1->GetType();
-//		collision2.other_radius = collider1->GetRadius();
-//		collider2->SetCollision(collision2);
-//
-//		return true;
-//	}
-//	return false;
-//}
-//
-//bool ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, ComponentRectCollider* collider2) // Circle - Rect
-//{
-//	Collision collision1;
-//	collision1.Reset();
-//	glm::vec2 center = collider1->GetCenter();
-//	float radius = collider1->GetRadius();
-//
-//	Collision collision2;
-//	collision2.Reset();
-//	glm::vec2 pos = collider2->GetPosition();
-//	glm::vec2 size = collider2->GetSize();
-//
-//
-//	glm::vec2 dist = center - glm::clamp(center, pos, pos + size);
-//	float distanceSquared = (dist.x * dist.x) + (dist.y * dist.y);
-//
-//	if (distanceSquared < (radius * radius))
-//	{
-//		collision1.has_collided = true;
-//		collision1.distance = dist;
-//		collision1.type = collider2->GetType();
-//		collider1->SetCollision(collision1);
-//
-//		collision2.has_collided = true;
-//		collision2.distance = dist;
-//		collision2.type = collider1->GetType();
-//		collider2->SetCollision(collision2);
-//
-//		return true;
-//	}
-//	return false;
-//}
+//--------------------------------------
+// --- COLLISION DETECTION ---
+bool ModulePhysics::CheckCollision(ComponentRectCollider* collider1, ComponentRectCollider* collider2) // Rect - Rect
+{
+	Collision collision1;
+	collision1.Reset();
+	glm::vec2 pos1 = collider1->GetPosition();
+	glm::vec2 size1 = collider1->GetSize();
+
+	glm::vec2 pos2 = collider2->GetPosition();
+	glm::vec2 size2 = collider2->GetSize();
+
+	//***GET DISTANCE
+
+	if (pos1.x < pos2.x + size2.x && pos1.x + size1.x > pos2.x && 
+		pos1.y < pos2.y + size2.y && pos1.y + size1.y > pos2.y)
+	{
+		collision1.has_collided = true;
+		//collision1.distance = dist;
+		collision1.type = collider2->GetType();
+		collider1->SetCollision(collision1);
+
+		return true;
+	}
+	return false;
+}
+
+bool ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, ComponentCircleCollider* collider2) // Circle - Circle
+{
+	Collision collision1;
+	collision1.Reset();
+	glm::vec2 center1 = collider1->GetCenter();
+	float radius1 = collider1->GetRadius();
+
+	glm::vec2 center2 = collider2->GetCenter();
+	float radius2 = collider2->GetRadius();
+
+
+	glm::vec2 dist = center1 - center2;
+	float distance = glm::sqrt(dist.x * dist.x + dist.y * dist.y);
+
+	if (distance < radius1 + radius2)
+	{
+		collision1.has_collided = true;
+		collision1.distance = dist;
+		collision1.type = collider2->GetType();
+		collision1.other_radius = collider2->GetRadius();
+		collider1->SetCollision(collision1);
+
+		return true;
+	}
+	return false;
+}
+
+bool ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, ComponentRectCollider* collider2) // Circle - Rect
+{
+	Collision collision1;
+	collision1.Reset();
+	glm::vec2 center = collider1->GetCenter();
+	float radius = collider1->GetRadius();
+
+	Collision collision2;
+	collision2.Reset();
+	glm::vec2 pos = collider2->GetPosition();
+	glm::vec2 size = collider2->GetSize();
+
+
+	glm::vec2 dist = center - glm::clamp(center, pos, pos + size);
+	float distanceSquared = (dist.x * dist.x) + (dist.y * dist.y);
+
+	if (distanceSquared < (radius * radius))
+	{
+		collision1.has_collided = true;
+		collision1.distance = dist;
+		collision1.type = collider2->GetType();
+		collider1->SetCollision(collision1);
+
+		collision2.has_collided = true;
+		collision2.distance = dist;
+		collision2.type = collider1->GetType();
+		collider2->SetCollision(collision2);
+
+		return true;
+	}
+	return false;
+}
