@@ -19,8 +19,7 @@ public:
 
 	static inline Component::Type GetType() { return Component::Type::ASTEROID; }
 
-	void OnUpdate(float dt) override;
-	void DoCollisions(ComponentCircleCollider* collider, ComponentTransform* transform);
+	void Move(float dt);
 
 	const glm::vec2& GetVelocity() const { return velocity; }
 	const float& GetRotationSpeed() const { return rotation_speed; }
@@ -32,6 +31,7 @@ public:
 
 private:
 	const int& GetDirection(glm::vec2 distance) const;
+	void DoCollisions(ComponentCircleCollider* collider, ComponentTransform* transform);
 
 private:
 	glm::vec2 velocity = glm::vec2(0.0f);

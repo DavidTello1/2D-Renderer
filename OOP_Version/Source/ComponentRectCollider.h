@@ -29,8 +29,6 @@ public:
 
 	bool CheckCollision(ComponentCircleCollider* collider);
 	bool CheckCollision(ComponentRectCollider* collider);
-
-private:
 	void DoCollisions();
 
 private:

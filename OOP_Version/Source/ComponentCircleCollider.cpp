@@ -40,8 +40,8 @@ void ComponentCircleCollider::OnUpdate(float dt)
 	glm::vec2 pos = transform->GetPosition();
 	center = glm::vec2(pos + radius + offset);
 
-	// Check for Collisions
-	DoCollisions();
+	//// Check for Collisions
+	//DoCollisions();
 }
 
 glm::vec2 ComponentCircleCollider::GetPosition()

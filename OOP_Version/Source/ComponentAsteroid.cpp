@@ -9,7 +9,7 @@
 
 #include "PCG/pcg_basic.h"
 
-void ComponentAsteroid::OnUpdate(float dt)
+void ComponentAsteroid::Move(float dt)
 {
 	Entity* entity = GetEntity();
 

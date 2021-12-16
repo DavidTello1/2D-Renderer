@@ -29,9 +29,9 @@ private:
 	int Exists(ComponentRectCollider* collider);
 	int Exists(ComponentCircleCollider* collider);
 
-	bool CheckCollision(ComponentRectCollider* collider1, ComponentRectCollider* collider2);	 // Rect - Rect
-	bool CheckCollision(ComponentCircleCollider* collider1, ComponentCircleCollider* collider2); // Circle - Circle
-	bool CheckCollision(ComponentCircleCollider* collider1, ComponentRectCollider* collider2);	 // Circle - Rect
+	//bool CheckCollision(ComponentRectCollider* collider1, ComponentRectCollider* collider2);	 // Rect - Rect
+	//bool CheckCollision(ComponentCircleCollider* collider1, ComponentCircleCollider* collider2); // Circle - Circle
+	//bool CheckCollision(ComponentCircleCollider* collider1, ComponentRectCollider* collider2);	 // Circle - Rect
 
 private:
 	std::vector<ComponentRectCollider*> rect_colliders;

@@ -33,8 +33,8 @@ void ComponentRectCollider::OnUpdate(float dt)
 
 	position = transform->GetPosition() + offset;
 
-	// Check for Collisions
-	DoCollisions();
+	//// Check for Collisions
+	//DoCollisions();
 }
 
 bool ComponentRectCollider::CheckCollision(ComponentRectCollider* collider) // Rect-Rect Collision
