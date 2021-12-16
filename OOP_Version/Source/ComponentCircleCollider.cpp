@@ -102,14 +102,16 @@ void ComponentCircleCollider::DoCollisions()
 		ComponentCircleCollider* cCollider = (ComponentCircleCollider*)entity->GetComponent(Component::Type::CIRCLE_COLLIDER);
 		if (cCollider != nullptr)
 		{
-			CheckCollision(cCollider);
+			if (CheckCollision(cCollider))
+				return;
 		}
 		else
 		{
 			ComponentRectCollider* rCollider = (ComponentRectCollider*)entity->GetComponent(Component::Type::RECT_COLLIDER);
 			if (rCollider != nullptr)
 			{
-				CheckCollision(rCollider);
+				if (CheckCollision(rCollider)) //has collided
+					return;
 			}
 		}
 	}
