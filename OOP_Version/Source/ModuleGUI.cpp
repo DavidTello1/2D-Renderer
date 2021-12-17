@@ -16,13 +16,10 @@
 
 #include "mmgr/mmgr.h"
 
-ModuleGUI::ModuleGUI(bool start_enabled) : Module("ModuleGUI", start_enabled), fps_log(FPS_LOG_SIZE), ms_log(FPS_LOG_SIZE)
+ModuleGUI::ModuleGUI(bool start_enabled) : Module("ModuleGUI", start_enabled), fps_log(FPS_LOG_SIZE), ms_log(FPS_LOG_SIZE), num_asteroids(1)
 {
-	is_debug = false;
-	num_asteroids = 1;
 }
 
-// Destructor
 ModuleGUI::~ModuleGUI()
 {
 }
@@ -55,6 +52,8 @@ bool ModuleGUI::Start()
 	world_width = App->scene->GetWorldWidth() / WORLD_SCALE;
 	world_height = App->scene->GetWorldHeight() / WORLD_SCALE;
 
+	grid_size = App->scene_base->GetGridSize() / WORLD_SCALE;
+
 	return true;
 }
 
@@ -70,7 +69,7 @@ bool ModuleGUI::PreUpdate(float dt)
 
 bool ModuleGUI::Update(float dt)
 {
-	return true;
+return true;
 }
 
 bool ModuleGUI::PostUpdate(float dt)
@@ -129,7 +128,7 @@ void ModuleGUI::DrawInfo()
 		{
 			if (dir == ImGuiDir_Up)
 				dir = ImGuiDir_Down;
-			else 
+			else
 				dir = ImGuiDir_Up;
 		}
 		ImGui::Columns(1);
@@ -149,10 +148,8 @@ void ModuleGUI::DrawInfo()
 
 		ImGui::Columns(2, "columns1", false);
 		ImGui::Text("Asteroids");
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.0f);
+		//ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.0f);
 		ImGui::Text("World Size");
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
-		ImGui::Text("Debug Mode");
 		ImGui::NextColumn();
 
 		ImGui::TextColored(YELLOW, "%d", App->scene->GetEntities().size() - BASE_ENTITIES);
@@ -161,15 +158,28 @@ void ModuleGUI::DrawInfo()
 		ImGui::Text("x");
 		ImGui::SameLine(0, 0);
 		ImGui::TextColored(YELLOW, "%d", App->scene->GetWorldHeight() / WORLD_SCALE);
-		if (ImGui::Checkbox("##Debug Mode", &is_debug))
-			App->scene_base->SwitchDebug();
 		ImGui::Columns(1);
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
+		if (ImGui::TreeNodeEx("Debug Draw", ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Grid", &App->scene_base->is_draw_grid);
+			ImGui::Checkbox("Axis", &App->scene_base->is_draw_axis);
+			ImGui::Checkbox("Colliders", &App->scene_base->is_draw_colliders);
+
+			ImGui::SetNextItemWidth(80.0f);
+			if (ImGui::DragInt("Grid Size", &grid_size) && grid_size > 0)
+				App->scene_base->SetGridSize(grid_size * WORLD_SCALE);
+			if (grid_size < 1) grid_size = 1;
+
+			ImGui::Separator();
+		}
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 		if (ImGui::TreeNodeEx("Render Stats", ImGuiTreeNodeFlags_NoTreePushOnOpen))
 		{
 			int quads = App->renderer->GetStats().quad_count;
-			ImGui::Columns(2, "columns2", false);
+			ImGui::Columns(2, "columns3", false);
 
 			ImGui::Text("DrawCalls");
 			ImGui::Text("Quads");
@@ -189,7 +199,7 @@ void ModuleGUI::DrawInfo()
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 		if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_NoTreePushOnOpen))
 		{
-			ImGui::Columns(2, "columns3", false);
+			ImGui::Columns(2, "columns4", false);
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("Move Speed");
@@ -211,7 +221,7 @@ void ModuleGUI::DrawInfo()
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 		if (ImGui::TreeNodeEx("World", ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Columns(2, "columns3", false);
+			ImGui::Columns(2, "columns5", false);
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("Width");

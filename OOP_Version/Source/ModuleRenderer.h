@@ -26,8 +26,11 @@ public:
 
 	//void Render();
 	void UpdateViewportSize();
+	void UpdateGrid();
 	const SDL_GLContext& GetContext() const { return context; }
 	const RenderStats& GetStats() const { return stats; }
+
+	void DrawGrid();
 
 	void DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
 		const glm::vec4& color = glm::vec4(1.0f), const float& rotation = 0.0f, const glm::vec2& center = glm::vec2(0.0f)); //*** CLEAN
@@ -46,6 +49,8 @@ public:
 
 	// DrawLine (color + thickness)
 
+private:
+	void CreateGrid(float target_distance);
 
 private:
 	SDL_GLContext context;
@@ -55,4 +60,7 @@ private:
 	uint quadVBO = 0;
 	uint quadIBO = 0;
 
+	uint gridVAO = 0;
+	uint gridVBO = 0;
+	int grid_vertices = 0;
 };

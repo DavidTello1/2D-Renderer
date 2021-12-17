@@ -69,4 +69,6 @@ public:
 
 	GLuint default_shader = 0;
 	GLuint default_tex = 0;
+
+	GLuint grid_shader = 0;
 };

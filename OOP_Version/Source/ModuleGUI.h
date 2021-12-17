@@ -30,8 +30,6 @@ public:
 	bool is_update_pos = false;
 
 private:
-	bool is_debug = false;
-
 	int num_asteroids = 0;
 	int seed = 0;
 
@@ -40,6 +38,8 @@ private:
 
 	int world_width = 0;
 	int world_height = 0;
+
+	int grid_size = 0;
 
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;

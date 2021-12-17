@@ -36,6 +36,36 @@ void main()
 #endif
 #endif
 
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+#ifdef GRID_SHADER
+
+#if defined(VERTEX) ///////////////////////////////////////////////////
+
+layout(location = 0) in vec3 aPosition;
+
+uniform mat4 uViewProj;
+
+void main()
+{
+	gl_Position = uViewProj * vec4(aPosition, 1.0);
+}
+
+#elif defined(FRAGMENT) ///////////////////////////////////////////////
+
+uniform vec4 uColor;
+out vec4 oColor;
+
+void main()
+{
+	oColor = uColor;
+}
+
+#endif
+#endif
+
+
 // NOTE: You can write several shaders in the same file if you want as
 // long as you embrace them within an #ifdef block (as you can see above).
 // The third parameter of the LoadProgram function in engine.cpp allows

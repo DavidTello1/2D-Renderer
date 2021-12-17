@@ -16,9 +16,6 @@ public:
 	void OnWindowResize();
 	void OnMouseZoom(int mouse_wheel);
 
-	const bool& IsDebug() const { return is_debug; }
-	void SwitchDebug() { is_debug = !is_debug; }
-
 	// --- Getters
 	const int& GetGridSize() const { return grid_size; }
 	ComponentCameraController* GetMainCamera() { return main_camera; }
@@ -26,18 +23,22 @@ public:
 	pcg32_random_t& GetRNG() { return rng; }
 
 	// --- Setters
-	void SetGridSize(int size) { grid_size = size; }
+	void SetGridSize(int size);
 	void SetMainCamera(ComponentCameraController* camera) { main_camera = camera; }
 
 private:
 	void DrawAxis();
 	void DrawGrid(int size);
 
+public:
+	bool is_draw_grid = false;
+	bool is_draw_axis = false;
+	bool is_draw_colliders = false;
+
 private:
 	ComponentCameraController* main_camera = nullptr;
 
 	pcg32_random_t rng;
-	bool is_debug = false;
-	int grid_size = 5;
+	int grid_size = 50;
 };
 

@@ -18,6 +18,7 @@ bool ModuleResources::Start()
 {
     // Default Shader
     default_shader = shaders[LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER")]->index;
+    grid_shader = shaders[LoadShader("Assets/shaders.glsl", "GRID_SHADER")]->index;
 
     // Default Texture (white 1x1)
     glGenTextures(1, &default_tex);

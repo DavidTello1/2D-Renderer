@@ -44,7 +44,8 @@ bool ModuleScene::Start()
 	bg->AddComponent(Component::Type::RENDERER);
 	background = (ComponentTransform*)bg->AddComponent(Component::Type::TRANSFORM);
 	ComponentSprite* sprite = (ComponentSprite*)bg->AddComponent(Component::Type::SPRITE);
-	sprite->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
+	//sprite->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
+	sprite->SetTexture(App->resources->LoadTexture("Assets/black.png")->index);
 
 	b_top = CreateEntity();
 	b_top->AddComponent(Component::Type::TRANSFORM);
@@ -135,6 +136,9 @@ void ModuleScene::UpdateWorldSize()
 	transform = (ComponentTransform*)b_right->GetComponent(Component::Type::TRANSFORM);
 	transform->SetPosition(glm::vec2(world_width, 0.0f));
 	transform->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height));
+
+	// Update Grid
+	App->renderer->UpdateGrid();
 }
 
 void ModuleScene::AddAsteroids(int num)

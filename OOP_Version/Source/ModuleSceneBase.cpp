@@ -23,6 +23,7 @@ void ModuleSceneBase::Draw()
 
 	//if (is_draw_grid)
 	//	DrawGrid();
+	App->renderer->DrawGrid();
 }
 
 void ModuleSceneBase::OnWindowResize()
@@ -46,6 +47,12 @@ void ModuleSceneBase::OnMouseZoom(int mouse_wheel)
 const glm::mat4& ModuleSceneBase::GetViewProjMatrix() const
 {
 	return main_camera->GetCamera()->GetViewProjMatrix();
+}
+
+void ModuleSceneBase::SetGridSize(int size)
+{
+	grid_size = size;
+	App->renderer->UpdateGrid();
 }
 
 void ModuleSceneBase::DrawAxis()
