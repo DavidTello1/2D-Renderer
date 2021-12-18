@@ -153,11 +153,11 @@ void ModuleScene::AddAsteroids(int num)
 		ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
 		int tex = pcg32_boundedrand_r(&App->scene_base->GetRNG(), 3);
 		if (tex == 0)
-			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_grey.png")->index);
+			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_1.png")->index);
 		else if(tex == 1)
-			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_red.png")->index);
+			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_2.png")->index);
 		else if (tex == 2)
-			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_brown.png")->index);
+			sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_3.png")->index);
 
 		ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->AddComponent(Component::Type::CIRCLE_COLLIDER);
 		collider->SetRadius(transform->GetSize().x * transform->GetScale().x / 2);
@@ -177,8 +177,8 @@ void ModuleScene::AddAsteroids(int num)
 	}
 }
 
-void ModuleScene::DeleteAsteroids(int num) //*** HAS TO BE FIXED
+void ModuleScene::DeleteAsteroids(int num)
 {
 	for (int i = 0; i < num; ++i)
-		DeleteEntity(entities[BASE_ENTITIES - 1]); // start from asteroids position in vector to not delete base entities
+		DeleteEntity(entities[BASE_ENTITIES]); // start from asteroids position in vector to not delete base entities
 }

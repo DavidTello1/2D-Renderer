@@ -235,10 +235,10 @@ void ModuleGUI::DrawInfo()
 		}
 		ImGui::SameLine(0, 1);
 
-		if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->GetEntities().size() > 1)
+		if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->GetEntities().size() > BASE_ENTITIES)
 		{
-			if (num_asteroids >= (int)App->scene->GetEntities().size())
-				num_asteroids = App->scene->GetEntities().size();
+			if (num_asteroids >= (int)App->scene->GetEntities().size() - BASE_ENTITIES)
+				num_asteroids = App->scene->GetEntities().size() - BASE_ENTITIES;
 			App->scene->DeleteAsteroids(num_asteroids);
 			num_asteroids = 1;
 		}
