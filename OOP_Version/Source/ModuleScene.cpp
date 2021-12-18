@@ -44,8 +44,7 @@ bool ModuleScene::Start()
 	bg->AddComponent(Component::Type::RENDERER);
 	background = (ComponentTransform*)bg->AddComponent(Component::Type::TRANSFORM);
 	ComponentSprite* sprite = (ComponentSprite*)bg->AddComponent(Component::Type::SPRITE);
-	//sprite->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
-	sprite->SetTexture(App->resources->LoadTexture("Assets/black.png")->index);
+	sprite->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
 
 	b_top = CreateEntity();
 	b_top->AddComponent(Component::Type::TRANSFORM);

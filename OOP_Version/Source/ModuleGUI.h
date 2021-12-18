@@ -34,12 +34,9 @@ private:
 	int seed = 0;
 
 	int move_speed = 0;
-	float zoom_speed = 0.0f;
 
 	int world_width = 0;
 	int world_height = 0;
-
-	int grid_size = 0;
 
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;

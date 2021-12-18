@@ -24,43 +24,37 @@ public:
 	bool PostUpdate(float dt) override;
 	bool CleanUp() override;
 
-	//void Render();
 	void UpdateViewportSize();
 	void UpdateGrid();
+
 	const SDL_GLContext& GetContext() const { return context; }
 	const RenderStats& GetStats() const { return stats; }
-
-	void DrawGrid();
+	const int& GetGridSize() const { return grid_size; }
+	void SetGridSize(int size) { grid_size = size; UpdateGrid(); }
 
 	void DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
 		const glm::vec4& color = glm::vec4(1.0f), const float& rotation = 0.0f, const glm::vec2& center = glm::vec2(0.0f)); //*** CLEAN
 
 	void DrawCircle(const uint shader, const glm::vec2& center, const float& radius, const glm::vec4& color);
 
-	// DrawQuad (texture)
-	// DrawQuad (color)
-	// DrawQuad (texture + color)
-
-	// DrawRotatedQuad (texture)
-	// DrawRotatedQuad (color)
-	// DrawRotatedQuad (texture + color)
-
-	// DrawCircle (color)
-
-	// DrawLine (color + thickness)
-
 private:
+	void CreateQuad();
+
 	void CreateGrid(float target_distance);
+	void DrawGrid();
 
 private:
 	SDL_GLContext context;
 	RenderStats stats;
 
+	// Quad
 	uint quadVAO = 0;
 	uint quadVBO = 0;
 	uint quadIBO = 0;
 
+	// Grid
 	uint gridVAO = 0;
 	uint gridVBO = 0;
 	int grid_vertices = 0;
+	int grid_size = 50;
 };

@@ -46,13 +46,10 @@ bool ModuleGUI::Init()
 
 bool ModuleGUI::Start()
 {
-	move_speed = (int)App->scene_base->GetMainCamera()->GetMoveSpeed();
-	zoom_speed = App->scene_base->GetMainCamera()->GetZoomSpeed();
-
 	world_width = App->scene->GetWorldWidth() / WORLD_SCALE;
 	world_height = App->scene->GetWorldHeight() / WORLD_SCALE;
 
-	grid_size = App->scene_base->GetGridSize() / WORLD_SCALE;
+	move_speed = (int)App->scene_base->GetMainCamera()->GetMoveSpeed();
 
 	return true;
 }
@@ -148,7 +145,7 @@ void ModuleGUI::DrawInfo()
 
 		ImGui::Columns(2, "columns1", false);
 		ImGui::Text("Asteroids");
-		//ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.0f);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.0f);
 		ImGui::Text("World Size");
 		ImGui::NextColumn();
 
@@ -161,25 +158,10 @@ void ModuleGUI::DrawInfo()
 		ImGui::Columns(1);
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
-		if (ImGui::TreeNodeEx("Debug Draw", ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Checkbox("Grid", &App->scene_base->is_draw_grid);
-			ImGui::Checkbox("Axis", &App->scene_base->is_draw_axis);
-			ImGui::Checkbox("Colliders", &App->scene_base->is_draw_colliders);
-
-			ImGui::SetNextItemWidth(80.0f);
-			if (ImGui::DragInt("Grid Size", &grid_size) && grid_size > 0)
-				App->scene_base->SetGridSize(grid_size * WORLD_SCALE);
-			if (grid_size < 1) grid_size = 1;
-
-			ImGui::Separator();
-		}
-
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
-		if (ImGui::TreeNodeEx("Render Stats", ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		if (ImGui::TreeNodeEx("Render Stats", ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			int quads = App->renderer->GetStats().quad_count;
-			ImGui::Columns(2, "columns3", false);
+			ImGui::Columns(2, "columns2", false);
 
 			ImGui::Text("DrawCalls");
 			ImGui::Text("Quads");
@@ -197,66 +179,68 @@ void ModuleGUI::DrawInfo()
 		}
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
-		if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		if (ImGui::TreeNodeEx("Debug", ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Columns(2, "columns4", false);
+			ImGui::Columns(2, "columns3", false);
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			ImGui::Text("Move Speed");
+			ImGui::Text("Colliders");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			ImGui::Text("Zoom Speed");
+			ImGui::Text("Grid");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
+			ImGui::Text("World Width");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::Text("World Height");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
+			ImGui::Text("Move Speed");
+
 			ImGui::NextColumn();
 
+			ImGui::Checkbox("##Colliders", &App->scene_base->is_draw_colliders);
+			ImGui::Checkbox("##Grid", &App->scene_base->is_draw_grid);
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
-			if (ImGui::InputInt("##Move Speed", &move_speed, 0))
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
+			if (ImGui::DragInt("##World Width", &world_width, 1.0f, 1, 1000))
+				App->scene->SetWorldWidth(world_width * WORLD_SCALE);
+			if (ImGui::DragInt("##World Height", &world_height, 1.0f, 1, 1000))
+				App->scene->SetWorldHeight(world_height * WORLD_SCALE);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
+			if (ImGui::DragInt("##Move Speed", &move_speed, 1.0f, 1, 10000))
 				App->scene_base->GetMainCamera()->SetMoveSpeed((float)move_speed);
-			if (ImGui::InputFloat("##Zoom Speed", &zoom_speed))
-				App->scene_base->GetMainCamera()->SetZoomSpeed(zoom_speed);
 			ImGui::PopStyleColor();
 
 			ImGui::Columns(1);
 			ImGui::Separator();
 		}
 
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
-		if (ImGui::TreeNodeEx("World", ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_DefaultOpen))
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
+		ImGui::Columns(2, "columns4", false);
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+		ImGui::Text("Asteroids");
+		ImGui::NextColumn();
+
+		ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
+		ImGui::DragInt("##Asteroids", &num_asteroids, 1.0f, 1, 1000000);
+		ImGui::PopStyleColor();
+
+		ImGui::Columns(1);
+
+		float width = (PANEL_WIDTH - 16.0f) / 2;
+		if (ImGui::Button("Add", ImVec2(width, 0)))
 		{
-			ImGui::Columns(2, "columns5", false);
+			App->scene->AddAsteroids(num_asteroids);
+			num_asteroids = 1;
+		}
+		ImGui::SameLine(0, 1);
 
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			ImGui::Text("Width");
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			ImGui::Text("Height");
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			ImGui::Text("Asteroids");
-			ImGui::NextColumn();
-
-			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
-			if (ImGui::DragInt("##World Width", &world_width, 1.0f, 1, 1000))
-				App->scene->SetWorldWidth(world_width * WORLD_SCALE);
-			if (ImGui::DragInt("##World Height", &world_height, 1.0f, 1, 1000))
-				App->scene->SetWorldHeight(world_height * WORLD_SCALE);
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.0f);
-			ImGui::InputInt("##Asteroids", &num_asteroids, 0);
-			ImGui::PopStyleColor();
-
-			ImGui::Columns(1);
-
-			float width = (PANEL_WIDTH - 16.0f) / 2;
-			if (ImGui::Button("Add", ImVec2(width, 0)))
-			{
-				App->scene->AddAsteroids(num_asteroids);
-				num_asteroids = 1;
-			}
-			ImGui::SameLine(0, 1);
-
-			if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->GetEntities().size() > 1)
-			{
-				if (num_asteroids >= (int)App->scene->GetEntities().size())
-					num_asteroids = App->scene->GetEntities().size();
-				App->scene->DeleteAsteroids(num_asteroids);
-				num_asteroids = 1;
-			}
+		if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->GetEntities().size() > 1)
+		{
+			if (num_asteroids >= (int)App->scene->GetEntities().size())
+				num_asteroids = App->scene->GetEntities().size();
+			App->scene->DeleteAsteroids(num_asteroids);
+			num_asteroids = 1;
 		}
 	}
 	ImGui::End();

@@ -16,16 +16,6 @@ ModuleSceneBase::~ModuleSceneBase()
 {
 }
 
-void ModuleSceneBase::Draw()
-{
-	//if (is_draw_axis)
-	//	DrawAxis();
-
-	//if (is_draw_grid)
-	//	DrawGrid();
-	App->renderer->DrawGrid();
-}
-
 void ModuleSceneBase::OnWindowResize()
 {
 	App->gui->is_update_pos = true;
@@ -43,22 +33,7 @@ void ModuleSceneBase::OnMouseZoom(int mouse_wheel)
 		main_camera->OnZoom(mouse_wheel);
 }
 
-//--------------------------
 const glm::mat4& ModuleSceneBase::GetViewProjMatrix() const
 {
 	return main_camera->GetCamera()->GetViewProjMatrix();
-}
-
-void ModuleSceneBase::SetGridSize(int size)
-{
-	grid_size = size;
-	App->renderer->UpdateGrid();
-}
-
-void ModuleSceneBase::DrawAxis()
-{
-}
-
-void ModuleSceneBase::DrawGrid(int size)
-{
 }

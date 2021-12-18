@@ -49,39 +49,9 @@ bool ModuleRenderer::Init()
 	glEnable(GL_TEXTURE_2D);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// --- Create Quad
-	float vertices[] = {
-		// positions        // texture coords
-		0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		1.0f, 1.0f, 0.0f,	1.0f, 1.0f
-	};
-
-	unsigned int indices[] = {
-		0, 1, 2, // first triangle
-		0, 3, 1  // second triangle
-	};
-
-	glGenVertexArrays(1, &quadVAO);
-	glGenBuffers(1, &quadVBO);
-	glGenBuffers(1, &quadIBO);
-
-	glBindVertexArray(quadVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
-	// --- Create Grid ---
-	glGenVertexArrays(1, &gridVAO);
-	glGenBuffers(1, &gridVBO);
-	CreateGrid(App->scene_base->GetGridSize());
+	// Create Basic Quad & Grid
+	CreateQuad();
+	CreateGrid(grid_size);
 
 	return ret;
 }
@@ -105,16 +75,11 @@ bool ModuleRenderer::PostUpdate(float dt)
 	App->scene->Draw();
 
 	// --- Debug Draw
-	if (App->scene_base->is_draw_grid)
-		DrawGrid();
-
-	if (App->scene_base->is_draw_axis)
-	{
-		//***Draw Axis
-	}
-
 	if (App->scene_base->is_draw_colliders)
 		App->physics->DrawColliders();
+
+	if (App->scene_base->is_draw_grid)
+		DrawGrid();
 
 	// --- Render ImGui
 	App->gui->Draw();
@@ -136,87 +101,6 @@ bool ModuleRenderer::CleanUp()
 }
 
 //--------------------------------
-void ModuleRenderer::CreateGrid(float size)
-{
-	int width = App->scene->GetWorldWidth();
-	int height = App->scene->GetWorldHeight();
-
-	int linesX = width / size;
-	int linesY = height / size;
-	int num_lines = (linesX + linesY + 1) * 4;
-
-	std::vector<glm::vec2> vertices(num_lines);
-	for (int i = 0; i <= 10; ++i)
-	{
-		vertices[4 * i + 0] = glm::vec2(0.0f, i * size);	// X top
-		vertices[4 * i + 1] = glm::vec2(width, i * size);	// X bottom
-
-		vertices[4 * i + 2]		= glm::vec2(i * size, 0.0f);	// Y top
-		vertices[4 * i + 3] = glm::vec2(i * size, height);	// Y bottom
-	}
-
-	glBindVertexArray(gridVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec2), vertices.data(), GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-}
-
-void ModuleRenderer::DrawGrid()
-{
-	glUseProgram(App->resources->grid_shader);
-	glUniformMatrix4fv(glGetUniformLocation(App->resources->grid_shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
-
-	glm::vec4 color = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
-	glUniform4f(glGetUniformLocation(App->resources->grid_shader, "uColor"), color.r, color.g, color.b, color.a);
-
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f));
-	model = glm::scale(model, glm::vec3(WORLD_WIDTH, WORLD_HEIGHT, 1.0f));
-	glUniformMatrix4fv(glGetUniformLocation(App->resources->grid_shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
-
-	glLineWidth(0.5f);
-	glBindVertexArray(gridVAO);
-	glDrawArrays(GL_LINES, 0, grid_vertices);
-	glBindVertexArray(0);
-	glLineWidth(1.0f);
-
-	stats.draw_calls++;
-
-	glUseProgram(0);
-}
-
-void ModuleRenderer::UpdateGrid()
-{
-	int size = App->scene_base->GetGridSize();
-	int width = App->scene->GetWorldWidth();
-	int height = App->scene->GetWorldHeight();
-
-	int linesX =(int) height / size;
-	int linesY = (int) width / size;
-	grid_vertices = (linesX + linesY + 2) * 2;
-	std::vector<glm::vec2> vertices(grid_vertices);
-
-	int count = 0;
-	for (int i = 0; i <= linesX; ++i) // Horizontal Lines
-	{
-		vertices[2 * i]		= glm::vec2(0.0f, i * size);	// Left
-		vertices[2 * i + 1] = glm::vec2(width, i * size);	// Right
-		count += 2;
-	}
-	for (int i = 0; i <= linesY; ++i) // Vertical Lines
-	{
-		vertices[count + 2 * i]		= glm::vec2(i * size, 0.0f);	// Top
-		vertices[count + 2 * i + 1] = glm::vec2(i * size, height);	// Bottom
-	}
-
-	glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec2), vertices.data(), GL_DYNAMIC_DRAW);
-}
-
 void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
 	const glm::vec4& color, const float& rotation, const glm::vec2& center)
 {
@@ -270,6 +154,121 @@ void ModuleRenderer::DrawCircle(const uint shader, const glm::vec2& position, co
 
 	stats.draw_calls++;
 	stats.quad_count++;
+}
+
+//--------------------------------
+void ModuleRenderer::CreateQuad()
+{
+	float vertices[] = {
+		// positions        // texture coords
+		0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,	1.0f, 1.0f
+	};
+
+	unsigned int indices[] = {
+		0, 1, 2, // first triangle
+		0, 3, 1  // second triangle
+	};
+
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+	glGenBuffers(1, &quadIBO);
+
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+}
+
+void ModuleRenderer::CreateGrid(float size)
+{
+	int width = App->scene->GetWorldWidth();
+	int height = App->scene->GetWorldHeight();
+
+	int linesX = width / size;
+	int linesY = height / size;
+	int num_lines = (linesX + linesY + 1) * 4;
+
+	std::vector<glm::vec2> vertices(num_lines);
+	for (int i = 0; i <= 10; ++i)
+	{
+		vertices[4 * i + 0] = glm::vec2(0.0f, i * size);	// X top
+		vertices[4 * i + 1] = glm::vec2(width, i * size);	// X bottom
+
+		vertices[4 * i + 2] = glm::vec2(i * size, 0.0f);	// Y top
+		vertices[4 * i + 3] = glm::vec2(i * size, height);	// Y bottom
+	}
+
+	glGenVertexArrays(1, &gridVAO);
+	glGenBuffers(1, &gridVBO);
+
+	glBindVertexArray(gridVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec2), vertices.data(), GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void ModuleRenderer::DrawGrid()
+{
+	glUseProgram(App->resources->grid_shader);
+	glUniformMatrix4fv(glGetUniformLocation(App->resources->grid_shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
+
+	glm::vec4 color = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
+	glUniform4f(glGetUniformLocation(App->resources->grid_shader, "uColor"), color.r, color.g, color.b, color.a);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f));
+	model = glm::scale(model, glm::vec3(WORLD_WIDTH, WORLD_HEIGHT, 1.0f));
+	glUniformMatrix4fv(glGetUniformLocation(App->resources->grid_shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
+
+	glLineWidth(0.5f);
+	glBindVertexArray(gridVAO);
+	glDrawArrays(GL_LINES, 0, grid_vertices);
+	glBindVertexArray(0);
+	glLineWidth(1.0f);
+
+	stats.draw_calls++;
+
+	glUseProgram(0);
+}
+
+void ModuleRenderer::UpdateGrid()
+{
+	int width = App->scene->GetWorldWidth();
+	int height = App->scene->GetWorldHeight();
+
+	int linesX = (int)height / grid_size;
+	int linesY = (int)width / grid_size;
+	grid_vertices = (linesX + linesY + 2) * 2;
+	std::vector<glm::vec2> vertices(grid_vertices);
+
+	int count = 0;
+	for (int i = 0; i <= linesX; ++i) // Horizontal Lines
+	{
+		vertices[2 * i] = glm::vec2(0.0f, i * grid_size);	// Left
+		vertices[2 * i + 1] = glm::vec2(width, i * grid_size);	// Right
+		count += 2;
+	}
+	for (int i = 0; i <= linesY; ++i) // Vertical Lines
+	{
+		vertices[count + 2 * i] = glm::vec2(i * grid_size, 0.0f);	// Top
+		vertices[count + 2 * i + 1] = glm::vec2(i * grid_size, height);	// Bottom
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, gridVBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec2), vertices.data(), GL_DYNAMIC_DRAW);
 }
 
 void ModuleRenderer::UpdateViewportSize()
