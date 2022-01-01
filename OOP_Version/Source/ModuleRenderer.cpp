@@ -230,7 +230,7 @@ void ModuleRenderer::DrawGrid()
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f));
-	model = glm::scale(model, glm::vec3(WORLD_WIDTH, WORLD_HEIGHT, 1.0f));
+	model = glm::scale(model, glm::vec3(DEFAULT_WORLD_WIDTH, DEFAULT_WORLD_HEIGHT, 1.0f));
 	glUniformMatrix4fv(glGetUniformLocation(App->resources->grid_shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
 
 	glLineWidth(0.5f);

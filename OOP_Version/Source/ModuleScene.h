@@ -4,9 +4,9 @@
 #include <vector>
 
 #define BASE_ENTITIES 6 //camera + background + boundaries(4)
-#define WORLD_WIDTH 500
-#define WORLD_HEIGHT 500
 #define BOUNDARIES_SIZE 100
+#define DEFAULT_WORLD_WIDTH 500
+#define DEFAULT_WORLD_HEIGHT 500
 
 class Entity;
 class ComponentCameraController;

@@ -18,7 +18,7 @@
 
 #include "mmgr/mmgr.h"
 
-ModuleScene::ModuleScene(bool start_enabled) : Module("ModuleScene", start_enabled), world_width(WORLD_WIDTH), world_height(WORLD_HEIGHT)
+ModuleScene::ModuleScene(bool start_enabled) : Module("ModuleScene", start_enabled), world_width(DEFAULT_WORLD_WIDTH), world_height(DEFAULT_WORLD_HEIGHT)
 {
 }
 
@@ -73,6 +73,21 @@ bool ModuleScene::Update(float dt)
 	{
 		for(Component* component : entity->GetComponents())
 			component->OnUpdate(dt);
+	}
+
+	// Check if asteroid is out of bounds
+	for (size_t i = 0; i < entities.size(); ++i)
+	{
+		if (entities[i]->GetComponent(Component::Type::ASTEROID) != nullptr)
+		{
+			ComponentTransform* transform = (ComponentTransform*)entities[i]->GetComponent(Component::Type::TRANSFORM);
+			glm::vec2 pos = transform->GetPosition();
+			glm::vec2 size = transform->GetSize() * transform->GetScale();
+
+			if (pos.x + size.x < 0 || pos.x > world_width ||
+				pos.y + size.y < 0 || pos.y > world_height)
+				DeleteEntity(entities[i]);
+		}
 	}
 
 	return true;

@@ -1,17 +1,21 @@
 #pragma once
 #include "Module.h"
-#include "Component.h"
 
 #include <vector>
 #include "glm/include/glm/glm.hpp"
 
-class Entity;
 class ComponentRectCollider;
 class ComponentCircleCollider;
 
 struct Collision {
 	bool has_collided = false;
 	glm::vec2 distance = glm::vec2(0.0f);
+};
+
+struct CollidingPairs {
+	ComponentCircleCollider* collider1;
+	ComponentCircleCollider* collider2;
+	glm::vec2 distance;
 };
 
 class ModulePhysics : public Module
@@ -51,5 +55,7 @@ private:
 private:
 	std::vector<ComponentRectCollider*> rect_colliders;
 	std::vector<ComponentCircleCollider*> circle_colliders;
+
+	std::vector<CollidingPairs> colliding_pairs;
 };
 

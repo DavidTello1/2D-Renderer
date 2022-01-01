@@ -60,7 +60,24 @@ bool ModulePhysics::Update(float dt)
 			Collision collision = CheckCollision(collider1, collider2);
 			if (collision.has_collided)
 			{
-				ResolveCollision(collision.distance, collider1, collider2);
+				CollidingPairs new_pair;
+				new_pair.collider1 = collider1;
+				new_pair.collider2 = collider2;
+				new_pair.distance = collision.distance;
+
+				// Check if pair is already in list
+				bool exists = false;
+				for (CollidingPairs pair : colliding_pairs)
+				{
+					if ((pair.collider1 == collider1 && pair.collider2 == collider2) ||
+						(pair.collider1 == collider2 && pair.collider2 == collider1))
+					{
+						exists = true;
+						break;
+					}
+				}
+				if (!exists) 
+					colliding_pairs.push_back(new_pair);
 				break;
 			}
 		}
@@ -73,8 +90,18 @@ bool ModulePhysics::Update(float dt)
 				break;
 			}
 		}
+	}
 
-		// --- Update Asteroids
+	// --- Solve Colliding Pairs
+	for (CollidingPairs pair : colliding_pairs)
+	{
+		ResolveCollision(pair.distance, pair.collider1, pair.collider2);
+	}
+	colliding_pairs.clear(); //clear list
+
+	// --- Update Asteroids ---
+	for (ComponentCircleCollider* collider1 : circle_colliders)
+	{
 		ComponentAsteroid* asteroid = (ComponentAsteroid*)collider1->GetEntity()->GetComponent(Component::Type::ASTEROID);
 		if (asteroid != nullptr)
 			asteroid->Move(dt);
@@ -328,8 +355,12 @@ void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentRectCollider* 
 
 void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentCircleCollider* collider2) // Circle - Circle
 {
-	ComponentTransform* transform = (ComponentTransform*)collider1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
-	if (transform == nullptr)
+	ComponentTransform* transform1 = (ComponentTransform*)collider1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
+	if (transform1 == nullptr)
+		return;
+
+	ComponentTransform* transform2 = (ComponentTransform*)collider1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
+	if (transform2 == nullptr)
 		return;
 
 	float dist = glm::sqrt(distance.x * distance.x + distance.y * distance.y);
@@ -342,7 +373,8 @@ void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider
 
 	// Update Transform Position
 	glm::vec2 final_pos = glm::vec2(center - collider1->GetRadius() - collider1->GetOffset());
-	transform->SetPosition(final_pos);
+	transform1->SetPosition(final_pos);
+
 
 	// Update Asteroid Velocity
 	//----------------------------------------------------
@@ -382,10 +414,9 @@ void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider
 
 	// Update Asteroid Velocities
 	vel1 = tangent * dpTan1 + normal * m1;
-	//vel2 = tangent * dpTan2 + normal * m2;
+	vel2 = tangent * dpTan2 + normal * m2;
 	asteroid1->SetVelocity(vel1);
-	//asteroid2->SetVelocity(vel2);
-
+	asteroid2->SetVelocity(vel2);
 }
 
 void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentRectCollider* collider2) // Circle - Rect
