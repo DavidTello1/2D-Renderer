@@ -10,7 +10,6 @@ ComponentCircleCollider::ComponentCircleCollider(Entity* entity) :
 	Component(Component::Type::CIRCLE_COLLIDER, entity), center(0.0f), radius(0.0f), offset(0.0f)
 {
 	App->physics->AddCollider(this);
-	collision.Reset();
 }
 
 ComponentCircleCollider::~ComponentCircleCollider()
@@ -20,7 +19,7 @@ ComponentCircleCollider::~ComponentCircleCollider()
 
 void ComponentCircleCollider::OnUpdate(float dt)
 {
-	collision.Reset();
+	is_colliding = false;
 
 	ComponentTransform* transform = (ComponentTransform*)GetEntity()->GetComponent(Component::Type::TRANSFORM);
 	if (transform == nullptr)

@@ -24,41 +24,58 @@ bool ModulePhysics::Start()
 bool ModulePhysics::Update(float dt)
 {
 	// --- Rect Colliders ---
-	for (ComponentRectCollider* rect1 : rect_colliders)
+	for (ComponentRectCollider* collider1 : rect_colliders)
 	{
-		for (ComponentRectCollider* rect2 : rect_colliders) // Rect-Rect Collisions
+		for (ComponentRectCollider* collider2 : rect_colliders) // Rect-Rect Collisions
 		{
-			if (rect1 == rect2)
+			if (collider1 == collider2)
 				continue;
 
-			if (CheckCollision(rect1, rect2))
+			Collision collision = CheckCollision(collider1, collider2);
+			if (collision.has_collided)
+			{
+				ResolveCollision(collision.distance, collider1, collider2);
 				break;
+			}
 		}
-		for (ComponentCircleCollider* circle1 : circle_colliders) // Rect-Circle Collisions
+		for (ComponentCircleCollider* collider2 : circle_colliders) // Rect-Circle Collisions
 		{
-			if (CheckCollision(circle1, rect1))
+			Collision collision = CheckCollision(collider1, collider2);
+			if (collision.has_collided)
+			{
+				ResolveCollision(collision.distance, collider1, collider2);
 				break;
+			}
 		}
 	}
 
-	for (ComponentCircleCollider* circle1 : circle_colliders)
+	// --- Circle Colliders ---
+	for (ComponentCircleCollider* collider1 : circle_colliders)
 	{
-		for (ComponentCircleCollider* circle2 : circle_colliders) // Circle-Circle Collisions
+		for (ComponentCircleCollider* collider2 : circle_colliders) // Circle-Circle Collisions
 		{
-			if (circle1 == circle2)
+			if (collider1 == collider2)
 				continue;
 
-			if (CheckCollision(circle1, circle2))
+			Collision collision = CheckCollision(collider1, collider2);
+			if (collision.has_collided)
+			{
+				ResolveCollision(collision.distance, collider1, collider2);
 				break;
+			}
 		}
-		for (ComponentRectCollider* rect1 : rect_colliders) // Rect-Circle Collisions
+		for (ComponentRectCollider* collider2 : rect_colliders) // Circle-Rect Collisions
 		{
-			if (CheckCollision(circle1, rect1))
+			Collision collision = CheckCollision(collider1, collider2);
+			if (collision.has_collided)
+			{
+				ResolveCollision(collision.distance, collider1, collider2);
 				break;
+			}
 		}
 
-		// Update Asteroid
-		ComponentAsteroid* asteroid = (ComponentAsteroid*)circle1->GetEntity()->GetComponent(Component::Type::ASTEROID);
+		// --- Update Asteroids
+		ComponentAsteroid* asteroid = (ComponentAsteroid*)collider1->GetEntity()->GetComponent(Component::Type::ASTEROID);
 		if (asteroid != nullptr)
 			asteroid->Move(dt);
 	}
@@ -72,7 +89,6 @@ bool ModulePhysics::CleanUp()
 	{
 		RELEASE(rect_colliders[i]);
 		rect_colliders.erase(rect_colliders.begin() + i);
-		break;
 	}
 	rect_colliders.clear();
 
@@ -80,7 +96,6 @@ bool ModulePhysics::CleanUp()
 	{
 		RELEASE(circle_colliders[i]);
 		circle_colliders.erase(circle_colliders.begin() + i);
-		break;
 	}
 	circle_colliders.clear();
 
@@ -179,35 +194,81 @@ int ModulePhysics::Exists(ComponentCircleCollider* collider)
 
 //--------------------------------------
 // --- COLLISION DETECTION ---
-bool ModulePhysics::CheckCollision(ComponentRectCollider* collider1, ComponentRectCollider* collider2) // Rect - Rect
+const int& ModulePhysics::GetCollisionDirection(glm::vec2 distance) const
 {
-	Collision collision1;
-	collision1.Reset();
+	float max = 0.0f;
+	int direction = -1;
+
+	glm::vec2 compass[] = {
+		glm::vec2(0.0f, 1.0f),	// up
+		glm::vec2(1.0f, 0.0f),	// right
+		glm::vec2(0.0f, -1.0f),	// down
+		glm::vec2(-1.0f, 0.0f)	// left
+	};
+
+	for (uint i = 0; i < 4; i++)
+	{
+		float dot_product = glm::dot(glm::normalize(distance), compass[i]);
+		if (dot_product > max)
+		{
+			max = dot_product;
+			direction = i;
+		}
+	}
+	return direction;
+}
+
+Collision ModulePhysics::CheckCollision(ComponentRectCollider* collider1, ComponentRectCollider* collider2) // Rect - Rect
+{
+	Collision collision;
 	glm::vec2 pos1 = collider1->GetPosition();
 	glm::vec2 size1 = collider1->GetSize();
 
 	glm::vec2 pos2 = collider2->GetPosition();
 	glm::vec2 size2 = collider2->GetSize();
 
-	//***GET DISTANCE
+
+	collision.distance = glm::vec2(0.0f); //***GET ACTUAL DISTANCE
 
 	if (pos1.x < pos2.x + size2.x && pos1.x + size1.x > pos2.x && 
 		pos1.y < pos2.y + size2.y && pos1.y + size1.y > pos2.y)
 	{
-		collision1.has_collided = true;
-		//collision1.distance = dist;
-		collision1.type = collider2->GetType();
-		collider1->SetCollision(collision1);
-
-		return true;
+		collider1->SetColliding(true);
+		collision.has_collided = true;
 	}
-	return false;
+	else
+		collision.has_collided = false;
+
+	return collision;
 }
 
-bool ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, ComponentCircleCollider* collider2) // Circle - Circle
+Collision ModulePhysics::CheckCollision(ComponentRectCollider* collider1, ComponentCircleCollider* collider2) // Rect - Circle
 {
-	Collision collision1;
-	collision1.Reset();
+	Collision collision;
+	glm::vec2 pos = collider1->GetPosition();
+	glm::vec2 size = collider1->GetSize();
+
+	glm::vec2 center = collider2->GetCenter();
+	float radius = collider2->GetRadius();
+
+
+	collision.distance = center - glm::clamp(center, pos, pos + size);
+	float distanceSquared = (collision.distance.x * collision.distance.x) + (collision.distance.y * collision.distance.y);
+
+	if (distanceSquared < (radius * radius))
+	{
+		collider1->SetColliding(true);
+		collision.has_collided = true;
+	}
+	else
+		collision.has_collided = false;
+
+	return collision;
+}
+
+Collision ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, ComponentCircleCollider* collider2) // Circle - Circle
+{
+	Collision collision;
 	glm::vec2 center1 = collider1->GetCenter();
 	float radius1 = collider1->GetRadius();
 
@@ -215,51 +276,161 @@ bool ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, Component
 	float radius2 = collider2->GetRadius();
 
 
-	glm::vec2 dist = center1 - center2;
-	float distance = glm::sqrt(dist.x * dist.x + dist.y * dist.y);
+	collision.distance = center1 - center2;
+	float dist = glm::sqrt(collision.distance.x * collision.distance.x + collision.distance.y * collision.distance.y);
 
-	if (distance < radius1 + radius2)
+	if (dist < radius1 + radius2)
 	{
-		collision1.has_collided = true;
-		collision1.distance = dist;
-		collision1.type = collider2->GetType();
-		collision1.other_radius = collider2->GetRadius();
-		collider1->SetCollision(collision1);
-
-		return true;
+		collider1->SetColliding(true);
+		collision.has_collided = true;
 	}
-	return false;
+	else
+		collision.has_collided = false;
+
+	return collision;
 }
 
-bool ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, ComponentRectCollider* collider2) // Circle - Rect
+Collision ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, ComponentRectCollider* collider2) // Circle - Rect
 {
-	Collision collision1;
-	collision1.Reset();
+	Collision collision;
 	glm::vec2 center = collider1->GetCenter();
 	float radius = collider1->GetRadius();
 
-	Collision collision2;
-	collision2.Reset();
 	glm::vec2 pos = collider2->GetPosition();
 	glm::vec2 size = collider2->GetSize();
 
 
-	glm::vec2 dist = center - glm::clamp(center, pos, pos + size);
-	float distanceSquared = (dist.x * dist.x) + (dist.y * dist.y);
+	collision.distance = center - glm::clamp(center, pos, pos + size);
+	float distanceSquared = (collision.distance.x * collision.distance.x) + (collision.distance.y * collision.distance.y);
 
 	if (distanceSquared < (radius * radius))
 	{
-		collision1.has_collided = true;
-		collision1.distance = dist;
-		collision1.type = collider2->GetType();
-		collider1->SetCollision(collision1);
-
-		collision2.has_collided = true;
-		collision2.distance = dist;
-		collision2.type = collider1->GetType();
-		collider2->SetCollision(collision2);
-
-		return true;
+		collider1->SetColliding(true);
+		collision.has_collided = true;
 	}
-	return false;
+	else
+		collision.has_collided = false;
+
+	return collision;
+}
+
+//--------------------------------------
+// --- COLLISION RESOULTION ---
+void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentRectCollider* collider1, ComponentRectCollider* collider2) // Rect - Rect
+{
+	//***
+}
+
+void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentRectCollider* collider1, ComponentCircleCollider* collider2) // Rect - Circle
+{
+	//***
+}
+
+void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentCircleCollider* collider2) // Circle - Circle
+{
+	ComponentTransform* transform = (ComponentTransform*)collider1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
+	if (transform == nullptr)
+		return;
+
+	float dist = glm::sqrt(distance.x * distance.x + distance.y * distance.y);
+	float overlap = 0.5f * (dist - collider1->GetRadius() - collider2->GetRadius());
+
+	// Displace Current Ball away from collision
+	glm::vec2 center = collider1->GetCenter();
+	center -= overlap * distance / dist;
+	collider1->SetCenter(center);
+
+	// Update Transform Position
+	glm::vec2 final_pos = glm::vec2(center - collider1->GetRadius() - collider1->GetOffset());
+	transform->SetPosition(final_pos);
+
+	// Update Asteroid Velocity
+	//----------------------------------------------------
+	ComponentAsteroid* asteroid1 = (ComponentAsteroid*)collider1->GetEntity()->GetComponent(Component::Type::ASTEROID);
+	ComponentAsteroid* asteroid2 = (ComponentAsteroid*)collider2->GetEntity()->GetComponent(Component::Type::ASTEROID);
+	if (asteroid1 == nullptr || asteroid2 == nullptr)
+		return;
+
+	glm::vec2 pos1 = collider1->GetPosition();
+	glm::vec2 pos2 = collider2->GetPosition();
+	glm::vec2 vel1 = asteroid1->GetVelocity();
+	glm::vec2 vel2 = asteroid2->GetVelocity();
+	float mass1 = asteroid1->GetMass();
+	float mass2 = asteroid2->GetMass();
+	float fDistance = sqrtf((pos1.x - pos2.x) * (pos1.x -pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
+
+	// Normal
+	glm::vec2 normal;
+	normal.x = (pos2.x - pos1.x) / fDistance;
+	normal.y = (pos2.y - pos1.y) / fDistance;
+
+	// Tangent
+	glm::vec2 tangent;
+	tangent.x = -normal.y;
+	tangent.y = normal.x;
+
+	// Dot Product Tangent
+	float dpTan1 = vel1.x * tangent.x + vel1.y * tangent.y;
+	float dpTan2 = vel2.x * tangent.x + vel2.y * tangent.y;
+
+	// Dot Product Normal
+	float dpNorm1 = vel1.x * normal.x + vel1.y * normal.y;
+	float dpNorm2 = vel2.x * normal.x + vel2.y * normal.y;
+
+	float m1 = (dpNorm1 * (mass1 - mass2) + 2.0f * mass2 * dpNorm2) / (mass1 + mass2);
+	float m2 = (dpNorm2 * (mass2 - mass1) + 2.0f * mass1 * dpNorm1) / (mass1 + mass2);
+
+	// Update Asteroid Velocities
+	vel1 = tangent * dpTan1 + normal * m1;
+	//vel2 = tangent * dpTan2 + normal * m2;
+	asteroid1->SetVelocity(vel1);
+	//asteroid2->SetVelocity(vel2);
+
+}
+
+void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentRectCollider* collider2) // Circle - Rect
+{
+	ComponentTransform* transform = (ComponentTransform*)collider1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
+	if (transform == nullptr)
+		return;
+
+	float dist = glm::sqrt(distance.x * distance.x + distance.y * distance.y);
+	float overlap = collider1->GetRadius() - dist; // Get Overlap
+	if (std::isnan(overlap)) overlap = 0;
+
+	if (overlap > 0)
+	{
+		int direction = GetCollisionDirection(distance);
+		glm::vec2 pos = transform->GetPosition();
+		glm::vec2 velocity = glm::vec2(1.0f);
+
+		if (direction == 0) // UP
+		{
+			velocity.y = -velocity.y;
+			pos.y += overlap;
+		}
+		else if (direction == 1) // RIGHT
+		{
+			velocity.x = -velocity.x;
+			pos.x += overlap;
+		}
+		else if (direction == 3) // LEFT
+		{
+			velocity.x = -velocity.x;
+			pos.x -= overlap;
+		}
+		else if (direction == 2)// DOWN
+		{
+			velocity.y = -velocity.y;
+			pos.y -= overlap;
+		}
+
+		// Update Transform Position
+		transform->SetPosition(pos);
+
+		// Update Asteroid Velocity
+		ComponentAsteroid* asteroid = (ComponentAsteroid*)collider1->GetEntity()->GetComponent(Component::Type::ASTEROID);
+		if (asteroid != nullptr)
+			asteroid->SetVelocity(asteroid->GetVelocity() * velocity);
+	}
 }

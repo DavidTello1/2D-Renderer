@@ -11,7 +11,6 @@ ComponentRectCollider::ComponentRectCollider(Entity* entity) :
 	Component(Component::Type::RECT_COLLIDER, entity), position(0.0f), size(0.0f), offset(0.0f)
 {
 	App->physics->AddCollider(this);
-	collision.Reset();
 }
 
 ComponentRectCollider::~ComponentRectCollider()
@@ -21,7 +20,7 @@ ComponentRectCollider::~ComponentRectCollider()
 
 void ComponentRectCollider::OnUpdate(float dt)
 {
-	collision.Reset();
+	is_colliding = false;
 
 	ComponentTransform* transform = (ComponentTransform*)GetEntity()->GetComponent(Component::Type::TRANSFORM);
 	if (transform == nullptr)

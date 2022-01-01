@@ -1,5 +1,7 @@
 #pragma once
-#include "Collision.h"
+#include "Component.h"
+
+#include "glm/include/glm/glm.hpp"
 
 class ComponentRectCollider;
 
@@ -13,9 +15,8 @@ public:
 
 	static inline Component::Type GetType() { return Component::Type::CIRCLE_COLLIDER; }
 
-	const bool& IsColliding() const { return collision.has_collided; }
+	const bool& IsColliding() const { return is_colliding; }
 	const bool& IsStatic() const { return is_static; }
-	const Collision& GetCollision() const { return collision; }
 	glm::vec2 GetPosition();
 
 	const glm::vec2& GetCenter() const { return center; }
@@ -23,15 +24,14 @@ public:
 	const glm::vec2& GetOffset() const { return offset; }
 
 	void SetStatic(bool value) { is_static = value; }
-	void SetCollision(Collision col) { collision = col; }
-
+	void SetColliding(bool value) { is_colliding = value; }
 	void SetCenter(glm::vec2 new_center) { center = new_center; }
 	void SetRadius(float radius_) { radius = radius_; }
 	void SetOffset(glm::vec2 offset_) { offset = offset_; }
 
 private:
+	bool is_colliding = false;
 	bool is_static = false;
-	Collision collision;
 
 	glm::vec2 center = glm::vec2(0.0f);
 	float radius = 0.0f;
