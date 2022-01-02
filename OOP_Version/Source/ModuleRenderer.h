@@ -56,5 +56,5 @@ private:
 	uint gridVAO = 0;
 	uint gridVBO = 0;
 	int grid_vertices = 0;
-	int grid_size = 50;
+	int grid_size = 100;
 };

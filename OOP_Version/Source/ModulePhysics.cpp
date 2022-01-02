@@ -23,33 +23,8 @@ bool ModulePhysics::Start()
 
 bool ModulePhysics::Update(float dt)
 {
-	// --- Rect Colliders ---
-	for (ComponentRectCollider* collider1 : rect_colliders)
-	{
-		for (ComponentRectCollider* collider2 : rect_colliders) // Rect-Rect Collisions
-		{
-			if (collider1 == collider2)
-				continue;
+	colliding_pairs.clear(); //clear list
 
-			Collision collision = CheckCollision(collider1, collider2);
-			if (collision.has_collided)
-			{
-				ResolveCollision(collision.distance, collider1, collider2);
-				break;
-			}
-		}
-		for (ComponentCircleCollider* collider2 : circle_colliders) // Rect-Circle Collisions
-		{
-			Collision collision = CheckCollision(collider1, collider2);
-			if (collision.has_collided)
-			{
-				ResolveCollision(collision.distance, collider1, collider2);
-				break;
-			}
-		}
-	}
-
-	// --- Circle Colliders ---
 	for (ComponentCircleCollider* collider1 : circle_colliders)
 	{
 		for (ComponentCircleCollider* collider2 : circle_colliders) // Circle-Circle Collisions
@@ -60,24 +35,16 @@ bool ModulePhysics::Update(float dt)
 			Collision collision = CheckCollision(collider1, collider2);
 			if (collision.has_collided)
 			{
+				ResolveCollisionStatic(collision.distance, collider1, collider2); // Resolve static collision (overlapping)
+
+				// Add new pair to list
 				CollidingPairs new_pair;
 				new_pair.collider1 = collider1;
 				new_pair.collider2 = collider2;
 				new_pair.distance = collision.distance;
-
-				// Check if pair is already in list
-				bool exists = false;
-				for (CollidingPairs pair : colliding_pairs)
-				{
-					if ((pair.collider1 == collider1 && pair.collider2 == collider2) ||
-						(pair.collider1 == collider2 && pair.collider2 == collider1))
-					{
-						exists = true;
-						break;
-					}
-				}
-				if (!exists) 
+				if (FindPair(new_pair, colliding_pairs) == false) 
 					colliding_pairs.push_back(new_pair);
+
 				break;
 			}
 		}
@@ -95,9 +62,10 @@ bool ModulePhysics::Update(float dt)
 	// --- Solve Colliding Pairs
 	for (CollidingPairs pair : colliding_pairs)
 	{
-		ResolveCollision(pair.distance, pair.collider1, pair.collider2);
+		if (FindPair(pair, prev_colliding_pairs) == false) // Check if pair had collided in previous frame, if yes do not resolve again
+			ResolveCollisionDynamic(pair.distance, pair.collider1, pair.collider2);
 	}
-	colliding_pairs.clear(); //clear list
+	prev_colliding_pairs = colliding_pairs; //set previous list to new list
 
 	// --- Update Asteroids ---
 	for (ComponentCircleCollider* collider1 : circle_colliders)
@@ -217,6 +185,20 @@ int ModulePhysics::Exists(ComponentCircleCollider* collider)
 	}
 
 	return -1;
+}
+
+bool ModulePhysics::FindPair(CollidingPairs new_pair, std::vector<CollidingPairs> list)
+{
+	for (CollidingPairs pair : list)
+	{
+		if ((pair.collider1 == new_pair.collider1 && pair.collider2 == new_pair.collider2) ||
+			(pair.collider1 == new_pair.collider2 && pair.collider2 == new_pair.collider1))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //--------------------------------------
@@ -343,17 +325,7 @@ Collision ModulePhysics::CheckCollision(ComponentCircleCollider* collider1, Comp
 
 //--------------------------------------
 // --- COLLISION RESOULTION ---
-void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentRectCollider* collider1, ComponentRectCollider* collider2) // Rect - Rect
-{
-	//***
-}
-
-void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentRectCollider* collider1, ComponentCircleCollider* collider2) // Rect - Circle
-{
-	//***
-}
-
-void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentCircleCollider* collider2) // Circle - Circle
+void ModulePhysics::ResolveCollisionStatic(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentCircleCollider* collider2) // Circle - Circle
 {
 	ComponentTransform* transform1 = (ComponentTransform*)collider1->GetEntity()->GetComponent(Component::Type::TRANSFORM);
 	if (transform1 == nullptr)
@@ -374,10 +346,11 @@ void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider
 	// Update Transform Position
 	glm::vec2 final_pos = glm::vec2(center - collider1->GetRadius() - collider1->GetOffset());
 	transform1->SetPosition(final_pos);
+}
 
-
+void ModulePhysics::ResolveCollisionDynamic(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentCircleCollider* collider2)
+{
 	// Update Asteroid Velocity
-	//----------------------------------------------------
 	ComponentAsteroid* asteroid1 = (ComponentAsteroid*)collider1->GetEntity()->GetComponent(Component::Type::ASTEROID);
 	ComponentAsteroid* asteroid2 = (ComponentAsteroid*)collider2->GetEntity()->GetComponent(Component::Type::ASTEROID);
 	if (asteroid1 == nullptr || asteroid2 == nullptr)
@@ -389,7 +362,7 @@ void ModulePhysics::ResolveCollision(glm::vec2 distance, ComponentCircleCollider
 	glm::vec2 vel2 = asteroid2->GetVelocity();
 	float mass1 = asteroid1->GetMass();
 	float mass2 = asteroid2->GetMass();
-	float fDistance = sqrtf((pos1.x - pos2.x) * (pos1.x -pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
+	float fDistance = sqrtf((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
 
 	// Normal
 	glm::vec2 normal;

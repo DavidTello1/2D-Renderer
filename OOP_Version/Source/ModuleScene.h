@@ -5,8 +5,8 @@
 
 #define BASE_ENTITIES 6 //camera + background + boundaries(4)
 #define BOUNDARIES_SIZE 100
-#define DEFAULT_WORLD_WIDTH 500
-#define DEFAULT_WORLD_HEIGHT 500
+#define DEFAULT_WORLD_WIDTH 2500
+#define DEFAULT_WORLD_HEIGHT 2500
 
 class Entity;
 class ComponentCameraController;

@@ -7,6 +7,8 @@
 #define MIN_VELOCITY 50
 #define MIN_ROTATION_SPEED 5
 #define MAX_ROTATION_SPEED 120
+#define MAX_SIZE 100
+#define MIN_SIZE 50
 
 class ComponentTransform;
 class ComponentCircleCollider;

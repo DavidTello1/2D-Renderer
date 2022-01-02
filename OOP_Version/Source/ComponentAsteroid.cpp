@@ -50,4 +50,16 @@ void ComponentAsteroid::SetRandomValues()
 
 	if (pcg32_boundedrand_r(&App->scene_base->GetRNG(), 2) == 0) // orientation
 		velocity.y *= -1;
+
+	// Size & Mass
+	ComponentTransform* transform = (ComponentTransform*)GetEntity()->GetComponent(Component::Type::TRANSFORM);
+	ComponentCircleCollider* collider = (ComponentCircleCollider*)GetEntity()->GetComponent(Component::Type::CIRCLE_COLLIDER);
+	if (transform == nullptr || collider == nullptr) return;
+
+	int size = pcg32_boundedrand_r(&App->scene_base->GetRNG(), MAX_SIZE + 1);
+	if (size < MIN_SIZE)
+		size = MIN_SIZE;
+	mass = size / 10.0f;
+	transform->SetSize(glm::vec2(size));
+	collider->SetRadius(transform->GetSize().x * transform->GetScale().x / 2);
 }
