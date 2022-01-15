@@ -40,6 +40,9 @@
     <Filter Include="Sources\Shaders">
       <UniqueIdentifier>{1f5c46c1-5a95-4e7b-8b12-84db0781a267}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\External Libraries\Optick">
+      <UniqueIdentifier>{3d59f3ef-e25b-47c5-839f-572bbec34dde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -408,6 +411,45 @@
     <ClInclude Include="ModulePhysics.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Optick\include\optick.config.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_common.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_core.freebsd.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_core.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_core.platform.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_core.win.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_gpu.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_memory.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_message.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_miniz.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_serialization.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="Optick\include\optick_server.h">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Imgui\imgui.cpp">
@@ -493,6 +535,24 @@
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Optick\include\optick_core.cpp">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClCompile>
+    <ClCompile Include="Optick\include\optick_gpu.cpp">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClCompile>
+    <ClCompile Include="Optick\include\optick_message.cpp">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClCompile>
+    <ClCompile Include="Optick\include\optick_miniz.cpp">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClCompile>
+    <ClCompile Include="Optick\include\optick_serialization.cpp">
+      <Filter>Sources\External Libraries\Optick</Filter>
+    </ClCompile>
+    <ClCompile Include="Optick\include\optick_server.cpp">
+      <Filter>Sources\External Libraries\Optick</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

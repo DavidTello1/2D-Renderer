@@ -1,7 +1,14 @@
 #include "Application.h"
 
-#pragma comment( lib, "SDL/libx86/SDL2.lib" )
-#pragma comment( lib, "SDL/libx86/SDL2main.lib" )
+#include "Optick/include/optick.h"
+
+#ifndef _WIN64
+	#pragma comment( lib, "SDL/libx86/SDL2.lib" )
+	#pragma comment( lib, "SDL/libx86/SDL2main.lib" )
+#else
+	#pragma comment( lib, "SDL/libx64/SDL2.lib" )
+	#pragma comment( lib, "SDL/libx64/SDL2main.lib" )
+#endif
 
 enum class main_states
 {
@@ -50,6 +57,8 @@ int main(int argc, char** argv)
 
 		case main_states::MAIN_UPDATE:
 		{
+			OPTICK_FRAME("Main Update"); // Start Optick
+
 			int update_return = App->Update();
 
 			if (update_return == false)
@@ -73,6 +82,8 @@ int main(int argc, char** argv)
 
 		}
 	}
+
+	OPTICK_SHUTDOWN(); // Close Optick
 
 	RELEASE(App);
 	LOG("Exiting engine...");

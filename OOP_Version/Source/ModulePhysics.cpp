@@ -11,6 +11,9 @@
 #include "ComponentTransform.h"
 #include "ComponentAsteroid.h"
 
+#include "Optick/include/optick.h"
+#include "mmgr/mmgr.h"
+
 bool ModulePhysics::Init()
 {
 	return true;
@@ -23,10 +26,14 @@ bool ModulePhysics::Start()
 
 bool ModulePhysics::Update(float dt)
 {
+	OPTICK_CATEGORY("Physics Update", Optick::Category::Physics);
+
 	colliding_pairs.clear(); //clear list
 
+	OPTICK_PUSH("Static Collisions");
 	for (ComponentCircleCollider* collider1 : circle_colliders)
 	{
+		OPTICK_PUSH("Circle-Circle Collisions");
 		for (ComponentCircleCollider* collider2 : circle_colliders) // Circle-Circle Collisions
 		{
 			if (collider1 == collider2)
@@ -48,6 +55,9 @@ bool ModulePhysics::Update(float dt)
 				break;
 			}
 		}
+		OPTICK_POP();
+
+		OPTICK_PUSH("Circle-Rect Collisions");
 		for (ComponentRectCollider* collider2 : rect_colliders) // Circle-Rect Collisions
 		{
 			Collision collision = CheckCollision(collider1, collider2);
@@ -56,24 +66,30 @@ bool ModulePhysics::Update(float dt)
 				ResolveCollision(collision.distance, collider1, collider2);
 				break;
 			}
-		}
+		}	
+		OPTICK_POP();
 	}
+	OPTICK_POP();
 
 	// --- Solve Colliding Pairs
+	OPTICK_PUSH("Dynamic Collision");
 	for (CollidingPairs pair : colliding_pairs)
 	{
 		if (FindPair(pair, prev_colliding_pairs) == false) // Check if pair had collided in previous frame, if yes do not resolve again
 			ResolveCollisionDynamic(pair.distance, pair.collider1, pair.collider2);
 	}
 	prev_colliding_pairs = colliding_pairs; //set previous list to new list
+	OPTICK_POP();
 
 	// --- Update Asteroids ---
+	OPTICK_PUSH("Update Asteroids");
 	for (ComponentCircleCollider* collider1 : circle_colliders)
 	{
 		ComponentAsteroid* asteroid = (ComponentAsteroid*)collider1->GetEntity()->GetComponent(Component::Type::ASTEROID);
 		if (asteroid != nullptr)
 			asteroid->Move(dt);
 	}
+	OPTICK_POP();
 
 	return true;
 }

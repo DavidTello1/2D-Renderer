@@ -13,10 +13,11 @@
 #include "SDL/include/SDL_opengl.h"
 #include "glm/include/glm/gtc/type_ptr.hpp"
 
-#pragma comment(lib, "glew/libx86/glew32.lib")
+#pragma comment(lib, "glew/x64/glew32.lib")
 #pragma comment (lib, "glu32.lib")    // link OpenGL Utility lib
 #pragma comment (lib, "opengl32.lib") // link Microsoft OpenGL lib
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 ModuleRenderer::ModuleRenderer(bool start_enabled) : Module("ModuleRenderer", start_enabled)
@@ -71,18 +72,28 @@ bool ModuleRenderer::PreUpdate(float dt)
 
 bool ModuleRenderer::PostUpdate(float dt)
 {
+	OPTICK_CATEGORY("Renderer PostUpdate", Optick::Category::Rendering);
+
 	// --- Render Scene
+	OPTICK_PUSH("Scene Draw");
 	App->scene->Draw();
+	OPTICK_POP();
 
 	// --- Debug Draw
+	OPTICK_PUSH("Debug Draw");
 	if (App->scene_base->is_draw_colliders)
 		App->physics->DrawColliders();
+	OPTICK_POP();
 
+	OPTICK_PUSH("Draw Grid");
 	if (App->scene_base->is_draw_grid)
 		DrawGrid();
+	OPTICK_POP();
 
 	// --- Render ImGui
+	OPTICK_PUSH("Draw Imgui");
 	App->gui->Draw();
+	OPTICK_POP();
 
 	SDL_GL_SwapWindow(App->window->GetWindow());
 	return true;
