@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "Optick/include/optick.h"
+#include "mmgr/mmgr.h"
 
 #ifndef _WIN64
 	#pragma comment( lib, "SDL/libx86/SDL2.lib" )

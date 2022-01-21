@@ -8,7 +8,6 @@
 #define DEFAULT_WORLD_WIDTH 2500
 #define DEFAULT_WORLD_HEIGHT 2500
 
-class Entity;
 class ComponentTransform;
 
 class ModuleGame : public Module
@@ -41,9 +40,9 @@ private:
 	int world_width = 0;
 	int world_height = 0;
 
-	ComponentTransform* background = nullptr;
-	Entity* b_top = nullptr;
-	Entity* b_bottom = nullptr;
-	Entity* b_left = nullptr;
-	Entity* b_right = nullptr;
+	//ComponentTransform* background = nullptr;
+	//Entity* b_top = nullptr;
+	//Entity* b_bottom = nullptr;
+	//Entity* b_left = nullptr;
+	//Entity* b_right = nullptr;
 };

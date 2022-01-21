@@ -7,8 +7,6 @@
 #include "ModuleGame.h"
 #include "ModuleRenderer.h"
 
-#include "ComponentCameraController.h"
-
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
 #include "imgui/imgui_impl_sdl.h"
@@ -49,7 +47,7 @@ bool ModuleGUI::Start()
 	world_width = App->game->GetWorldWidth() / WORLD_SCALE;
 	world_height = App->game->GetWorldHeight() / WORLD_SCALE;
 
-	move_speed = (int)App->scene_base->GetMainCamera()->GetMoveSpeed();
+	//move_speed = (int)App->scene_base->GetMainCamera()->GetMoveSpeed();
 
 	return true;
 }
@@ -149,7 +147,7 @@ void ModuleGUI::DrawInfo()
 		ImGui::Text("World Size");
 		ImGui::NextColumn();
 
-		ImGui::TextColored(YELLOW, "%d", App->game->GetEntities().size() - BASE_ENTITIES);
+		//ImGui::TextColored(YELLOW, "%d", App->game->GetEntities().size() - BASE_ENTITIES);
 		ImGui::TextColored(YELLOW, "%d", App->game->GetWorldWidth() / WORLD_SCALE);
 		ImGui::SameLine(0, 0);
 		ImGui::Text("x");
@@ -205,8 +203,8 @@ void ModuleGUI::DrawInfo()
 			if (ImGui::DragInt("##World Height", &world_height, 1.0f, 1, 1000))
 				App->game->SetWorldHeight(world_height * WORLD_SCALE);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
-			if (ImGui::DragInt("##Move Speed", &move_speed, 1.0f, 1, 10000))
-				App->scene_base->GetMainCamera()->SetMoveSpeed((float)move_speed);
+			//if (ImGui::DragInt("##Move Speed", &move_speed, 1.0f, 1, 10000))
+			//	App->scene_base->GetMainCamera()->SetMoveSpeed((float)move_speed);
 			ImGui::PopStyleColor();
 
 			ImGui::Columns(1);
@@ -235,13 +233,13 @@ void ModuleGUI::DrawInfo()
 		}
 		ImGui::SameLine(0, 1);
 
-		if (ImGui::Button("Delete", ImVec2(width, 0)) && App->game->GetEntities().size() > BASE_ENTITIES)
-		{
-			if (num_asteroids >= (int)App->game->GetEntities().size() - BASE_ENTITIES)
-				num_asteroids = App->game->GetEntities().size() - BASE_ENTITIES;
-			App->game->DeleteAsteroids(num_asteroids);
-			num_asteroids = 1;
-		}
+		//if (ImGui::Button("Delete", ImVec2(width, 0)) && App->game->GetEntities().size() > BASE_ENTITIES)
+		//{
+		//	if (num_asteroids >= (int)App->game->GetEntities().size() - BASE_ENTITIES)
+		//		num_asteroids = App->game->GetEntities().size() - BASE_ENTITIES;
+		//	App->game->DeleteAsteroids(num_asteroids);
+		//	num_asteroids = 1;
+		//}
 	}
 	ImGui::End();
 }

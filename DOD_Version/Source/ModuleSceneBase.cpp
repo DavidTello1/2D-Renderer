@@ -5,7 +5,7 @@
 #include "ModuleRenderer.h"
 #include "ModuleGUI.h"
 
-#include "ComponentCameraController.h"
+#include "mmgr/mmgr.h"
 
 ModuleSceneBase::ModuleSceneBase(bool start_enabled) : Module("ModuleGame", start_enabled)
 {
@@ -22,18 +22,19 @@ void ModuleSceneBase::OnWindowResize()
 
 	App->renderer->UpdateViewportSize();
 
-	if (main_camera != nullptr) 
-		main_camera->OnResize(App->window->GetWidth(), App->window->GetHeight());
+	//if (main_camera != nullptr) 
+	//	main_camera->OnResize(App->window->GetWidth(), App->window->GetHeight());
 
 }
 
 void ModuleSceneBase::OnMouseZoom(int mouse_wheel)
 {
-	if (main_camera != nullptr) 
-		main_camera->OnZoom(mouse_wheel);
+	//if (main_camera != nullptr) 
+	//	main_camera->OnZoom(mouse_wheel);
 }
 
 const glm::mat4& ModuleSceneBase::GetViewProjMatrix() const
 {
-	return main_camera->GetCamera()->GetViewProjMatrix();
+	//return main_camera->GetCamera()->GetViewProjMatrix();
+	return glm::mat4(1.0);
 }

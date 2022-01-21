@@ -40,7 +40,7 @@ public:
 private:
 	void CreateQuad();
 
-	void CreateGrid(float target_distance);
+	void CreateGrid(int size);
 	void DrawGrid();
 
 private:

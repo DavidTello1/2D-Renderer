@@ -10,6 +10,7 @@ class ModuleInput;
 class ModuleGUI;
 class ModuleResources;
 class ModuleSceneBase;
+class ModuleScene;
 class ModuleGame;
 class ModulePhysics;
 class ModuleRenderer;
@@ -38,6 +39,7 @@ public:
 	ModuleGUI* gui;
 	ModuleResources* resources;
 	ModuleSceneBase* scene_base;
+	ModuleScene* scene;
 	ModuleGame* game;
 	ModulePhysics* physics;
 	ModuleRenderer* renderer;

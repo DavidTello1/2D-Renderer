@@ -134,17 +134,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="ComponentAsteroid.h" />
-    <ClInclude Include="ComponentCamera.h" />
-    <ClInclude Include="ComponentCameraController.h" />
-    <ClInclude Include="ComponentCircleCollider.h" />
+    <ClInclude Include="ComponentArray.h" />
     <ClInclude Include="ComponentManager.h" />
-    <ClInclude Include="ComponentRectCollider.h" />
-    <ClInclude Include="ComponentRenderer.h" />
-    <ClInclude Include="ComponentSprite.h" />
-    <ClInclude Include="ComponentTransform.h" />
-    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Components.h" />
+    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Glew\include\eglew.h" />
     <ClInclude Include="Glew\include\glew.h" />
     <ClInclude Include="Glew\include\glxew.h" />
@@ -167,6 +160,7 @@
     <ClInclude Include="ModuleRenderer.h" />
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleGame.h" />
+    <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleSceneBase.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Optick\include\optick.config.h" />
@@ -268,19 +262,11 @@
     <ClInclude Include="SDL\include\SDL_vulkan.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="stb\stb_image_write.h" />
+    <ClInclude Include="SystemManager.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="ComponentAsteroid.cpp" />
-    <ClCompile Include="ComponentCamera.cpp" />
-    <ClCompile Include="ComponentCameraController.cpp" />
-    <ClCompile Include="ComponentCircleCollider.cpp" />
-    <ClCompile Include="ComponentManager.cpp" />
-    <ClCompile Include="ComponentRectCollider.cpp" />
-    <ClCompile Include="ComponentRenderer.cpp" />
-    <ClCompile Include="ComponentTransform.cpp" />
-    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
     <ClCompile Include="Imgui\imgui_demo.cpp" />
     <ClCompile Include="Imgui\imgui_draw.cpp" />
@@ -295,6 +281,7 @@
     <ClCompile Include="ModuleRenderer.cpp" />
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleGame.cpp" />
+    <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleSceneBase.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Optick\include\optick_core.cpp" />

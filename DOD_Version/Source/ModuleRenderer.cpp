@@ -199,13 +199,13 @@ void ModuleRenderer::CreateQuad()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 }
 
-void ModuleRenderer::CreateGrid(float size)
+void ModuleRenderer::CreateGrid(int size)
 {
 	int width = App->game->GetWorldWidth();
 	int height = App->game->GetWorldHeight();
 
-	int linesX = width / size;
-	int linesY = height / size;
+	int linesX = (int)width / size;
+	int linesY = (int)height / size;
 	int num_lines = (linesX + linesY + 1) * 4;
 
 	std::vector<glm::vec2> vertices(num_lines);
