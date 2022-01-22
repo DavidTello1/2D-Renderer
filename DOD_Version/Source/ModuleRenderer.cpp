@@ -5,6 +5,7 @@
 #include "ModuleGUI.h"
 #include "ModuleResources.h"
 #include "ModulePhysics.h"
+#include "ModuleScene.h"
 #include "ModuleGame.h"
 #include "ModuleSceneBase.h"
 
@@ -76,7 +77,7 @@ bool ModuleRenderer::PostUpdate(float dt)
 
 	// --- Render Scene
 	OPTICK_PUSH("Scene Draw");
-	App->game->Draw();
+	App->scene->Draw();
 	OPTICK_POP();
 
 	// --- Debug Draw

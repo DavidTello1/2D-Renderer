@@ -22,10 +22,6 @@ ModuleGame::~ModuleGame()
 
 bool ModuleGame::Init()
 {
-	// Register Components
-	App->scene->RegisterComponent<C_Camera>();
-	App->scene->RegisterComponent<C_CameraController>();
-
 	//// Create Main Camera
 	//Entity camera = App->scene->CreateEntity();
 	//App->scene->AddComponent(camera, C_Camera{});
@@ -43,13 +39,18 @@ bool ModuleGame::Init()
 
 bool ModuleGame::Start()
 {
-	//// Create Background & Boundaries
-	//Entity* bg = CreateEntity();
-	//bg->AddComponent(Component::Type::RENDERER);
-	//background = (ComponentTransform*)bg->AddComponent(Component::Type::TRANSFORM);
-	//ComponentSprite* sprite = (ComponentSprite*)bg->AddComponent(Component::Type::SPRITE);
-	//sprite->SetTexture(App->resources->LoadTexture("Assets/background.png")->index);
+	// Create Background
+	background = App->scene->coordinator.CreateEntity();
+	C_Transform transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(50.0f) };
+	C_Sprite sprite = {
+		App->resources->default_shader,
+		App->resources->LoadTexture("Assets/background.png")->index
+	};
+	App->scene->coordinator.AddComponent(background, C_Renderer{ true });
+	App->scene->coordinator.AddComponent(background, transform);
+	App->scene->coordinator.AddComponent(background, sprite);
 
+	//// Create Boundaries
 	//b_top = CreateEntity();
 	//b_top->AddComponent(Component::Type::TRANSFORM);
 	//b_top->AddComponent(Component::Type::RECT_COLLIDER);
@@ -66,7 +67,7 @@ bool ModuleGame::Start()
 	//b_right->AddComponent(Component::Type::TRANSFORM);
 	//b_right->AddComponent(Component::Type::RECT_COLLIDER);
 
-	//UpdateWorldSize();
+	UpdateWorldSize();
 
 	return true;
 }
@@ -115,8 +116,9 @@ void ModuleGame::Draw()
 //--------------------------------------
 void ModuleGame::UpdateWorldSize()
 {
-	//// Update Background
-	//background->SetSize(glm::vec2(world_width, world_height));
+	// Update Background
+	C_Transform transform = App->scene->coordinator.GetComponent<C_Transform>(background);
+	transform.size = glm::vec2(world_width, world_height);
 
 	//// Update Boundaries
 	//ComponentTransform* transform = (ComponentTransform*)b_top->GetComponent(Component::Type::TRANSFORM);

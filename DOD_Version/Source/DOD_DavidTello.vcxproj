@@ -177,6 +177,7 @@
     <ClInclude Include="Optick\include\optick_serialization.h" />
     <ClInclude Include="Optick\include\optick_server.h" />
     <ClInclude Include="PCG\pcg_basic.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SDL\include\begin_code.h" />
     <ClInclude Include="SDL\include\close_code.h" />
     <ClInclude Include="SDL\include\SDL.h" />
@@ -262,7 +263,9 @@
     <ClInclude Include="SDL\include\SDL_vulkan.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="stb\stb_image_write.h" />
+    <ClInclude Include="SystemBase.h" />
     <ClInclude Include="SystemManager.h" />
+    <ClInclude Include="Systems.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -293,6 +296,9 @@
     <ClCompile Include="PCG\pcg_basic.c" />
     <ClCompile Include="mmgr\mmgr.cpp" />
     <ClCompile Include="stb\stb.cpp" />
+    <ClCompile Include="S_CameraController.cpp" />
+    <ClCompile Include="S_Physics.cpp" />
+    <ClCompile Include="S_Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Game\Assets\shaders.glsl" />

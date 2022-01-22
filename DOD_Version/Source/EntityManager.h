@@ -1,75 +1,62 @@
 #pragma once
-#include "Globals.h"
 
-#include <queue>
 #include <array>
+#include <queue>
 #include <bitset>
+#include <cassert>
 
 const int MAX_ENTITIES = 10000;
 const int MAX_COMPONENTS = 32;
-typedef std::bitset<MAX_COMPONENTS> ComponentMask;
-
-struct Entity {
-	UID id;
-	ComponentMask mask;
-};
+typedef std::bitset<MAX_COMPONENTS> Signature;
+typedef unsigned int Entity;
 
 class EntityManager
 {
 public:
-	EntityManager()
-	{
-		for (size_t index = 0; index < MAX_ENTITIES; ++index)
-			available_indexes.push(index);
-	}
+    EntityManager()
+    {
+        for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
+        {
+            mAvailableEntities.push(entity);
+        }
+    }
 
-	Entity CreateEntity()
-	{
-		if (entity_count > MAX_ENTITIES)
-		{
-			LOG("--- Unable to create entity: max entities reached");
-			return { 0, ComponentMask() };
-		}
+    Entity CreateEntity()
+    {
+        assert(mLivingEntityCount < MAX_ENTITIES && "Too many entities in existence.");
 
-		size_t index = available_indexes.front();
-		available_indexes.pop();
-		++entity_count;
+        Entity id = mAvailableEntities.front();
+        mAvailableEntities.pop();
+        ++mLivingEntityCount;
 
-		UID id = 1; //CreateUID();
-		Entity entity = { id, ComponentMask() };
-		entities[index] = entity;
+        return id;
+    }
 
-		return entity;
-	}
+    void DestroyEntity(Entity entity)
+    {
+        assert(entity < MAX_ENTITIES && "Entity out of range.");
 
-	void DeleteEntity(Entity entity) 
-	{
-		int index = -1;
-		//for (int i = 0; i < entities.size() - 1; ++i)
-		//{
-		//	if (entities[i] == entity) 
-		//	{
-		//		index = i;
-		//		break;
-		//	}
-		//}
+        mSignatures[entity].reset();
+        mAvailableEntities.push(entity);
+        --mLivingEntityCount;
+    }
 
-		if (index == -1)
-		{
-			LOG("--- Unable to delete entity: index not found");
-			return;
-		}
+    void SetSignature(Entity entity, Signature signature)
+    {
+        assert(entity < MAX_ENTITIES && "Entity out of range.");
 
-		entities[index].id = 0;
-		entities[index].mask.reset();
+        mSignatures[entity] = signature;
+    }
 
-		available_indexes.push(index);
-		--entity_count;
-	}
+    Signature GetSignature(Entity entity)
+    {
+        assert(entity < MAX_ENTITIES && "Entity out of range.");
+
+        return mSignatures[entity];
+    }
 
 private:
-	std::array<Entity, MAX_ENTITIES> entities;
-
-	std::queue<size_t> available_indexes;
-	uint32_t entity_count = 0;
+    std::queue<Entity> mAvailableEntities{};
+    std::array<Signature, MAX_ENTITIES> mSignatures{};
+    uint32_t mLivingEntityCount{};
 };

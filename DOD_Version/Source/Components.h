@@ -8,17 +8,12 @@ struct C_Transform {
 	glm::vec2 scale;
 	float rotation;
 
-	glm::mat4 transform;
 	glm::vec2 size;
 };
 
 struct C_Sprite {
 	uint shader;
 	uint texture;
-
-	glm::vec2 tex_size;
-	glm::vec2 sprite_size;
-	glm::vec2 offset;
 };
 
 struct C_Renderer {
@@ -45,6 +40,12 @@ struct C_CameraController {
 };
 
 // --- COLLIDERS ---
+struct C_RigidBody {
+	glm::vec2 velocity;
+	float mass;
+	float rotation_speed;
+};
+
 struct C_RectCollider {
 	bool is_colliding;
 	bool is_static;
@@ -61,10 +62,4 @@ struct C_CircleCollider {
 	glm::vec2 center;
 	float radius;
 	glm::vec2 offset;
-};
-
-struct C_RigidBody {
-	glm::vec2 velocity;
-	float mass;
-	float rotation_speed;
 };

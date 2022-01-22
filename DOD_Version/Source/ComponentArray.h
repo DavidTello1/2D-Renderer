@@ -1,79 +1,75 @@
 #pragma once
+
 #include "EntityManager.h"
 
+#include <array>
 #include <unordered_map>
+#include <cassert>
 
-class ComponentArrayBase 
+typedef unsigned int Entity;
+
+class IComponentArray
 {
 public:
-	virtual ~ComponentArrayBase() = default;
+    virtual ~IComponentArray() = default;
+    virtual void EntityDestroyed(Entity entity) = 0;
 };
 
+
 template<typename T>
-class ComponentArray : public ComponentArrayBase
+class ComponentArray : public IComponentArray
 {
 public:
-	// Add Component
-	template<typename T>
-	int AddComponent(Entity entity, T& component)
-	{
-		if (entity_to_index.find(entity) != entity_to_index.end())
-		{
-			LOG("--- Unable to Add Component: entity already has component of same type");
-			return -1;
-		}
+    void InsertData(Entity entity, T component)
+    {
+        assert(mEntityToIndexMap.find(entity) == mEntityToIndexMap.end() && "Component added to same entity more than once.");
 
-		int index = component_count; // get index of component to add (first empty spot -> component_count)
-		components[index] = component; // add component data to component_array at index
+        // Put new entry at end
+        size_t newIndex = mSize;
+        mEntityToIndexMap[entity] = newIndex;
+        mIndexToEntityMap[newIndex] = entity;
+        mComponentArray[newIndex] = component;
+        ++mSize;
+    }
 
-		entity_to_index[entity] = index; // add index to entity_to_index map
-		index_to_entity[index] = entity; // add entity to index_to_entity_map
+    void RemoveData(Entity entity)
+    {
+        assert(mEntityToIndexMap.find(entity) != mEntityToIndexMap.end() && "Removing non-existent component.");
 
-		++component_count; // set new index for next component to be added
+        // Copy element at end into deleted element's place to maintain density
+        size_t indexOfRemovedEntity = mEntityToIndexMap[entity];
+        size_t indexOfLastElement = mSize - 1;
+        mComponentArray[indexOfRemovedEntity] = mComponentArray[indexOfLastElement];
 
-		return index;
-	}
+        // Update map to point to moved spot
+        Entity entityOfLastElement = mIndexToEntityMap[indexOfLastElement];
+        mEntityToIndexMap[entityOfLastElement] = indexOfRemovedEntity;
+        mIndexToEntityMap[indexOfRemovedEntity] = entityOfLastElement;
 
-	// Remove Component
-	template<typename T>
-	void RemoveComponent(Entity entity)
-	{
-		if (entity_to_index.find(entity) == entity_to_index.end())
-		{
-			LOG("--- Unable to Remove Component: component not found");
-			return;
-		}
+        mEntityToIndexMap.erase(entity);
+        mIndexToEntityMap.erase(indexOfLastElement);
 
-		size_t index = entity_to_index[entity]; // get index of entity to remove
-		size_t last_index = component_count - 1; // get index of last component
-		components[index] = components[last_index]; // copy last component data to removed component index
+        --mSize;
+    }
 
-		Entity moved_entity = index_to_entity[last_index]; // get entity of last component (the copied one)
-		entity_to_index[moved_entity] = index; // update entity_to_index map
-		index_to_entity[index] = moved_entity; // update index_to_entity map
+    T& GetData(Entity entity)
+    {
+        assert(mEntityToIndexMap.find(entity) != mEntityToIndexMap.end() && "Retrieving non-existent component.");
 
-		entity_to_index.erase(entity); // delete removed entity from entity_to_index map
-		index_to_entity.erase(last_index); // delete last index from index_to_entity map
-		--component_count;
-	}
+        return mComponentArray[mEntityToIndexMap[entity]];
+    }
 
-	// Get Component
-	template<typename T>
-	T* GetComponent(Entity entity)
-	{
-		if (entity_to_index.find(entity) == entity_to_index.end())
-		{
-			LOG("--- Component not found");
-			return;
-		}
-
-		return components[entity_to_index[entity]];
-	}
+    void EntityDestroyed(Entity entity) override
+    {
+        if (mEntityToIndexMap.find(entity) != mEntityToIndexMap.end())
+        {
+            RemoveData(entity);
+        }
+    }
 
 private:
-	std::array<T, MAX_ENTITIES> components; // array of component_data - is always tightly packed
-	size_t component_count;
-
-	std::unordered_map<Entity, size_t> entity_to_index; // map to keep where each entity component_data's index is
-	std::unordered_map<size_t, Entity> index_to_entity; // just a copy of entity_to_index but reversed - used for removing
+    std::array<T, MAX_ENTITIES> mComponentArray{};
+    std::unordered_map<Entity, size_t> mEntityToIndexMap{};
+    std::unordered_map<size_t, Entity> mIndexToEntityMap{};
+    size_t mSize{};
 };

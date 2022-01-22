@@ -1,14 +1,12 @@
 #pragma once
 #include "Module.h"
 
-#include <vector>
-
 #define BASE_ENTITIES 6 //camera + background + boundaries(4)
 #define BOUNDARIES_SIZE 100
 #define DEFAULT_WORLD_WIDTH 2500
 #define DEFAULT_WORLD_HEIGHT 2500
 
-class ComponentTransform;
+typedef unsigned int Entity;
 
 class ModuleGame : public Module
 {
@@ -40,9 +38,12 @@ private:
 	int world_width = 0;
 	int world_height = 0;
 
+	Entity background = 0;
+
 	//ComponentTransform* background = nullptr;
 	//Entity* b_top = nullptr;
 	//Entity* b_bottom = nullptr;
 	//Entity* b_left = nullptr;
 	//Entity* b_right = nullptr;
+
 };
