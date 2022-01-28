@@ -16,9 +16,7 @@ out vec2 vTexCoord;
 void main()
 {
 	vTexCoord = aTexCoord;
-	gl_Position = vec4(aPosition, 1.0);
-
-	//gl_Position = uViewProj * uTransform * vec4(aPosition, 1.0);
+	gl_Position = uViewProj * uTransform * vec4(aPosition, 1.0);
 }
 
 #elif defined(FRAGMENT) ///////////////////////////////////////////////

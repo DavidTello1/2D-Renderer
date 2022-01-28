@@ -375,9 +375,6 @@
     <ClInclude Include="stb\stb_image_write.h">
       <Filter>Sources\3rd Party\stb</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleSceneBase.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
     <ClInclude Include="ModulePhysics.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
@@ -502,9 +499,6 @@
     </ClCompile>
     <ClCompile Include="stb\stb.cpp">
       <Filter>Sources\3rd Party\stb</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleSceneBase.cpp">
-      <Filter>Sources\Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
       <Filter>Sources\Modules</Filter>

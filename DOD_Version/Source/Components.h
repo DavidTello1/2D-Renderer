@@ -20,14 +20,8 @@ struct C_Renderer {
 	bool render;
 };
 
-// --- CAMERA ---
 struct C_Camera {
-	glm::vec3 position;
-	float rotation;
-
-	glm::mat4 ViewMatrix;
-	glm::mat4 ProjectionMatrix;
-	glm::mat4 ViewProjMatrix;
+	glm::mat4 projection;
 };
 
 struct C_CameraController {
@@ -35,11 +29,8 @@ struct C_CameraController {
 
 	float move_speed;
 	float zoom_speed;
-
-	//ComponentCamera* camera = nullptr;
 };
 
-// --- COLLIDERS ---
 struct C_RigidBody {
 	glm::vec2 velocity;
 	float mass;

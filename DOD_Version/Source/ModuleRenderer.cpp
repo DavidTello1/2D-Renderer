@@ -7,7 +7,6 @@
 #include "ModulePhysics.h"
 #include "ModuleScene.h"
 #include "ModuleGame.h"
-#include "ModuleSceneBase.h"
 
 #include "Imgui/imgui.h"
 #include "Glew/include/glew.h"
@@ -80,16 +79,16 @@ bool ModuleRenderer::PostUpdate(float dt)
 	App->scene->Draw();
 	OPTICK_POP();
 
-	// --- Debug Draw
-	OPTICK_PUSH("Debug Draw");
-	if (App->scene_base->is_draw_colliders)
-		App->physics->DrawColliders();
-	OPTICK_POP();
+	//// --- Debug Draw
+	//OPTICK_PUSH("Debug Draw");
+	//if (App->scene_base->is_draw_colliders)
+	//	App->physics->DrawColliders();
+	//OPTICK_POP();
 
-	OPTICK_PUSH("Draw Grid");
-	if (App->scene_base->is_draw_grid)
-		DrawGrid();
-	OPTICK_POP();
+	//OPTICK_PUSH("Draw Grid");
+	//if (App->scene_base->is_draw_grid)
+	//	DrawGrid();
+	//OPTICK_POP();
 
 	// --- Render ImGui
 	OPTICK_PUSH("Draw Imgui");
@@ -117,7 +116,7 @@ void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, cons
 	const glm::vec4& color, const float& rotation, const glm::vec2& center)
 {
 	glUseProgram(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
+	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
@@ -148,7 +147,7 @@ void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, cons
 void ModuleRenderer::DrawCircle(const uint shader, const glm::vec2& position, const float& diameter, const glm::vec4& color)
 {
 	glUseProgram(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
+	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
@@ -235,7 +234,7 @@ void ModuleRenderer::CreateGrid(int size)
 void ModuleRenderer::DrawGrid()
 {
 	glUseProgram(App->resources->grid_shader);
-	glUniformMatrix4fv(glGetUniformLocation(App->resources->grid_shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
+	glUniformMatrix4fv(glGetUniformLocation(App->resources->grid_shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
 
 	glm::vec4 color = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
 	glUniform4f(glGetUniformLocation(App->resources->grid_shader, "uColor"), color.r, color.g, color.b, color.a);

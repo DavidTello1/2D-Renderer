@@ -5,7 +5,6 @@
 #include "ModuleInput.h"
 #include "ModuleGUI.h"
 #include "ModuleResources.h"
-#include "ModuleSceneBase.h"
 #include "ModuleScene.h"
 #include "ModuleGame.h"
 #include "ModulePhysics.h"
@@ -28,7 +27,6 @@ Application::Application()
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(gui = new ModuleGUI());
 	modules.push_back(resources = new ModuleResources());
-	modules.push_back(scene_base = new ModuleSceneBase());
 	modules.push_back(scene = new ModuleScene());
 	modules.push_back(game = new ModuleGame());
 	modules.push_back(physics = new ModulePhysics());

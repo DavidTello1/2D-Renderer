@@ -161,7 +161,6 @@
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleGame.h" />
     <ClInclude Include="ModuleScene.h" />
-    <ClInclude Include="ModuleSceneBase.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Optick\include\optick.config.h" />
     <ClInclude Include="Optick\include\optick.h" />
@@ -285,7 +284,6 @@
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleGame.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
-    <ClCompile Include="ModuleSceneBase.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Optick\include\optick_core.cpp" />
     <ClCompile Include="Optick\include\optick_gpu.cpp" />

@@ -2,7 +2,7 @@
 
 #include "Application.h"
 #include "ModuleWindow.h"
-#include "ModuleSceneBase.h"
+#include "ModuleScene.h"
 
 #include "ImGui/imgui.h"
 #include "imGui/imgui_impl_sdl.h"
@@ -12,7 +12,7 @@
 
 #define MAX_KEYS 300
 
-ModuleInput::ModuleInput(bool start_enabled) : Module("Input", start_enabled)
+ModuleInput::ModuleInput(bool start_enabled) : Module("ModuleInput", start_enabled)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
@@ -113,7 +113,7 @@ bool ModuleInput::PreUpdate(float dt)
 
 		case SDL_MOUSEWHEEL:
 			mouse_wheel = e.wheel.y;
-			App->scene_base->OnMouseZoom(mouse_wheel);
+			App->scene->OnZoom(mouse_wheel); //*** EVENT SYSTEM
 			break;
 
 		case SDL_WINDOWEVENT:
@@ -122,7 +122,7 @@ bool ModuleInput::PreUpdate(float dt)
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
 				App->window->SetWidth(e.window.data1, false);
 				App->window->SetHeigth(e.window.data2, false);
-				App->scene_base->OnWindowResize();
+				App->scene->OnResize(e.window.data1, e.window.data2); //*** EVENT SYSTEM
 				break;
 			}
 			break;

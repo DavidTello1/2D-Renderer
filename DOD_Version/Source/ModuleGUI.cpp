@@ -3,7 +3,6 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
-#include "ModuleSceneBase.h"
 #include "ModuleGame.h"
 #include "ModuleRenderer.h"
 
@@ -181,21 +180,21 @@ void ModuleGUI::DrawInfo()
 		{
 			ImGui::Columns(2, "columns3", false);
 
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			ImGui::Text("Colliders");
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			ImGui::Text("Grid");
+			//ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			//ImGui::Text("Colliders");
+			//ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			//ImGui::Text("Grid");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
 			ImGui::Text("World Width");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("World Height");
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
-			ImGui::Text("Move Speed");
+			//ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
+			//ImGui::Text("Move Speed");
 
 			ImGui::NextColumn();
 
-			ImGui::Checkbox("##Colliders", &App->scene_base->is_draw_colliders);
-			ImGui::Checkbox("##Grid", &App->scene_base->is_draw_grid);
+			//ImGui::Checkbox("##Colliders", &App->scene_base->is_draw_colliders);
+			//ImGui::Checkbox("##Grid", &App->scene_base->is_draw_grid);
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 			if (ImGui::DragInt("##World Width", &world_width, 1.0f, 1, 1000))

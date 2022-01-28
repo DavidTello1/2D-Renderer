@@ -1,10 +1,10 @@
 #include "ModuleGame.h"
 
 #include "Application.h"
-#include "ModuleSceneBase.h"
 #include "ModuleResources.h"
 #include "ModuleRenderer.h"
 #include "ModuleScene.h"
+#include "ModuleWindow.h"
 
 #include "Components.h"
 
@@ -22,17 +22,15 @@ ModuleGame::~ModuleGame()
 
 bool ModuleGame::Init()
 {
-	//// Create Main Camera
-	//Entity camera = App->scene->CreateEntity();
-	//App->scene->AddComponent(camera, C_Camera{});
-	////C_CameraController* controller = App->scene->AddComponent(camera, C_CameraController{});
-	////App->scene_base->SetMainCamera(controller);
+	// Create Main Camera
+	C_Transform transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(0.0f) };
+	C_Camera camera = { glm::ortho(0.0f, (float)App->window->GetWidth(), (float)App->window->GetHeight(), 0.0f) };
+	C_CameraController controller = { 1.0f, 200.0f, 0.25f };
 
-	//------
-	//Entity* cam = CreateEntity();
-	//cam->AddComponent<C_Camera>();
-	//ComponentCameraController controller = (ComponentCameraController*)cam->AddComponent<C_CameraController>;
-	//App->scene_base->SetMainCamera(controller);
+	main_camera = App->scene->coordinator.CreateEntity();
+	App->scene->coordinator.AddComponent(main_camera, transform);
+	App->scene->coordinator.AddComponent(main_camera, camera);
+	App->scene->coordinator.AddComponent(main_camera, controller);
 
 	return true;
 }
@@ -40,104 +38,97 @@ bool ModuleGame::Init()
 bool ModuleGame::Start()
 {
 	// Create Background
-	background = App->scene->coordinator.CreateEntity();
-	C_Transform transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(50.0f) };
+	C_Transform transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(0.0f) };
 	C_Sprite sprite = {
 		App->resources->default_shader,
 		App->resources->LoadTexture("Assets/background.png")->index
 	};
+	background = App->scene->coordinator.CreateEntity();
 	App->scene->coordinator.AddComponent(background, C_Renderer{ true });
 	App->scene->coordinator.AddComponent(background, transform);
 	App->scene->coordinator.AddComponent(background, sprite);
 
-	//// Create Boundaries
-	//b_top = CreateEntity();
-	//b_top->AddComponent(Component::Type::TRANSFORM);
-	//b_top->AddComponent(Component::Type::RECT_COLLIDER);
+	// Create Boundaries
+	transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(0.0f) };
+	C_RectCollider collider = { false, true, glm::vec2(0.0f), glm::vec2(0.0f), glm::vec2(0.0f) };
 
-	//b_bottom = CreateEntity();
-	//b_bottom->AddComponent(Component::Type::TRANSFORM);
-	//b_bottom->AddComponent(Component::Type::RECT_COLLIDER);
+	b_top = App->scene->coordinator.CreateEntity();
+	App->scene->coordinator.AddComponent(b_top, transform);
+	App->scene->coordinator.AddComponent(b_top, collider);
 
-	//b_left = CreateEntity();
-	//b_left->AddComponent(Component::Type::TRANSFORM);
-	//b_left->AddComponent(Component::Type::RECT_COLLIDER);
+	b_bottom = App->scene->coordinator.CreateEntity();
+	App->scene->coordinator.AddComponent(b_bottom, transform);
+	App->scene->coordinator.AddComponent(b_bottom, collider);
 
-	//b_right = CreateEntity();
-	//b_right->AddComponent(Component::Type::TRANSFORM);
-	//b_right->AddComponent(Component::Type::RECT_COLLIDER);
+	b_left = App->scene->coordinator.CreateEntity();
+	App->scene->coordinator.AddComponent(b_left, transform);
+	App->scene->coordinator.AddComponent(b_left, collider);
 
+	b_right = App->scene->coordinator.CreateEntity();
+	App->scene->coordinator.AddComponent(b_right, transform);
+	App->scene->coordinator.AddComponent(b_right, collider);
+
+	// Update World Size
 	UpdateWorldSize();
 
 	return true;
 }
 
-bool ModuleGame::Update(float dt)
+//--------------------------------------
+const glm::mat4& ModuleGame::GetViewProjMatrix() const
 {
-	//for (Entity* entity : entities)
-	//{
-	//	for(Component* component : entity->GetComponents())
-	//		component->OnUpdate(dt);
-	//}
+	C_Transform transform = App->scene->coordinator.GetComponent<C_Transform>(main_camera);
+	glm::mat4 projection = App->scene->coordinator.GetComponent<C_Camera>(main_camera).projection;
 
-	//// Check if asteroid is out of bounds
-	//for (size_t i = 0; i < entities.size(); ++i)
-	//{
-	//	if (entities[i]->GetComponent(Component::Type::ASTEROID) != nullptr)
-	//	{
-	//		ComponentTransform* transform = (ComponentTransform*)entities[i]->GetComponent(Component::Type::TRANSFORM);
-	//		glm::vec2 pos = transform->GetPosition();
-	//		glm::vec2 size = transform->GetSize() * transform->GetScale();
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), { transform.position, 0.0f }) *
+		glm::rotate(glm::mat4(1.0f), glm::radians(transform.rotation), glm::vec3(0, 0, 1));
+	view = glm::inverse(view);
 
-	//		if (pos.x + size.x < 0 || pos.x > world_width ||
-	//			pos.y + size.y < 0 || pos.y > world_height)
-	//			DeleteEntity(entities[i]);
-	//	}
-	//}
-
-	return true;
-}
-
-bool ModuleGame::CleanUp()
-{
-	//while(!entities.empty())
-	//	DeleteEntity(entities.front());
-	//entities.clear();
-
-	return true;
-}
-
-void ModuleGame::Draw()
-{
-	//for (Entity* entity : entities)
-	//	entity->Draw();
+	glm::mat4 viewproj = projection * view;
+	return viewproj;
 }
 
 //--------------------------------------
 void ModuleGame::UpdateWorldSize()
 {
-	// Update Background
-	C_Transform transform = App->scene->coordinator.GetComponent<C_Transform>(background);
+	//--- Update Background
+	C_Transform& transform = App->scene->coordinator.GetComponent<C_Transform>(background);
 	transform.size = glm::vec2(world_width, world_height);
 
-	//// Update Boundaries
-	//ComponentTransform* transform = (ComponentTransform*)b_top->GetComponent(Component::Type::TRANSFORM);
-	//transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, -BOUNDARIES_SIZE));
-	//transform->SetSize(glm::vec2(world_width + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+	//--- Update Boundaries
+	// Top
+	C_Transform& transform1 = App->scene->coordinator.GetComponent<C_Transform>(b_top);
+	C_RectCollider& collider1 = App->scene->coordinator.GetComponent<C_RectCollider>(b_top);
+	transform1.position = glm::vec2(-BOUNDARIES_SIZE, -BOUNDARIES_SIZE);
+	transform1.size = glm::vec2(world_width + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE);
+	collider1.position = transform1.position;
+	collider1.size = transform1.size;
 
-	//transform = (ComponentTransform*)b_bottom->GetComponent(Component::Type::TRANSFORM);
-	//transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, world_height));
-	//transform->SetSize(glm::vec2(world_width + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE));
+	// Bottom
+	C_Transform& transform2 = App->scene->coordinator.GetComponent<C_Transform>(b_bottom);
+	C_RectCollider& collider2 = App->scene->coordinator.GetComponent<C_RectCollider>(b_bottom);
+	transform2.position = glm::vec2(-BOUNDARIES_SIZE, world_height);
+	transform2.size = glm::vec2(world_width + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE);
+	collider2.position = transform2.position;
+	collider2.size = transform2.size;
 
-	//transform = (ComponentTransform*)b_left->GetComponent(Component::Type::TRANSFORM);
-	//transform->SetPosition(glm::vec2(-BOUNDARIES_SIZE, 0.0f));
-	//transform->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height));
+	// Left
+	C_Transform& transform3 = App->scene->coordinator.GetComponent<C_Transform>(b_left);
+	C_RectCollider& collider3 = App->scene->coordinator.GetComponent<C_RectCollider>(b_left);
+	transform3.position = glm::vec2(-BOUNDARIES_SIZE, 0.0f);
+	transform3.size = glm::vec2(BOUNDARIES_SIZE, world_height);
+	collider3.position = transform3.position;
+	collider3.size = transform3.size;
 
-	//transform = (ComponentTransform*)b_right->GetComponent(Component::Type::TRANSFORM);
-	//transform->SetPosition(glm::vec2(world_width, 0.0f));
-	//transform->SetSize(glm::vec2(BOUNDARIES_SIZE, world_height));
+	// Right
+	C_Transform& transform4 = App->scene->coordinator.GetComponent<C_Transform>(b_right);
+	C_RectCollider& collider4 = App->scene->coordinator.GetComponent<C_RectCollider>(b_right);
+	transform4.position = glm::vec2(world_width, 0.0f);
+	transform4.size = glm::vec2(BOUNDARIES_SIZE, world_height);
+	collider4.position = transform4.position;
+	collider4.size = transform4.size;
 
-	// Update Grid
+	//--- Update Grid
 	App->renderer->UpdateGrid();
 }
 
