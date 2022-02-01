@@ -5,6 +5,7 @@
 #include <vector>
 
 class Module;
+class ModuleEvent;
 class ModuleWindow;
 class ModuleInput;
 class ModuleGUI;
@@ -33,6 +34,7 @@ private:
 	void FinishUpdate();
 
 public:
+	ModuleEvent* event_mgr;
 	ModuleWindow* window;
 	ModuleInput* input;
 	ModuleGUI* gui;

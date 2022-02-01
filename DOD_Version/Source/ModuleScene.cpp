@@ -105,6 +105,7 @@ bool ModuleScene::CleanUp()
 	return true;
 }
 
+//--------------------------------------
 void ModuleScene::Draw()
 {
 	render_system->Render();

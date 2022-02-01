@@ -203,7 +203,7 @@ void ModuleGUI::DrawInfo()
 				App->game->SetWorldHeight(world_height * WORLD_SCALE);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 			//if (ImGui::DragInt("##Move Speed", &move_speed, 1.0f, 1, 10000))
-			//	App->scene_base->GetMainCamera()->SetMoveSpeed((float)move_speed);
+			//	App->scene->GetMainCamera()->SetMoveSpeed((float)move_speed);
 			ImGui::PopStyleColor();
 
 			ImGui::Columns(1);
