@@ -6,9 +6,6 @@
 #define MAX_EVENTS 1000
 #define EVENT_TYPES 7
 
-typedef void (*Function)(const Event& e);
-typedef std::vector<Function> Listeners;
-
 struct Event {
 	enum class EventType {
 		INVALID = 0,
@@ -23,6 +20,9 @@ struct Event {
 private:
 	EventType type = EventType::INVALID;
 };
+
+typedef void (*Function)(const Event& e);
+typedef std::vector<Function> Listeners;
 
 class ModuleEvent : public Module
 {

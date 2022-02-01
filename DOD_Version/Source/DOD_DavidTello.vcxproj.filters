@@ -426,26 +426,26 @@
     <ClInclude Include="EntityManager.h">
       <Filter>Sources\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>Sources\ECS</Filter>
-    </ClInclude>
     <ClInclude Include="ComponentArray.h">
       <Filter>Sources\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Sources\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentManager.h">
-      <Filter>Sources\ECS\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemManager.h">
-      <Filter>Sources\ECS\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="SystemBase.h">
       <Filter>Sources\ECS\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Systems.h">
       <Filter>Sources\ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleEvent.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemManager.h">
+      <Filter>Sources\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentManager.h">
+      <Filter>Sources\ECS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -535,6 +535,9 @@
     </ClCompile>
     <ClCompile Include="S_CameraController.cpp">
       <Filter>Sources\ECS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleEvent.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

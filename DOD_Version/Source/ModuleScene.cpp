@@ -18,49 +18,51 @@ ModuleScene::~ModuleScene()
 bool ModuleScene::Init()
 {
 	//--- Init Scene Manager ---
-	coordinator.Init();
+	mComponentManager = std::make_unique<ComponentManager>();
+	mEntityManager = std::make_unique<EntityManager>();
+	mSystemManager = std::make_unique<SystemManager>();
 
 	//--- Register Components ---
-	coordinator.RegisterComponent<C_Transform>();
-	coordinator.RegisterComponent<C_Sprite>();
-	coordinator.RegisterComponent<C_Renderer>();
-	coordinator.RegisterComponent<C_Camera>();
-	coordinator.RegisterComponent<C_CameraController>();
-	coordinator.RegisterComponent<C_RigidBody>();
-	coordinator.RegisterComponent<C_CircleCollider>();
-	coordinator.RegisterComponent<C_RectCollider>();
+	RegisterComponent<C_Transform>();
+	RegisterComponent<C_Sprite>();
+	RegisterComponent<C_Renderer>();
+	RegisterComponent<C_Camera>();
+	RegisterComponent<C_CameraController>();
+	RegisterComponent<C_RigidBody>();
+	RegisterComponent<C_CircleCollider>();
+	RegisterComponent<C_RectCollider>();
 
 	//--- Register Systems and Init ---
 	// Renderer
-	render_system = coordinator.RegisterSystem<S_Renderer>();
+	render_system = RegisterSystem<S_Renderer>();
 	{
 		Signature signature;
-		signature.set(coordinator.GetComponentType<C_Transform>());
-		signature.set(coordinator.GetComponentType<C_Renderer>());
-		signature.set(coordinator.GetComponentType<C_Sprite>());
-		coordinator.SetSystemSignature<S_Renderer>(signature);
+		signature.set(GetComponentType<C_Transform>());
+		signature.set(GetComponentType<C_Renderer>());
+		signature.set(GetComponentType<C_Sprite>());
+		SetSystemSignature<S_Renderer>(signature);
 	}
 
 	// Camera Controller
-	camera_system = coordinator.RegisterSystem<S_CameraController>();
+	camera_system = RegisterSystem<S_CameraController>();
 	{
 		Signature signature;
-		signature.set(coordinator.GetComponentType<C_Transform>());
-		signature.set(coordinator.GetComponentType<C_Camera>());
-		signature.set(coordinator.GetComponentType<C_CameraController>());
-		coordinator.SetSystemSignature<S_CameraController>(signature);
+		signature.set(GetComponentType<C_Transform>());
+		signature.set(GetComponentType<C_Camera>());
+		signature.set(GetComponentType<C_CameraController>());
+		SetSystemSignature<S_CameraController>(signature);
 	}
 	camera_system->Init();
 
 	// Physics
-	physics_system = coordinator.RegisterSystem<S_Physics>();
+	physics_system = RegisterSystem<S_Physics>();
 	{
 		Signature signature;
-		signature.set(coordinator.GetComponentType<C_Transform>());
-		signature.set(coordinator.GetComponentType<C_RigidBody>());
-		signature.set(coordinator.GetComponentType<C_CircleCollider>()); //***
-		signature.set(coordinator.GetComponentType<C_RectCollider>()); //***
-		coordinator.SetSystemSignature<S_Physics>(signature);
+		signature.set(GetComponentType<C_Transform>());
+		signature.set(GetComponentType<C_RigidBody>());
+		signature.set(GetComponentType<C_CircleCollider>()); //***
+		signature.set(GetComponentType<C_RectCollider>()); //***
+		SetSystemSignature<S_Physics>(signature);
 	}
 	physics_system->Init();
 

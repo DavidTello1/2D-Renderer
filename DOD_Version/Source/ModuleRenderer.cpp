@@ -4,9 +4,8 @@
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
 #include "ModuleResources.h"
-#include "ModulePhysics.h"
 #include "ModuleScene.h"
-#include "ModuleGame.h"
+#include "ModuleGame.h" //***for grid - should this be here?
 
 #include "Imgui/imgui.h"
 #include "Glew/include/glew.h"
@@ -137,7 +136,7 @@ void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, cons
 
 	glUniform4f(glGetUniformLocation(shader, "uColor"), color.r, color.g, color.b, color.a);
 
-	glBindVertexArray(App->renderer->quadVAO);
+	glBindVertexArray(quadVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	stats.draw_calls++;
@@ -160,7 +159,7 @@ void ModuleRenderer::DrawCircle(const uint shader, const glm::vec2& position, co
 
 	glUniform4f(glGetUniformLocation(shader, "uColor"), color.r, color.g, color.b, color.a);
 
-	glBindVertexArray(App->renderer->quadVAO);
+	glBindVertexArray(quadVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	stats.draw_calls++;

@@ -1,10 +1,9 @@
 #include "ModuleGUI.h"
 
 #include "Application.h"
-#include "ModuleInput.h"
 #include "ModuleWindow.h"
-#include "ModuleGame.h"
 #include "ModuleRenderer.h"
+#include "ModuleGame.h"
 
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
@@ -57,19 +56,6 @@ bool ModuleGUI::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->GetWindow());
 	ImGui::NewFrame();
-
-	return true;
-}
-
-bool ModuleGUI::Update(float dt)
-{
-return true;
-}
-
-bool ModuleGUI::PostUpdate(float dt)
-{
-	if (App->input->close) //***SHOULD THIS BE HERE?
-		return false;
 
 	return true;
 }

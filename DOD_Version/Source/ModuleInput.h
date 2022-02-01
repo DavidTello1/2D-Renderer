@@ -20,6 +20,7 @@ public:
 
 	bool Init() override;
 	bool PreUpdate(float dt) override;
+	bool PostUpdate(float dt) override;
 	bool CleanUp() override;
 
 	KEY_STATE GetKey(int id) const { return keyboard[id]; }

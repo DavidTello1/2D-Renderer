@@ -14,8 +14,8 @@ void S_Renderer::Render()
 {
     for (Entity entity : mEntities)
     {
-        C_Transform transform = App->scene->coordinator.GetComponent<C_Transform>(entity);
-        C_Sprite sprite = App->scene->coordinator.GetComponent<C_Sprite>(entity);
+        C_Transform transform = App->scene->GetComponent<C_Transform>(entity);
+        C_Sprite sprite = App->scene->GetComponent<C_Sprite>(entity);
 
         App->renderer->DrawQuad(sprite.shader, transform.position, transform.size * transform.scale,
             sprite.texture, glm::vec4(1.0f), transform.rotation, transform.size * transform.scale / 2.0f);

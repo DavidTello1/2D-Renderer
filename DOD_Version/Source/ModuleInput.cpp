@@ -1,8 +1,8 @@
 #include "ModuleInput.h"
 
 #include "Application.h"
-#include "ModuleWindow.h"
-#include "ModuleScene.h"
+#include "ModuleWindow.h" //***REMOVE WHEN EVENT SYSTEM
+#include "ModuleScene.h" //***REMOVE WHEN EVENT SYSTEM
 
 #include "ImGui/imgui.h"
 #include "imGui/imgui_impl_sdl.h"
@@ -133,6 +133,11 @@ bool ModuleInput::PreUpdate(float dt)
 		}
 	}
 	return true;
+}
+
+bool ModuleInput::PostUpdate(float dt)
+{
+	return !close; // if close == true return false and stop execution
 }
 
 // Called before quitting

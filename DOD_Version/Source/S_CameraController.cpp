@@ -20,8 +20,8 @@ void S_CameraController::Update(float dt)
 {
 	for (Entity entity : mEntities)
 	{
-		C_Transform& transform = App->scene->coordinator.GetComponent<C_Transform>(entity);
-		C_CameraController& controller = App->scene->coordinator.GetComponent<C_CameraController>(entity);
+		C_Transform& transform = App->scene->GetComponent<C_Transform>(entity);
+		C_CameraController& controller = App->scene->GetComponent<C_CameraController>(entity);
 
 		float world_width = (float)App->game->GetWorldWidth();
 		float world_height = (float)App->game->GetWorldHeight();
@@ -84,15 +84,15 @@ void S_CameraController::OnResize(int width, int height)
 	App->gui->is_update_pos = true;
 	App->renderer->UpdateViewportSize();
 
-	C_Camera& camera = App->scene->coordinator.GetComponent<C_Camera>(App->game->GetMainCamera());
-	C_CameraController controller = App->scene->coordinator.GetComponent<C_CameraController>(App->game->GetMainCamera());
+	C_Camera& camera = App->scene->GetComponent<C_Camera>(App->game->GetMainCamera());
+	C_CameraController controller = App->scene->GetComponent<C_CameraController>(App->game->GetMainCamera());
 
 	camera.projection = glm::ortho(0.0f, width * controller.zoom, height * controller.zoom, 0.0f);
 }
 
 void S_CameraController::OnZoom(int new_zoom)
 {
-	C_CameraController& controller = App->scene->coordinator.GetComponent<C_CameraController>(App->game->GetMainCamera());
+	C_CameraController& controller = App->scene->GetComponent<C_CameraController>(App->game->GetMainCamera());
 
 	controller.zoom -= new_zoom * controller.zoom_speed;
 	controller.zoom = std::max(controller.zoom, controller.zoom_speed);
