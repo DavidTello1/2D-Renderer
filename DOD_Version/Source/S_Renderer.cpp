@@ -14,6 +14,9 @@ void S_Renderer::Render()
 {
     for (Entity entity : mEntities)
     {
+        if (App->scene->GetComponent<C_Renderer>(entity).render == false)
+            continue;
+
         C_Transform transform = App->scene->GetComponent<C_Transform>(entity);
         C_Sprite sprite = App->scene->GetComponent<C_Sprite>(entity);
 

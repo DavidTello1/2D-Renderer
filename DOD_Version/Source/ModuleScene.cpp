@@ -6,6 +6,8 @@
 #include "Components.h"
 #include "Systems.h"
 
+#include "mmgr/mmgr.h"
+
 ModuleScene::ModuleScene(bool start_enabled) : Module("ModuleScene", start_enabled)
 {
 	pcg32_srandom_r(&rng, 42u, 54u); // Seed the RNG with a fixed constant

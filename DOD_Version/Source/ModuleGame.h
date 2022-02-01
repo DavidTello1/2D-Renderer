@@ -8,6 +8,13 @@
 #define DEFAULT_WORLD_WIDTH 2500
 #define DEFAULT_WORLD_HEIGHT 2500
 
+#define MAX_ASTEROID_VELOCITY 150
+#define MIN_ASTEROID_VELOCITY 50
+#define MIN_ASTEROID_ROTATION_SPEED 5
+#define MAX_ASTEROID_ROTATION_SPEED 120
+#define MAX_ASTEROID_SIZE 100
+#define MIN_ASTEROID_SIZE 50
+
 typedef unsigned int Entity;
 
 class ModuleGame : public Module

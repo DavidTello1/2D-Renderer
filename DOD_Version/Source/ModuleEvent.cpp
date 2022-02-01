@@ -1,6 +1,8 @@
 #include "ModuleEvent.h"
 
-ModuleEvent::ModuleEvent(bool start_enabled) : Module("ModuleEvent", start_enabled)
+#include "mmgr/mmgr.h"
+
+ModuleEvent::ModuleEvent(bool start_enabled) : head(0), tail(0), Module("ModuleEvent", start_enabled)
 {
 }
 

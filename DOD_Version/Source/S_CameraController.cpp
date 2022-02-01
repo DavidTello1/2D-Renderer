@@ -1,12 +1,12 @@
 #include "Systems.h"
 
 #include "Application.h"
+#include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ModuleScene.h"
 #include "ModuleGame.h"
-#include "ModuleWindow.h"
-#include "ModuleGUI.h"
-#include "ModuleRenderer.h"
+#include "ModuleRenderer.h" //*** REMOVE WHEN EVENT SYSTEM
+#include "ModuleGUI.h" //*** REMOVE WHEN EVENT SYSTEM
 
 #include "Components.h"
 

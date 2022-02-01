@@ -134,37 +134,78 @@ void ModuleGame::UpdateWorldSize()
 
 void ModuleGame::AddAsteroids(int num)
 {
-	//for (int i = 0; i < num; ++i)
-	//{
-	//	Entity* entity = CreateEntity();
-	//	entity->AddComponent(Component::Type::RENDERER);
+	for (int i = 0; i < num; ++i)
+	{
+		Entity entity = App->scene->CreateEntity();
+		App->scene->AddComponent(entity, C_Renderer{ true });
 
+		// --- Sprite
+		C_Sprite sprite;
+		sprite.shader = App->resources->default_shader;
 
-	//	ComponentSprite* sprite = (ComponentSprite*)entity->AddComponent(Component::Type::SPRITE);
-	//	int tex = pcg32_boundedrand_r(&App->scene_base->GetRNG(), 3);
-	//	if (tex == 0)
-	//		sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_1.png")->index);
-	//	else if(tex == 1)
-	//		sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_2.png")->index);
-	//	else if (tex == 2)
-	//		sprite->SetTexture(App->resources->LoadTexture("Assets/asteroid_3.png")->index);
+		int tex = pcg32_boundedrand_r(&App->scene->GetRNG(), 3);
+		if (tex == 0)
+			sprite.texture = App->resources->LoadTexture("Assets/asteroid_1.png")->index;
+		else if(tex == 1)
+			sprite.texture = App->resources->LoadTexture("Assets/asteroid_2.png")->index;
+		else if (tex == 2)
+			sprite.texture = App->resources->LoadTexture("Assets/asteroid_3.png")->index;
 
-	//	ComponentTransform* transform = (ComponentTransform*)entity->AddComponent(Component::Type::TRANSFORM);
-	//	ComponentCircleCollider* collider = (ComponentCircleCollider*)entity->AddComponent(Component::Type::CIRCLE_COLLIDER);
+		App->scene->AddComponent(entity, sprite);
 
-	//	ComponentAsteroid* asteroid = (ComponentAsteroid*)entity->AddComponent(Component::Type::ASTEROID);
-	//	asteroid->SetRandomValues();
+		// --- Transform
+		C_Transform transform;
+		transform.rotation = 0.0f;
+		transform.scale = glm::vec2(1.0f);
 
-	//	// Position Limits
-	//	glm::vec2 pos;
-	//	pos.x = pcg32_boundedrand_r(&App->scene_base->GetRNG(), world_width - transform->GetSize().x * transform->GetScale().x - BOUNDARIES_SIZE);
-	//	pos.y = pcg32_boundedrand_r(&App->scene_base->GetRNG(), world_height - transform->GetSize().y * transform->GetScale().y - BOUNDARIES_SIZE);
+		transform.size = glm::vec2(pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_ASTEROID_SIZE + 1));
+		if (transform.size.x < MIN_ASTEROID_SIZE) // Limits
+			transform.size = glm::vec2(MIN_ASTEROID_SIZE);
 
-	//	if (pos.x == 0) pos.x = BOUNDARIES_SIZE;
-	//	if (pos.y == 0) pos.y = BOUNDARIES_SIZE;
+		transform.position.x = pcg32_boundedrand_r(&App->scene->GetRNG(), world_width - transform.size.x * transform.scale.x - BOUNDARIES_SIZE);
+		if (transform.position.x < 0) // Limits
+			transform.position.x = BOUNDARIES_SIZE;
 
-	//	transform->SetPosition(pos);
-	//}
+		transform.position.y = pcg32_boundedrand_r(&App->scene->GetRNG(), world_height - transform.size.y * transform.scale.y - BOUNDARIES_SIZE);
+		if (transform.position.y < 0) // Limits
+			transform.position.y = BOUNDARIES_SIZE;
+
+		App->scene->AddComponent(entity, transform);
+
+		//// --- Collider
+		//C_CircleCollider collider;
+		//collider.is_colliding = false;
+		//collider.is_static = false;
+		//collider.center = transform.position;
+		//collider.offset = glm::vec2(0.0f);
+		//collider.radius = transform.size.x * transform.scale.x / 2;
+		//App->scene->AddComponent(entity, collider);
+
+		// --- Rigidbody
+		C_RigidBody rigidbody;
+		rigidbody.mass = transform.size.x / 10.0f;
+
+		rigidbody.velocity.x = pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_ASTEROID_VELOCITY + 1);
+		if (rigidbody.velocity.x < MIN_ASTEROID_VELOCITY) // Limits
+			rigidbody.velocity.x = MIN_ASTEROID_VELOCITY;
+		if (pcg32_boundedrand_r(&App->scene->GetRNG(), 2) == 0) // Orientation
+			rigidbody.velocity.x *= -1;
+
+		rigidbody.velocity.y = pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_ASTEROID_VELOCITY + 1);
+		if (rigidbody.velocity.y < MIN_ASTEROID_VELOCITY) // Limits
+			rigidbody.velocity.y = MIN_ASTEROID_VELOCITY;
+		if (pcg32_boundedrand_r(&App->scene->GetRNG(), 2) == 0) // Orientation
+			rigidbody.velocity.y *= -1;
+
+		rigidbody.rotation_speed = pcg32_boundedrand_r(&App->scene->GetRNG(), MAX_ASTEROID_ROTATION_SPEED + 1);
+		if (rigidbody.rotation_speed < MIN_ASTEROID_ROTATION_SPEED) // Limits
+			rigidbody.rotation_speed = MIN_ASTEROID_ROTATION_SPEED;
+		if (pcg32_boundedrand_r(&App->scene->GetRNG(), 2) == 0) // Orientation
+			rigidbody.rotation_speed *= -1;
+
+		// orientation
+		App->scene->AddComponent(entity, rigidbody);
+	}
 }
 
 void ModuleGame::DeleteAsteroids(int num)
