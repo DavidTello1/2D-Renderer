@@ -138,6 +138,7 @@
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="Glew\include\eglew.h" />
     <ClInclude Include="Glew\include\glew.h" />
     <ClInclude Include="Glew\include\glxew.h" />
@@ -277,7 +278,6 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ModuleEvent.cpp" />
     <ClCompile Include="ModuleGUI.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModulePhysics.cpp" />

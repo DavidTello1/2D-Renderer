@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleResources.h"
 #include "ModuleScene.h"
+#include "ModuleEvent.h"
 #include "ModuleRenderer.h" //*** REMOVE WHEN EVENT SYSTEM (GRID)
 
 #include "Components.h"
@@ -127,6 +128,9 @@ void ModuleGame::UpdateWorldSize()
 	transform4.size = glm::vec2(BOUNDARIES_SIZE, world_height);
 	collider4.position = transform4.position;
 	collider4.size = transform4.size;
+
+	// Send Event to Update Grid
+	App->event_mgr->Publish(new EventWorldSizeUpdate(world_width, world_height));
 
 	//--- Update Grid
 	App->renderer->UpdateGrid();

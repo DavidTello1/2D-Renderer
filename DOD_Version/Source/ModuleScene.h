@@ -26,17 +26,13 @@ public:
 	void Draw();
 	pcg32_random_t& GetRNG() { return rng; }
 
-	//*** UNTIL EVENT MANAGER
-	void OnResize(int width, int height);
-	void OnZoom(int new_zoom);
-
 	// --- ENTITY COMPONENT SYSTEM ---
     // Entities
-    Entity CreateEntity() {
+    EntityIdx CreateEntity() {
         return mEntityManager->CreateEntity();
     }
 
-    void DestroyEntity(Entity entity) {
+    void DestroyEntity(EntityIdx entity) {
         mEntityManager->DestroyEntity(entity);
         mComponentManager->EntityDestroyed(entity);
         mSystemManager->EntityDestroyed(entity);
@@ -50,29 +46,29 @@ public:
     }
 
     template<typename T>
-    void AddComponent(Entity entity, T component) {
+    void AddComponent(EntityIdx entity, T component) {
         mComponentManager->AddComponent<T>(entity, component);
 
-        auto signature = mEntityManager->GetSignature(entity);
-        signature.set(mComponentManager->GetComponentType<T>(), true);
-        mEntityManager->SetSignature(entity, signature);
+        ComponentMask mask = mEntityManager->GetMask(entity);
+        mask.set(mComponentManager->GetComponentType<T>(), true);
+        mEntityManager->SetMask(entity, mask);
 
-        mSystemManager->EntitySignatureChanged(entity, signature);
+        mSystemManager->EntitySignatureChanged(entity, mask);
     }
 
     template<typename T>
-    void RemoveComponent(Entity entity) {
+    void RemoveComponent(EntityIdx entity) {
         mComponentManager->RemoveComponent<T>(entity);
 
-        auto signature = mEntityManager->GetSignature(entity);
-        signature.set(mComponentManager->GetComponentType<T>(), false);
-        mEntityManager->SetSignature(entity, signature);
+        ComponentMask mask = mEntityManager->GetMask(entity);
+        mask.set(mComponentManager->GetComponentType<T>(), false);
+        mEntityManager->SetMask(entity, mask);
 
-        mSystemManager->EntitySignatureChanged(entity, signature);
+        mSystemManager->EntitySignatureChanged(entity, mask);
     }
 
     template<typename T>
-    T& GetComponent(Entity entity) {
+    T& GetComponent(EntityIdx entity) {
         return mComponentManager->GetComponent<T>(entity);
     }
 
@@ -89,8 +85,8 @@ public:
     }
 
     template<typename T>
-    void SetSystemSignature(Signature signature) {
-        mSystemManager->SetSignature<T>(signature);
+    void SetSystemSignature(ComponentMask signature) {
+        mSystemManager->SetMask<T>(signature);
     }
 
 private:

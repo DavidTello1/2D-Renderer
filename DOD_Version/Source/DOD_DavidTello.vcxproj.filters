@@ -447,6 +447,9 @@
     <ClInclude Include="ComponentManager.h">
       <Filter>Sources\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Sources\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Imgui\imgui.cpp">
@@ -535,9 +538,6 @@
     </ClCompile>
     <ClCompile Include="S_CameraController.cpp">
       <Filter>Sources\ECS\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleEvent.cpp">
-      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

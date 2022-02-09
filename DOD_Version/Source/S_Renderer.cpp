@@ -12,7 +12,7 @@ void S_Renderer::Init()
 
 void S_Renderer::Render()
 {
-    for (Entity entity : mEntities)
+    for (EntityIdx entity : entities)
     {
         if (App->scene->GetComponent<C_Renderer>(entity).render == false)
             continue;

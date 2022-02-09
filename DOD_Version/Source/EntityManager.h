@@ -7,56 +7,51 @@
 
 const int MAX_ENTITIES = 10000;
 const int MAX_COMPONENTS = 32;
-typedef std::bitset<MAX_COMPONENTS> Signature;
-typedef unsigned int Entity;
+
+typedef std::bitset<MAX_COMPONENTS> ComponentMask;
+typedef unsigned int EntityIdx;
 
 class EntityManager
 {
 public:
-    EntityManager()
-    {
-        for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
-        {
-            mAvailableEntities.push(entity);
-        }
+    EntityManager() {
+        for (EntityIdx entity = 0; entity < MAX_ENTITIES; ++entity)
+            available_indexes.push(entity);
     }
 
-    Entity CreateEntity()
-    {
-        assert(mLivingEntityCount < MAX_ENTITIES && "Too many entities in existence.");
+    EntityIdx CreateEntity() {
+        assert(count_entities < MAX_ENTITIES && "Too many entities in existence.");
 
-        Entity id = mAvailableEntities.front();
-        mAvailableEntities.pop();
-        ++mLivingEntityCount;
+        EntityIdx index = available_indexes.front();
+        available_indexes.pop();
+        ++count_entities;
 
-        return id;
+        return index;
     }
 
-    void DestroyEntity(Entity entity)
-    {
+    void DestroyEntity(EntityIdx entity) {
         assert(entity < MAX_ENTITIES && "Entity out of range.");
 
-        mSignatures[entity].reset();
-        mAvailableEntities.push(entity);
-        --mLivingEntityCount;
+        component_masks[entity].reset();
+        available_indexes.push(entity);
+        --count_entities;
     }
 
-    void SetSignature(Entity entity, Signature signature)
-    {
+    void SetMask(EntityIdx entity, ComponentMask mask) {
         assert(entity < MAX_ENTITIES && "Entity out of range.");
 
-        mSignatures[entity] = signature;
+        component_masks[entity] = mask;
     }
 
-    Signature GetSignature(Entity entity)
-    {
+    ComponentMask GetMask(EntityIdx entity) {
         assert(entity < MAX_ENTITIES && "Entity out of range.");
 
-        return mSignatures[entity];
+        return component_masks[entity];
     }
 
 private:
-    std::queue<Entity> mAvailableEntities{};
-    std::array<Signature, MAX_ENTITIES> mSignatures{};
-    uint32_t mLivingEntityCount{};
+    std::array<ComponentMask, MAX_ENTITIES> component_masks;
+
+    std::queue<EntityIdx> available_indexes;
+    uint32_t count_entities = 0;
 };

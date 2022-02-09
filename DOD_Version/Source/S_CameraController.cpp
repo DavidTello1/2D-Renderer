@@ -5,8 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleScene.h"
 #include "ModuleGame.h"
-#include "ModuleRenderer.h" //*** REMOVE WHEN EVENT SYSTEM
-#include "ModuleGUI.h" //*** REMOVE WHEN EVENT SYSTEM
+#include "ModuleEvent.h"
 
 #include "Components.h"
 
@@ -14,11 +13,14 @@
 
 void S_CameraController::Init()
 {
+	App->event_mgr->Subscribe(this, &S_CameraController::OnResize);
+	App->event_mgr->Subscribe(this, &S_CameraController::OnZoom);
+
 }
 
 void S_CameraController::Update(float dt)
 {
-	for (Entity entity : mEntities)
+	for (EntityIdx entity : entities)
 	{
 		C_Transform& transform = App->scene->GetComponent<C_Transform>(entity);
 		C_CameraController& controller = App->scene->GetComponent<C_CameraController>(entity);
@@ -79,23 +81,30 @@ void S_CameraController::Update(float dt)
 	}
 }
 
-void S_CameraController::OnResize(int width, int height)
+void S_CameraController::OnResize(EventWindowResize* e)
 {
-	App->gui->is_update_pos = true;
-	App->renderer->UpdateViewportSize();
+	//App->gui->is_update_pos = true;
+	//App->renderer->UpdateViewportSize();
 
 	C_Camera& camera = App->scene->GetComponent<C_Camera>(App->game->GetMainCamera());
 	C_CameraController controller = App->scene->GetComponent<C_CameraController>(App->game->GetMainCamera());
 
-	camera.projection = glm::ortho(0.0f, width * controller.zoom, height * controller.zoom, 0.0f);
+	camera.projection = glm::ortho(0.0f, e->width * controller.zoom, e->height * controller.zoom, 0.0f);
 }
 
-void S_CameraController::OnZoom(int new_zoom)
+void S_CameraController::OnZoom(EventCameraZoom* e)
 {
+	C_Camera& camera = App->scene->GetComponent<C_Camera>(App->game->GetMainCamera());
 	C_CameraController& controller = App->scene->GetComponent<C_CameraController>(App->game->GetMainCamera());
 
-	controller.zoom -= new_zoom * controller.zoom_speed;
+	controller.zoom -= e->zoom * controller.zoom_speed;
 	controller.zoom = std::max(controller.zoom, controller.zoom_speed);
+	
+	camera.projection = glm::ortho(0.0f, App->window->GetWidth() * controller.zoom, App->window->GetHeight() * controller.zoom, 0.0f);
+}
 
-	OnResize(App->window->GetWidth(), App->window->GetHeight());
+void S_CameraController::OnSpeedChange(EventCameraSpeedChanged* e)
+{
+	C_CameraController& controller = App->scene->GetComponent<C_CameraController>(App->game->GetMainCamera());
+	controller.move_speed = e->speed;
 }

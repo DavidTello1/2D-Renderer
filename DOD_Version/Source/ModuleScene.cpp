@@ -38,7 +38,7 @@ bool ModuleScene::Init()
 	// Renderer
 	render_system = RegisterSystem<S_Renderer>();
 	{
-		Signature signature;
+		ComponentMask signature;
 		signature.set(GetComponentType<C_Transform>());
 		signature.set(GetComponentType<C_Renderer>());
 		signature.set(GetComponentType<C_Sprite>());
@@ -48,7 +48,7 @@ bool ModuleScene::Init()
 	// Camera Controller
 	camera_system = RegisterSystem<S_CameraController>();
 	{
-		Signature signature;
+		ComponentMask signature;
 		signature.set(GetComponentType<C_Transform>());
 		signature.set(GetComponentType<C_Camera>());
 		signature.set(GetComponentType<C_CameraController>());
@@ -59,7 +59,7 @@ bool ModuleScene::Init()
 	// Physics
 	physics_system = RegisterSystem<S_Physics>();
 	{
-		Signature signature;
+		ComponentMask signature;
 		signature.set(GetComponentType<C_Transform>());
 		signature.set(GetComponentType<C_RigidBody>());
 		signature.set(GetComponentType<C_CircleCollider>()); //***
@@ -113,14 +113,4 @@ bool ModuleScene::CleanUp()
 void ModuleScene::Draw()
 {
 	render_system->Render();
-}
-
-void ModuleScene::OnResize(int width, int height)
-{
-	camera_system->OnResize(width, height);
-}
-
-void ModuleScene::OnZoom(int new_zoom)
-{
-	camera_system->OnZoom(new_zoom);
 }

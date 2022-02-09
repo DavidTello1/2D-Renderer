@@ -1,8 +1,7 @@
 #include "ModuleInput.h"
 
 #include "Application.h"
-#include "ModuleWindow.h" //***REMOVE WHEN EVENT SYSTEM
-#include "ModuleScene.h" //***REMOVE WHEN EVENT SYSTEM
+#include "ModuleEvent.h" 
 
 #include "ImGui/imgui.h"
 #include "imGui/imgui_impl_sdl.h"
@@ -113,16 +112,14 @@ bool ModuleInput::PreUpdate(float dt)
 
 		case SDL_MOUSEWHEEL:
 			mouse_wheel = e.wheel.y;
-			App->scene->OnZoom(mouse_wheel); //*** EVENT SYSTEM
+			App->event_mgr->Publish(new EventCameraZoom(mouse_wheel));
 			break;
 
 		case SDL_WINDOWEVENT:
 			switch (e.window.event)
 			{
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				App->window->SetWidth(e.window.data1, false);
-				App->window->SetHeigth(e.window.data2, false);
-				App->scene->OnResize(e.window.data1, e.window.data2); //*** EVENT SYSTEM
+				App->event_mgr->Publish(new EventWindowResize(e.window.data1, e.window.data2));
 				break;
 			}
 			break;

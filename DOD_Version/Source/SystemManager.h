@@ -10,58 +10,49 @@ class SystemManager
 {
 public:
     template<typename T>
-    std::shared_ptr<T> RegisterSystem()
-    {
+    std::shared_ptr<T> RegisterSystem() {
         const char* typeName = typeid(T).name();
-
-        assert(mSystems.find(typeName) == mSystems.end() && "Registering system more than once.");
+        assert(systems.find(typeName) == systems.end() && "Registering system more than once.");
 
         auto system = std::make_shared<T>();
-        mSystems.insert({ typeName, system });
+        systems.insert({ typeName, system });
         return system;
     }
 
     template<typename T>
-    void SetSignature(Signature signature)
+    void SetMask(ComponentMask signature)
     {
         const char* typeName = typeid(T).name();
+        assert(systems.find(typeName) != systems.end() && "System used before registered.");
 
-        assert(mSystems.find(typeName) != mSystems.end() && "System used before registered.");
-
-        mSignatures.insert({ typeName, signature });
+        component_masks.insert({ typeName, signature });
     }
 
-    void EntityDestroyed(Entity entity)
+    void EntityDestroyed(EntityIdx entity)
     {
-        for (auto const& pair : mSystems)
+        for (auto const& pair : systems)
         {
             auto const& system = pair.second;
-
-
-            system->mEntities.erase(entity);
+            system->entities.erase(entity);
         }
     }
 
-    void EntitySignatureChanged(Entity entity, Signature entitySignature)
+    void EntitySignatureChanged(EntityIdx entity, ComponentMask entitySignature)
     {
-        for (auto const& pair : mSystems)
+        for (auto const& pair : systems)
         {
             auto const& type = pair.first;
             auto const& system = pair.second;
-            auto const& systemSignature = mSignatures[type];
+            auto const& systemSignature = component_masks[type];
 
             if ((entitySignature & systemSignature) == systemSignature)
-            {
-                system->mEntities.insert(entity);
-            }
+                system->entities.insert(entity);
             else
-            {
-                system->mEntities.erase(entity);
-            }
+                system->entities.erase(entity);
         }
     }
 
 private:
-    std::unordered_map<const char*, Signature> mSignatures{};
-    std::unordered_map<const char*, std::shared_ptr<SystemBase>> mSystems{};
+    std::unordered_map<const char*, std::shared_ptr<SystemBase>> systems;
+    std::unordered_map<const char*, ComponentMask> component_masks;
 };

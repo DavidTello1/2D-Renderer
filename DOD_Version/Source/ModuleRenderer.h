@@ -17,7 +17,7 @@ class ModuleRenderer : public Module
 {
 public:
 	ModuleRenderer(bool start_enabled = true);
-	~ModuleRenderer();
+	virtual ~ModuleRenderer();
 
 	bool Init() override;
 	bool PreUpdate(float dt) override;

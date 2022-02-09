@@ -133,11 +133,11 @@ void ModuleGUI::DrawInfo()
 		ImGui::NextColumn();
 
 		//ImGui::TextColored(YELLOW, "%d", App->game->GetEntities().size() - BASE_ENTITIES);
-		ImGui::TextColored(YELLOW, "%d", App->game->GetWorldWidth() / WORLD_SCALE);
+		ImGui::TextColored(YELLOW, "%d", world_width);
 		ImGui::SameLine(0, 0);
 		ImGui::Text("x");
 		ImGui::SameLine(0, 0);
-		ImGui::TextColored(YELLOW, "%d", App->game->GetWorldHeight() / WORLD_SCALE);
+		ImGui::TextColored(YELLOW, "%d", world_height);
 		ImGui::Columns(1);
 
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);

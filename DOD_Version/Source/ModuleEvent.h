@@ -1,47 +1,72 @@
 #pragma once
 #include "Module.h"
+#include "Event.h"
 
-#include <vector>
+#include <map>
+#include <list>
+#include <typeindex>
 
-#define MAX_EVENTS 1000
-#define EVENT_TYPES 7
-
-struct Event {
-	enum class EventType {
-		INVALID = 0,
-		ENTITY_DESTROYED,
-
-
-	};
-	Event(EventType type) : type(type) {}
-	Event() {}
-	EventType GetType() const { return type; };
+class HandlerFunctionBase
+{
+public:
+    void Exec(Event* e) { Call(e); } // Call the member function
 
 private:
-	EventType type = EventType::INVALID;
+    virtual void Call(Event* e) = 0; // Implemented by MemberFunctionHandler
 };
 
-typedef void (*Function)(const Event& e);
-typedef std::vector<Function> Listeners;
+template<class T, class EventType>
+class MemberFunctionHandler : public HandlerFunctionBase
+{
+public:
+    typedef void (T::* MemberFunction)(EventType*);
+    MemberFunctionHandler(T* instance, MemberFunction memberFunction) : instance{ instance }, memberFunction{ memberFunction } {};
 
+    void Call(Event* e) { 
+        (instance->*memberFunction)(static_cast<EventType*>(e)); // Cast event to the correct type and call member function
+    } 
+
+private:
+    T* instance; // Pointer to class instance
+    MemberFunction memberFunction; // Pointer to member function
+};
+
+//---------------------------
+typedef std::list<HandlerFunctionBase*> HandlerList;
 class ModuleEvent : public Module
 {
 public:
-	ModuleEvent(bool start_enabled = true);
-	virtual ~ModuleEvent();
+    ModuleEvent(bool start_enabled = true) : Module("ModuleEvent", start_enabled) {};
+    virtual ~ModuleEvent() {};
 
-	bool PreUpdate(float dt) override;
-	bool CleanUp() override;
 
-	void PushEvent(Event& new_event);
-	void AddListener(Event::EventType type, Function callback);
-	void RemoveListener(Event::EventType type, Function callback);
+    template<typename EventType>
+    void Publish(EventType* evnt) {
+        HandlerList* handlers = subscribers[typeid(EventType)];
+
+        if (handlers == nullptr)
+            return;
+
+        for (auto& handler : *handlers) 
+        {
+            if (handler != nullptr)
+                handler->Exec(evnt);
+        }
+    }
+
+    template<class T, class EventType>
+    void Subscribe(T* instance, void (T::* memberFunction)(EventType*)) {
+        HandlerList* handlers = subscribers[typeid(EventType)];
+
+        //First time initialization
+        if (handlers == nullptr) 
+        {
+            handlers = new HandlerList();
+            subscribers[typeid(EventType)] = handlers;
+        }
+        handlers->push_back(new MemberFunctionHandler<T, EventType>(instance, memberFunction));
+    }
 
 private:
-	Event events[MAX_EVENTS];
-	Listeners listeners[EVENT_TYPES];
-
-	uint head;
-	uint tail;
+    std::map<std::type_index, HandlerList*> subscribers;
 };
-

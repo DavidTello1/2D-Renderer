@@ -1,8 +1,8 @@
 #pragma once
 #include <set>
-typedef unsigned int Entity;
+typedef unsigned int EntityIdx;
 
 struct SystemBase
 {
-    std::set<Entity> mEntities;
+    std::set<EntityIdx> entities;
 };

@@ -5,7 +5,7 @@
 #include "ModuleGUI.h"
 #include "ModuleResources.h"
 #include "ModuleScene.h"
-#include "ModuleGame.h" //***for grid - should this be here?
+#include "ModuleGame.h"
 
 #include "Imgui/imgui.h"
 #include "Glew/include/glew.h"
@@ -25,7 +25,8 @@ ModuleRenderer::ModuleRenderer(bool start_enabled) : Module("ModuleRenderer", st
 }
 
 ModuleRenderer::~ModuleRenderer()
-{}
+{
+}
 
 bool ModuleRenderer::Init()
 {
@@ -86,7 +87,7 @@ bool ModuleRenderer::PostUpdate(float dt)
 
 	//OPTICK_PUSH("Draw Grid");
 	//if (App->scene_base->is_draw_grid)
-	//	DrawGrid();
+		DrawGrid();
 	//OPTICK_POP();
 
 	// --- Render ImGui

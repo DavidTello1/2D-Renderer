@@ -16,7 +16,7 @@ class ModuleInput : public Module
 public:
 
 	ModuleInput(bool start_enabled = true);
-	~ModuleInput();
+	virtual ~ModuleInput();
 
 	bool Init() override;
 	bool PreUpdate(float dt) override;
