@@ -2,8 +2,8 @@
 #include "Module.h"
 
 #include <vector>
-#include "Glew/include/glew.h"
-#include "glm/include/glm/glm.hpp"
+#include "Glew/include/glew.h" //***should this be here or in cpp?
+#include "glm/include/glm/glm.hpp" //***should this be here or in cpp?
 
 // --- Shader ---
 struct VertexShaderAttribute
@@ -69,6 +69,4 @@ public:
 
 	GLuint default_shader = 0;
 	GLuint default_tex = 0;
-
-	GLuint grid_shader = 0;
 };

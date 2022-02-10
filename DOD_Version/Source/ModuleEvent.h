@@ -20,7 +20,7 @@ class MemberFunctionHandler : public HandlerFunctionBase
 {
 public:
     typedef void (T::* MemberFunction)(EventType*);
-    MemberFunctionHandler(T* instance, MemberFunction memberFunction) : instance{ instance }, memberFunction{ memberFunction } {};
+    MemberFunctionHandler(T* inst, MemberFunction function) : instance(inst), memberFunction(function) {};
 
     void Call(Event* e) { 
         (instance->*memberFunction)(static_cast<EventType*>(e)); // Cast event to the correct type and call member function
@@ -37,11 +37,29 @@ class ModuleEvent : public Module
 {
 public:
     ModuleEvent(bool start_enabled = true) : Module("ModuleEvent", start_enabled) {};
-    virtual ~ModuleEvent() {};
+    ~ModuleEvent() {};
+
+    bool CleanUp() override {
+        for (auto it = subscribers.rbegin(); it != subscribers.rend(); ++it)
+        {
+            HandlerList* list = (*it).second;
+            for (auto it2 = list->rbegin(); it2 != list->rend(); ++it2)
+            {
+                RELEASE(*it2);
+            }
+            list->clear();
+
+            RELEASE((*it).second);
+        }
+        subscribers.clear();
+
+        return true;
+    }
 
 
     template<typename EventType>
-    void Publish(EventType* evnt) {
+    void Publish(EventType* evnt) 
+    {
         HandlerList* handlers = subscribers[typeid(EventType)];
 
         if (handlers == nullptr)
@@ -52,18 +70,21 @@ public:
             if (handler != nullptr)
                 handler->Exec(evnt);
         }
+
+        delete evnt;
     }
 
     template<class T, class EventType>
-    void Subscribe(T* instance, void (T::* memberFunction)(EventType*)) {
+    void Subscribe(T* instance, void (T::* memberFunction)(EventType*)) 
+    {
         HandlerList* handlers = subscribers[typeid(EventType)];
 
-        //First time initialization
-        if (handlers == nullptr) 
+        if (handlers == nullptr)  //First time initialization
         {
             handlers = new HandlerList();
             subscribers[typeid(EventType)] = handlers;
         }
+
         handlers->push_back(new MemberFunctionHandler<T, EventType>(instance, memberFunction));
     }
 

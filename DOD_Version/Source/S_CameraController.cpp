@@ -15,7 +15,7 @@ void S_CameraController::Init()
 {
 	App->event_mgr->Subscribe(this, &S_CameraController::OnResize);
 	App->event_mgr->Subscribe(this, &S_CameraController::OnZoom);
-
+	App->event_mgr->Subscribe(this, &S_CameraController::OnSpeedChange);
 }
 
 void S_CameraController::Update(float dt)

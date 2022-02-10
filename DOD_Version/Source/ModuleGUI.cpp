@@ -3,7 +3,8 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
-#include "ModuleGame.h"
+#include "ModuleEvent.h"
+#include "ModuleGame.h" //***
 
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
@@ -42,10 +43,10 @@ bool ModuleGUI::Init()
 
 bool ModuleGUI::Start()
 {
-	world_width = App->game->GetWorldWidth() / WORLD_SCALE;
-	world_height = App->game->GetWorldHeight() / WORLD_SCALE;
+	world_width = DEFAULT_WORLD_WIDTH / WORLD_SCALE;
+	world_height = DEFAULT_WORLD_HEIGHT / WORLD_SCALE;
 
-	//move_speed = (int)App->scene_base->GetMainCamera()->GetMoveSpeed();
+	move_speed = DEFAULT_CAMERA_MOVE_SPEED;
 
 	return true;
 }
@@ -174,8 +175,8 @@ void ModuleGUI::DrawInfo()
 			ImGui::Text("World Width");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("World Height");
-			//ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
-			//ImGui::Text("Move Speed");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
+			ImGui::Text("Move Speed");
 
 			ImGui::NextColumn();
 
@@ -188,8 +189,8 @@ void ModuleGUI::DrawInfo()
 			if (ImGui::DragInt("##World Height", &world_height, 1.0f, 1, 1000))
 				App->game->SetWorldHeight(world_height * WORLD_SCALE);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
-			//if (ImGui::DragInt("##Move Speed", &move_speed, 1.0f, 1, 10000))
-			//	App->scene->GetMainCamera()->SetMoveSpeed((float)move_speed);
+			if (ImGui::DragInt("##Move Speed", &move_speed, 1.0f, 1, 10000))
+				App->event_mgr->Publish(new EventCameraSpeedChanged((float)move_speed));
 			ImGui::PopStyleColor();
 
 			ImGui::Columns(1);

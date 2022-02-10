@@ -450,6 +450,9 @@
     <ClInclude Include="Event.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Sources\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Imgui\imgui.cpp">
@@ -538,6 +541,9 @@
     </ClCompile>
     <ClCompile Include="S_CameraController.cpp">
       <Filter>Sources\ECS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Sources\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

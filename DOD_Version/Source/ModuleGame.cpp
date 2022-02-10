@@ -5,7 +5,6 @@
 #include "ModuleResources.h"
 #include "ModuleScene.h"
 #include "ModuleEvent.h"
-#include "ModuleRenderer.h" //*** REMOVE WHEN EVENT SYSTEM (GRID)
 
 #include "Components.h"
 
@@ -131,9 +130,6 @@ void ModuleGame::UpdateWorldSize()
 
 	// Send Event to Update Grid
 	App->event_mgr->Publish(new EventWorldSizeUpdate(world_width, world_height));
-
-	//--- Update Grid
-	App->renderer->UpdateGrid();
 }
 
 void ModuleGame::AddAsteroids(int num)
