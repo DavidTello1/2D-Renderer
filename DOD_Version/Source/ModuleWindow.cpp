@@ -1,6 +1,7 @@
 #include "ModuleWindow.h"
 
 #include "Application.h"
+#include "ModuleEvent.h"
 
 #include "mmgr/mmgr.h"
 
@@ -52,6 +53,9 @@ bool ModuleWindow::Init()
 			screen_surface = SDL_GetWindowSurface(window);
 		}
 	}
+
+	App->event_mgr->Subscribe(this, &ModuleWindow::OnResize);
+
 	return ret;
 }
 
@@ -123,4 +127,10 @@ void ModuleWindow::GetMaxMinSize(uint& min_width, uint& min_height, uint& max_wi
 		max_width = dm.w;
 		max_height = dm.h;
 	}
+}
+
+void ModuleWindow::OnResize(EventWindowResize* e)
+{
+	screen_width = e->width;
+	screen_height = e->height;
 }

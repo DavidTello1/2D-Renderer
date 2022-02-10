@@ -60,6 +60,8 @@ bool ModuleRenderer::Init()
 	grid = new Grid();
 	grid->Create(2500, 2500, 100); // 2500 = DEFAULT_WORLD_SIZE, 100 = grid_spacing
 
+	App->event_mgr->Subscribe(this, &ModuleRenderer::OnResize);
+
 	return ret;
 }
 

@@ -38,6 +38,8 @@ bool ModuleGUI::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->GetContext());
 	ImGui_ImplOpenGL3_Init();
 
+	App->event_mgr->Subscribe(this, &ModuleGUI::OnResize);
+
 	return true;
 }
 

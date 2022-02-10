@@ -5,6 +5,7 @@
 
 class Grid;
 struct Texture;
+struct EventWindowResize;
 typedef void* SDL_GLContext;
 
 struct RenderStats
@@ -34,6 +35,9 @@ public:
 		const glm::vec4& color = glm::vec4(1.0f), const float& rotation = 0.0f, const glm::vec2& center = glm::vec2(0.0f)); //*** CLEAN
 
 	void DrawCircle(const uint shader, const glm::vec2& center, const float& radius, const glm::vec4& color);
+
+	// --- EVENTS ---
+	void OnResize(EventWindowResize* e) { UpdateViewportSize(); }
 
 private:
 	void CreateQuad();

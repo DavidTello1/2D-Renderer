@@ -7,6 +7,7 @@
 
 struct SDL_Window;
 struct SDL_Surface;
+struct EventWindowResize;
 
 class ModuleWindow : public Module
 {
@@ -27,6 +28,9 @@ public:
 
 	uint GetRefreshRate() const; //*** NOT USED (MAYBE DELETE)
 	void GetMaxMinSize(uint& min_width, uint& min_height, uint& max_width, uint& max_height) const; //*** NOT USED (MAYBE DELETE)
+
+	// --- EVENTS ---
+	void OnResize(EventWindowResize* e);
 
 private:
 	SDL_Window* window = nullptr; //The window we'll be rendering to

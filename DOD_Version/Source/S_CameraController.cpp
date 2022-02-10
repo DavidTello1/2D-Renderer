@@ -83,9 +83,6 @@ void S_CameraController::Update(float dt)
 
 void S_CameraController::OnResize(EventWindowResize* e)
 {
-	//App->gui->is_update_pos = true;
-	//App->renderer->UpdateViewportSize();
-
 	C_Camera& camera = App->scene->GetComponent<C_Camera>(App->game->GetMainCamera());
 	C_CameraController controller = App->scene->GetComponent<C_CameraController>(App->game->GetMainCamera());
 

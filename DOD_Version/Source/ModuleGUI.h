@@ -8,6 +8,8 @@
 #define PANEL_HEIGHT 266
 #define WORLD_SCALE 50
 
+struct EventWindowResize;
+
 class ModuleGUI : public Module
 {
 public:
@@ -23,6 +25,9 @@ public:
 	void DrawInfo();
 
 	void LogFPS(float fps, float ms);
+
+	//--- EVENTS ---
+	void OnResize(EventWindowResize* e) { is_update_pos = true; }
 
 public:
 	bool is_update_pos = false;

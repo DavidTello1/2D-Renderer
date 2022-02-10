@@ -1,7 +1,7 @@
 #pragma once
 #include "SystemBase.h"
-#include "Event.h"
 
+// ---------------------------
 class S_Renderer : public SystemBase
 {
 public:
@@ -9,12 +9,18 @@ public:
     void Render();
 };
 
+// ---------------------------
 class S_Physics : public SystemBase
 {
 public:
     void Init();
     void Update(float dt);
 };
+
+// ---------------------------
+struct EventWindowResize;
+struct EventCameraZoom;
+struct EventCameraSpeedChanged;
 
 class S_CameraController : public SystemBase
 {
@@ -27,3 +33,5 @@ public:
     void OnZoom(EventCameraZoom* e);
     void OnSpeedChange(EventCameraSpeedChanged* e);
 };
+
+// ---------------------------
