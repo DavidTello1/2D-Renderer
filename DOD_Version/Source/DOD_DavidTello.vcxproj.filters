@@ -453,6 +453,7 @@
     <ClInclude Include="Grid.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleDebug.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Imgui\imgui.cpp">
@@ -545,6 +546,7 @@
     <ClCompile Include="Grid.cpp">
       <Filter>Sources\Tools</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleDebug.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SDL\include\SDL_config.h.cmake">

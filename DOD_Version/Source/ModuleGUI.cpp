@@ -4,7 +4,9 @@
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
 #include "ModuleEvent.h"
-#include "ModuleGame.h" //***
+#include "ModuleScene.h" //*** to have GetEntityCount()
+#include "ModuleDebug.h" //*** for checkboxes grid & colliders
+#include "ModuleGame.h" //*** for world_size & defines (BASE_ENTITIES + DEFAULT_...)
 
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
@@ -49,6 +51,9 @@ bool ModuleGUI::Start()
 	world_height = DEFAULT_WORLD_HEIGHT / WORLD_SCALE;
 
 	move_speed = DEFAULT_CAMERA_MOVE_SPEED;
+
+	is_draw_grid = false;
+	is_draw_colliders = false;
 
 	return true;
 }
@@ -135,7 +140,7 @@ void ModuleGUI::DrawInfo()
 		ImGui::Text("World Size");
 		ImGui::NextColumn();
 
-		//ImGui::TextColored(YELLOW, "%d", App->game->GetEntities().size() - BASE_ENTITIES);
+		ImGui::TextColored(YELLOW, "%d", App->scene->GetEntityCount() - BASE_ENTITIES);
 		ImGui::TextColored(YELLOW, "%d", world_width);
 		ImGui::SameLine(0, 0);
 		ImGui::Text("x");
@@ -169,27 +174,29 @@ void ModuleGUI::DrawInfo()
 		{
 			ImGui::Columns(2, "columns3", false);
 
-			//ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			//ImGui::Text("Colliders");
-			//ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
-			//ImGui::Text("Grid");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::Text("Colliders");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::Text("Grid");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
 			ImGui::Text("World Width");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("World Height");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
-			ImGui::Text("Move Speed");
+			ImGui::Text("Camera Speed");
 
 			ImGui::NextColumn();
 
-			//ImGui::Checkbox("##Colliders", &App->scene_base->is_draw_colliders);
-			//ImGui::Checkbox("##Grid", &App->scene_base->is_draw_grid);
+			if (ImGui::Checkbox("##Colliders", &is_draw_colliders))
+				App->debug->SetDrawColliders(is_draw_colliders); //***
+			if (ImGui::Checkbox("##Grid", &is_draw_grid))
+				App->debug->SetDrawGrid(is_draw_grid); //***
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 			if (ImGui::DragInt("##World Width", &world_width, 1.0f, 1, 1000))
-				App->game->SetWorldWidth(world_width * WORLD_SCALE);
+				App->game->SetWorldWidth(world_width * WORLD_SCALE); //***
 			if (ImGui::DragInt("##World Height", &world_height, 1.0f, 1, 1000))
-				App->game->SetWorldHeight(world_height * WORLD_SCALE);
+				App->game->SetWorldHeight(world_height * WORLD_SCALE); //***
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 			if (ImGui::DragInt("##Move Speed", &move_speed, 1.0f, 1, 10000))
 				App->event_mgr->Publish(new EventCameraSpeedChanged((float)move_speed));
@@ -216,18 +223,19 @@ void ModuleGUI::DrawInfo()
 		float width = (PANEL_WIDTH - 16.0f) / 2;
 		if (ImGui::Button("Add", ImVec2(width, 0)))
 		{
-			App->game->AddAsteroids(num_asteroids);
+			App->event_mgr->Publish(new EventAsteroidAdded(num_asteroids));
 			num_asteroids = 1;
 		}
 		ImGui::SameLine(0, 1);
 
-		//if (ImGui::Button("Delete", ImVec2(width, 0)) && App->game->GetEntities().size() > BASE_ENTITIES)
-		//{
-		//	if (num_asteroids >= (int)App->game->GetEntities().size() - BASE_ENTITIES)
-		//		num_asteroids = App->game->GetEntities().size() - BASE_ENTITIES;
-		//	App->game->DeleteAsteroids(num_asteroids);
-		//	num_asteroids = 1;
-		//}
+		if (ImGui::Button("Delete", ImVec2(width, 0)) && App->scene->GetEntityCount() > BASE_ENTITIES)
+		{
+			if (num_asteroids >= (int)App->scene->GetEntityCount() - BASE_ENTITIES)
+				num_asteroids = App->scene->GetEntityCount() - BASE_ENTITIES;
+
+			App->event_mgr->Publish(new EventAsteroidRemoved(num_asteroids));
+			num_asteroids = 1;
+		}
 	}
 	ImGui::End();
 }

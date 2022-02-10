@@ -6,9 +6,8 @@
 #include "ModuleResources.h" //*** for circle texture - !b here
 #include "ModuleGUI.h" // draw gui (***?)
 #include "ModuleScene.h" // draw scene (***?)
+#include "ModuleDebug.h" // draw debug (***?)
 #include "ModuleGame.h" //***should not be here
-
-#include "Grid.h"
 
 #include "Imgui/imgui.h"
 #include "Glew/include/glew.h"
@@ -56,10 +55,6 @@ bool ModuleRenderer::Init()
 	// Create Basic Quad
 	CreateQuad();
 
-	// Create Grid
-	grid = new Grid();
-	grid->Create(2500, 2500, 100); // 2500 = DEFAULT_WORLD_SIZE, 100 = grid_spacing
-
 	App->event_mgr->Subscribe(this, &ModuleRenderer::OnResize);
 
 	return ret;
@@ -87,16 +82,16 @@ bool ModuleRenderer::PostUpdate(float dt)
 	App->scene->Draw();
 	OPTICK_POP();
 
-	//// --- Debug Draw
-	//OPTICK_PUSH("Debug Draw");
-	//if (App->scene_base->is_draw_colliders)
-	//	App->physics->DrawColliders();
-	//OPTICK_POP();
+	// --- Debug Draw
+	OPTICK_PUSH("Debug Draw");
+	if (App->debug->IsDrawColliders())
+		App->debug->DrawColliders();
+	OPTICK_POP();
 
 	OPTICK_PUSH("Draw Grid");
-	//if (App->scene_base->is_draw_grid)
+	if (App->debug->IsDrawGrid())
 	{
-		grid->Draw();
+		App->debug->DrawGrid();
 		stats.draw_calls++;
 	}
 	OPTICK_POP();
@@ -119,13 +114,11 @@ bool ModuleRenderer::CleanUp()
 	glDeleteVertexArrays(1, &quadVAO);
 	glDeleteBuffers(1, &quadVBO);
 
-	RELEASE(grid);
-
 	return true;
 }
 
 //--------------------------------
-void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
+void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, const uint32_t texture, 
 	const glm::vec4& color, const float& rotation, const glm::vec2& center)
 {
 	glUseProgram(shader);
@@ -157,7 +150,7 @@ void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, cons
 	stats.quad_count++;
 }
 
-void ModuleRenderer::DrawCircle(const uint shader, const glm::vec2& position, const float& diameter, const glm::vec4& color)
+void ModuleRenderer::DrawCircle(const uint shader, const uint32_t texture, const glm::vec2& position, const float& diameter, const glm::vec4& color)
 {
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
@@ -168,7 +161,7 @@ void ModuleRenderer::DrawCircle(const uint shader, const glm::vec2& position, co
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, App->resources->LoadTexture("Assets/circle_collider.png")->index);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(glGetUniformLocation(shader, "uTexture"), 0);
 
 	glUniform4f(glGetUniformLocation(shader, "uColor"), color.r, color.g, color.b, color.a);

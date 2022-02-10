@@ -4,7 +4,7 @@
 #include <vector>
 
 #define FPS_LOG_SIZE 100
-#define PANEL_WIDTH 186
+#define PANEL_WIDTH 190
 #define PANEL_HEIGHT 266
 #define WORLD_SCALE 50
 
@@ -29,17 +29,17 @@ public:
 	//--- EVENTS ---
 	void OnResize(EventWindowResize* e) { is_update_pos = true; }
 
-public:
-	bool is_update_pos = false;
 
 private:
-	int num_asteroids = 0;
-	int seed = 0;
+	bool is_update_pos = false;
+	bool is_draw_grid = false;
+	bool is_draw_colliders = false;
 
 	int move_speed = 0;
-
 	int world_width = 0;
 	int world_height = 0;
+
+	int num_asteroids = 0;
 
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;

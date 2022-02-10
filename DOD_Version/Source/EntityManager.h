@@ -49,6 +49,8 @@ public:
         return component_masks[entity];
     }
 
+    int GetCountEntities() { return count_entities; }
+
 private:
     std::array<ComponentMask, MAX_ENTITIES> component_masks;
 

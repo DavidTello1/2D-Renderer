@@ -27,6 +27,7 @@ public:
 	pcg32_random_t& GetRNG() { return rng; }
 
 	// --- ENTITY COMPONENT SYSTEM ---
+
     // Entities
     EntityIdx CreateEntity() {
         return mEntityManager->CreateEntity();
@@ -36,6 +37,10 @@ public:
         mEntityManager->DestroyEntity(entity);
         mComponentManager->EntityDestroyed(entity);
         mSystemManager->EntityDestroyed(entity);
+    }
+
+    int GetEntityCount() {
+        return mEntityManager->GetCountEntities();
     }
 
 

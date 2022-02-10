@@ -7,6 +7,7 @@
 #include "ModuleGUI.h"
 #include "ModuleResources.h"
 #include "ModuleScene.h"
+#include "ModuleDebug.h"
 #include "ModuleGame.h"
 #include "ModulePhysics.h"
 #include "ModuleRenderer.h"
@@ -30,6 +31,7 @@ Application::Application()
 	modules.push_back(gui = new ModuleGUI());
 	modules.push_back(resources = new ModuleResources());
 	modules.push_back(scene = new ModuleScene());
+	modules.push_back(debug = new ModuleDebug());
 	modules.push_back(game = new ModuleGame());
 	modules.push_back(physics = new ModulePhysics());
 	modules.push_back(renderer = new ModuleRenderer());

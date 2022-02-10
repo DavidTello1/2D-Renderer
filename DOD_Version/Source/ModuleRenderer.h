@@ -3,7 +3,6 @@
 
 #include "glm/include/glm/glm.hpp"
 
-class Grid;
 struct Texture;
 struct EventWindowResize;
 typedef void* SDL_GLContext;
@@ -31,10 +30,10 @@ public:
 	const SDL_GLContext& GetContext() const { return context; }
 	const RenderStats& GetStats() const { return stats; }
 
-	void DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
+	void DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, const uint32_t texture, 
 		const glm::vec4& color = glm::vec4(1.0f), const float& rotation = 0.0f, const glm::vec2& center = glm::vec2(0.0f)); //*** CLEAN
 
-	void DrawCircle(const uint shader, const glm::vec2& center, const float& radius, const glm::vec4& color);
+	void DrawCircle(const uint shader, const uint32_t texture, const glm::vec2& center, const float& radius, const glm::vec4& color);
 
 	// --- EVENTS ---
 	void OnResize(EventWindowResize* e) { UpdateViewportSize(); }
@@ -50,7 +49,4 @@ private:
 	uint quadVAO = 0;
 	uint quadVBO = 0;
 	uint quadIBO = 0;
-
-	// Grid
-	Grid* grid = nullptr;
 };
