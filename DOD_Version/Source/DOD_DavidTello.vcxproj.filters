@@ -450,10 +450,9 @@
     <ClInclude Include="Event.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Sources\Tools</Filter>
+    <ClInclude Include="ModuleDebug.h">
+      <Filter>Sources\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleDebug.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Imgui\imgui.cpp">
@@ -543,10 +542,9 @@
     <ClCompile Include="S_CameraController.cpp">
       <Filter>Sources\ECS\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Sources\Tools</Filter>
+    <ClCompile Include="ModuleDebug.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleDebug.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SDL\include\SDL_config.h.cmake">

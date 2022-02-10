@@ -1,8 +1,8 @@
 #include "ModuleResources.h"
 
+#include "stb/stb_image.h"
 #include <windows.h>
 #include <fstream>
-#include "stb/stb_image.h"
 
 #include "mmgr/mmgr.h"
 

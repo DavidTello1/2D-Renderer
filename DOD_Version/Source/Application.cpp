@@ -12,8 +12,6 @@
 #include "ModulePhysics.h"
 #include "ModuleRenderer.h"
 
-#include <windows.h>
-
 #include "mmgr/mmgr.h"
 
 Application::Application()

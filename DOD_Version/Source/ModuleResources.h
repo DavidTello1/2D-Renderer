@@ -1,9 +1,9 @@
 #pragma once
 #include "Module.h"
 
-#include <vector>
 #include "Glew/include/glew.h" //***should this be here or in cpp?
 #include "glm/include/glm/glm.hpp" //***should this be here or in cpp?
+#include <vector>
 
 // --- Shader ---
 struct VertexShaderAttribute

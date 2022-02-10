@@ -3,7 +3,6 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleEvent.h"
-#include "ModuleResources.h" //*** for circle texture - !b here
 #include "ModuleGUI.h" // draw gui (***?)
 #include "ModuleScene.h" // draw scene (***?)
 #include "ModuleDebug.h" // draw debug (***?)

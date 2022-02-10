@@ -1,8 +1,5 @@
 #include "ModuleScene.h"
 
-#include "Application.h"
-#include "ModuleWindow.h"
-
 #include "Components.h"
 #include "Systems.h"
 

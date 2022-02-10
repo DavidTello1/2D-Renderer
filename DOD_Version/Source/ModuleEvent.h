@@ -1,5 +1,6 @@
 #pragma once
 #include "Module.h"
+
 #include "Event.h"
 
 #include <map>
@@ -43,12 +44,14 @@ public:
         for (auto it = subscribers.rbegin(); it != subscribers.rend(); ++it)
         {
             HandlerList* list = (*it).second;
-            for (auto it2 = list->rbegin(); it2 != list->rend(); ++it2)
+            if (list != nullptr)
             {
-                RELEASE(*it2);
+                for (auto it2 = list->rbegin(); it2 != list->rend(); ++it2)
+                {
+                    RELEASE(*it2);
+                }
+                list->clear();
             }
-            list->clear();
-
             RELEASE((*it).second);
         }
         subscribers.clear();
@@ -63,7 +66,10 @@ public:
         HandlerList* handlers = subscribers[typeid(EventType)];
 
         if (handlers == nullptr)
+        {
+            delete evnt;
             return;
+        }
 
         for (auto& handler : *handlers) 
         {
