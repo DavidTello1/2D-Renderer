@@ -155,7 +155,6 @@
     <ClInclude Include="mmgr\mmgr.h" />
     <ClInclude Include="mmgr\nommgr.h" />
     <ClInclude Include="Module.h" />
-    <ClInclude Include="ModuleDebug.h" />
     <ClInclude Include="ModuleEvent.h" />
     <ClInclude Include="ModuleGUI.h" />
     <ClInclude Include="ModuleInput.h" />
@@ -264,9 +263,12 @@
     <ClInclude Include="SDL\include\SDL_vulkan.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="stb\stb_image_write.h" />
-    <ClInclude Include="SystemBase.h" />
+    <ClInclude Include="System.h" />
     <ClInclude Include="SystemManager.h" />
-    <ClInclude Include="Systems.h" />
+    <ClInclude Include="S_CameraController.h" />
+    <ClInclude Include="S_Debug.h" />
+    <ClInclude Include="S_Physics.h" />
+    <ClInclude Include="S_Renderer.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -279,7 +281,6 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ModuleDebug.cpp" />
     <ClCompile Include="ModuleGUI.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModulePhysics.cpp" />
@@ -298,6 +299,7 @@
     <ClCompile Include="mmgr\mmgr.cpp" />
     <ClCompile Include="stb\stb.cpp" />
     <ClCompile Include="S_CameraController.cpp" />
+    <ClCompile Include="S_Debug.cpp" />
     <ClCompile Include="S_Physics.cpp" />
     <ClCompile Include="S_Renderer.cpp" />
   </ItemGroup>

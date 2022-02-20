@@ -4,53 +4,53 @@
 #include "glm/include/glm/glm.hpp"
 
 struct C_Transform {
-	glm::vec2 position;
-	glm::vec2 scale;
-	float rotation;
+	glm::vec2 position = glm::vec2(0.0f);
+	glm::vec2 scale = glm::vec2(0.0f);
+	float rotation = 0.0f;
 
-	glm::vec2 size;
+	glm::vec2 size = glm::vec2(0.0f);
 };
 
 struct C_Sprite {
-	uint shader;
-	uint texture;
+	uint shader = 0;
+	uint texture = 0;
 };
 
 struct C_Renderer {
-	bool render;
+	bool render = false;
 };
 
 struct C_Camera {
-	glm::mat4 projection;
+	glm::mat4 projection = glm::mat4(1.0f);
 };
 
 struct C_CameraController {
-	float zoom;
+	float zoom = 0.0f;
 
-	float move_speed;
-	float zoom_speed;
+	float move_speed = 0.0f;
+	float zoom_speed = 0.0f;
 };
 
 struct C_RigidBody {
-	glm::vec2 velocity;
-	float mass;
-	float rotation_speed;
+
+	glm::vec2 velocity = glm::vec2(0.0f);
+	float mass = 0.0f;
+	float rotation_speed = 0.0f;
 };
 
-struct C_RectCollider {
-	bool is_colliding;
-	bool is_static;
+struct C_Collider {
+	enum class ColliderType {
+		UNKNOWN = 0,
+		RECT,
+		CIRCLE,
+	};
 
-	glm::vec2 position;
-	glm::vec2 size;
-	glm::vec2 offset;
-};
+	bool is_static = false;
+	bool is_colliding = false;
 
-struct C_CircleCollider {
-	bool is_colliding;
-	bool is_static;
-
-	glm::vec2 center;
-	float radius;
-	glm::vec2 offset;
+	ColliderType type = ColliderType::UNKNOWN;
+	glm::vec2 position = glm::vec2(0.0f);
+	glm::vec2 size = glm::vec2(0.0f);
+	glm::vec2 center = glm::vec2(0.0f);
+	float radius = 0.0f;
 };

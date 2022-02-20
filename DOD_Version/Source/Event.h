@@ -45,6 +45,8 @@ struct EventCameraSpeedChanged : public Event
     float speed;
 };
 
+
+// --- GUI EVENTS ---
 struct EventAsteroidAdded : public Event
 {
     EventAsteroidAdded(int n) : num(n) {};

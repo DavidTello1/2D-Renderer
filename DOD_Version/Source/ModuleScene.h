@@ -9,6 +9,7 @@
 #include <memory>
 
 class S_Renderer;
+class S_Debug;
 class S_CameraController;
 class S_Physics;
 
@@ -23,11 +24,13 @@ public:
 	bool Update(float dt) override;
 	bool CleanUp() override;
 
-	void Draw();
 	pcg32_random_t& GetRNG() { return rng; }
+	
+    void Draw();
+    void DrawDebug(bool grid, bool colliders);
+
 
 	// --- ENTITY COMPONENT SYSTEM ---
-
     // Entities
     EntityIdx CreateEntity() {
         return mEntityManager->CreateEntity();
@@ -104,6 +107,7 @@ private:
 
 	// Systems
 	std::shared_ptr<S_Renderer> render_system;
+    std::shared_ptr<S_Debug> debug_system;
 	std::shared_ptr<S_CameraController> camera_system;
 	std::shared_ptr<S_Physics> physics_system;
 };

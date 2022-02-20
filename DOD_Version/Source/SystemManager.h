@@ -1,6 +1,6 @@
 #pragma once
 #include "EntityManager.h"
-#include "SystemBase.h"
+#include "System.h"
 
 #include <unordered_map>
 #include <memory>
@@ -53,6 +53,6 @@ public:
     }
 
 private:
-    std::unordered_map<const char*, std::shared_ptr<SystemBase>> systems;
+    std::unordered_map<const char*, std::shared_ptr<System>> systems;
     std::unordered_map<const char*, ComponentMask> component_masks;
 };

@@ -3,9 +3,8 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleEvent.h"
-#include "ModuleGUI.h" // draw gui (***?)
-#include "ModuleScene.h" // draw scene (***?)
-#include "ModuleDebug.h" // draw debug (***?)
+#include "ModuleGUI.h" // draw gui & debug (***?)
+#include "ModuleScene.h" // draw scene & debug (***?)
 #include "ModuleGame.h" //***should not be here
 
 #include "Imgui/imgui.h"
@@ -83,16 +82,10 @@ bool ModuleRenderer::PostUpdate(float dt)
 
 	// --- Debug Draw
 	OPTICK_PUSH("Debug Draw");
-	if (App->debug->IsDrawColliders())
-		App->debug->DrawColliders();
-	OPTICK_POP();
+	App->scene->DrawDebug(App->gui->IsDrawGrid(), App->gui->IsDrawColliders());
 
-	OPTICK_PUSH("Draw Grid");
-	if (App->debug->IsDrawGrid())
-	{
-		App->debug->DrawGrid();
+	if (App->gui->IsDrawGrid())
 		stats.draw_calls++;
-	}
 	OPTICK_POP();
 
 	// --- Render ImGui

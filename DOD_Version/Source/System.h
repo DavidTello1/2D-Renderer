@@ -4,7 +4,7 @@
 
 typedef unsigned int EntityIdx;
 
-struct SystemBase
+struct System
 {
     std::set<EntityIdx> entities;
 };

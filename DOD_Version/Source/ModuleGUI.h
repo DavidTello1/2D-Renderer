@@ -26,6 +26,9 @@ public:
 
 	void LogFPS(float fps, float ms);
 
+	bool IsDrawGrid() { return is_draw_grid; }
+	bool IsDrawColliders() { return is_draw_colliders; }
+
 	//--- EVENTS ---
 	void OnResize(EventWindowResize* e) { is_update_pos = true; }
 

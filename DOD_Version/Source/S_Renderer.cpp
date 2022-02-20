@@ -1,10 +1,12 @@
-#include "Systems.h"
+#include "S_Renderer.h"
 
 #include "Application.h"
 #include "ModuleScene.h"
 #include "ModuleRenderer.h"
 
 #include "Components.h"
+
+#include "mmgr/mmgr.h"
 
 void S_Renderer::Init()
 {

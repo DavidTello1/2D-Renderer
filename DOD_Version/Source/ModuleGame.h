@@ -18,6 +18,10 @@
 #define MAX_ASTEROID_SIZE 100
 #define MIN_ASTEROID_SIZE 50
 
+struct EventAsteroidAdded;
+struct EventAsteroidRemoved;
+struct EventWorldSizeUpdate;
+
 typedef unsigned int Entity;
 
 class ModuleGame : public Module
@@ -28,6 +32,7 @@ public:
 
 	bool Init() override;
 	bool Start() override;
+	bool Update(float dt) override;
 
 	// Main Camera
 	const Entity& GetMainCamera() const { return main_camera; }
@@ -46,6 +51,12 @@ public:
 	// Asteroids
 	void AddAsteroids(int num);
 	void DeleteAsteroids(int num);
+
+private:
+	// --- EVENTS ---
+	void OnWorldSizeUpdate(EventWorldSizeUpdate* e);
+	void OnAddAsteroid(EventAsteroidAdded* e);
+	void OnRemoveAsteroid(EventAsteroidRemoved* e);
 
 private:
 	Entity main_camera = 0;

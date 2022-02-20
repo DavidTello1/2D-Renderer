@@ -22,6 +22,11 @@ ModuleGame::~ModuleGame()
 
 bool ModuleGame::Init()
 {
+	// Events
+	App->event_mgr->Subscribe(this, &ModuleGame::OnWorldSizeUpdate);
+	App->event_mgr->Subscribe(this, &ModuleGame::OnAddAsteroid);
+	App->event_mgr->Subscribe(this, &ModuleGame::OnRemoveAsteroid);
+
 	// Create Main Camera
 	C_Transform transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(0.0f) };
 	C_Camera camera = { glm::ortho(0.0f, (float)App->window->GetWidth(), (float)App->window->GetHeight(), 0.0f) };
@@ -50,7 +55,7 @@ bool ModuleGame::Start()
 
 	// Create Boundaries
 	transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(0.0f) };
-	C_RectCollider collider = { false, true, glm::vec2(0.0f), glm::vec2(0.0f), glm::vec2(0.0f) };
+	C_Collider collider = { true, false, C_Collider::ColliderType::RECT, glm::vec2(0.0f), glm::vec2(0.0f), glm::vec2(0.0f), 0.0f };
 
 	b_top = App->scene->CreateEntity();
 	App->scene->AddComponent(b_top, transform);
@@ -70,6 +75,26 @@ bool ModuleGame::Start()
 
 	// Update World Size
 	UpdateWorldSize();
+
+	return true;
+}
+
+bool ModuleGame::Update(float dt)
+{
+	//// Check if asteroid is out of bounds
+	//for (size_t i = 0; i < entities.size(); ++i)
+	//{
+	//	if (entities[i]->GetComponent(Component::Type::ASTEROID) != nullptr)
+	//	{
+	//		ComponentTransform* transform = (ComponentTransform*)entities[i]->GetComponent(Component::Type::TRANSFORM);
+	//		glm::vec2 pos = transform->GetPosition();
+	//		glm::vec2 size = transform->GetSize() * transform->GetScale();
+
+	//		if (pos.x + size.x < 0 || pos.x > world_width ||
+	//			pos.y + size.y < 0 || pos.y > world_height)
+	//			DeleteEntity(entities[i]);
+	//	}
+	//}
 
 	return true;
 }
@@ -98,7 +123,7 @@ void ModuleGame::UpdateWorldSize()
 	//--- Update Boundaries
 	// Top
 	C_Transform& transform1 = App->scene->GetComponent<C_Transform>(b_top);
-	C_RectCollider& collider1 = App->scene->GetComponent<C_RectCollider>(b_top);
+	C_Collider& collider1 = App->scene->GetComponent<C_Collider>(b_top);
 	transform1.position = glm::vec2(-BOUNDARIES_SIZE, -BOUNDARIES_SIZE);
 	transform1.size = glm::vec2(world_width + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE);
 	collider1.position = transform1.position;
@@ -106,7 +131,7 @@ void ModuleGame::UpdateWorldSize()
 
 	// Bottom
 	C_Transform& transform2 = App->scene->GetComponent<C_Transform>(b_bottom);
-	C_RectCollider& collider2 = App->scene->GetComponent<C_RectCollider>(b_bottom);
+	C_Collider& collider2 = App->scene->GetComponent<C_Collider>(b_bottom);
 	transform2.position = glm::vec2(-BOUNDARIES_SIZE, world_height);
 	transform2.size = glm::vec2(world_width + 2 * BOUNDARIES_SIZE, BOUNDARIES_SIZE);
 	collider2.position = transform2.position;
@@ -114,7 +139,7 @@ void ModuleGame::UpdateWorldSize()
 
 	// Left
 	C_Transform& transform3 = App->scene->GetComponent<C_Transform>(b_left);
-	C_RectCollider& collider3 = App->scene->GetComponent<C_RectCollider>(b_left);
+	C_Collider& collider3 = App->scene->GetComponent<C_Collider>(b_left);
 	transform3.position = glm::vec2(-BOUNDARIES_SIZE, 0.0f);
 	transform3.size = glm::vec2(BOUNDARIES_SIZE, world_height);
 	collider3.position = transform3.position;
@@ -122,14 +147,11 @@ void ModuleGame::UpdateWorldSize()
 
 	// Right
 	C_Transform& transform4 = App->scene->GetComponent<C_Transform>(b_right);
-	C_RectCollider& collider4 = App->scene->GetComponent<C_RectCollider>(b_right);
+	C_Collider& collider4 = App->scene->GetComponent<C_Collider>(b_right);
 	transform4.position = glm::vec2(world_width, 0.0f);
 	transform4.size = glm::vec2(BOUNDARIES_SIZE, world_height);
 	collider4.position = transform4.position;
 	collider4.size = transform4.size;
-
-	// Send Event to Update Grid
-	App->event_mgr->Publish(new EventWorldSizeUpdate(world_width, world_height));
 }
 
 void ModuleGame::AddAsteroids(int num)
@@ -172,14 +194,12 @@ void ModuleGame::AddAsteroids(int num)
 
 		App->scene->AddComponent(entity, transform);
 
-		//// --- Collider
-		//C_CircleCollider collider;
-		//collider.is_colliding = false;
-		//collider.is_static = false;
-		//collider.center = transform.position;
-		//collider.offset = glm::vec2(0.0f);
-		//collider.radius = transform.size.x * transform.scale.x / 2;
-		//App->scene->AddComponent(entity, collider);
+		// --- Collider
+		C_Collider collider;
+		collider.type = C_Collider::ColliderType::CIRCLE;
+		collider.center = transform.position;
+		collider.radius = transform.size.x * transform.scale.x / 2;
+		App->scene->AddComponent(entity, collider);
 
 		// --- Rigidbody
 		C_RigidBody rigidbody;
@@ -212,4 +232,22 @@ void ModuleGame::DeleteAsteroids(int num)
 {
 	//for (int i = 0; i < num; ++i)
 	//	DeleteEntity(entities[BASE_ENTITIES]); // start from asteroids position in vector to not delete base entities
+}
+
+//-------------------------------------
+void ModuleGame::OnWorldSizeUpdate(EventWorldSizeUpdate* e)
+{
+	world_width = e->width;
+	world_height = e->height;
+	UpdateWorldSize();
+}
+
+void ModuleGame::OnAddAsteroid(EventAsteroidAdded* e)
+{
+	AddAsteroids(e->num);
+}
+
+void ModuleGame::OnRemoveAsteroid(EventAsteroidRemoved* e)
+{
+	DeleteAsteroids(e->num);
 }

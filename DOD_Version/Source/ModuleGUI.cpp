@@ -5,7 +5,6 @@
 #include "ModuleRenderer.h"
 #include "ModuleEvent.h"
 #include "ModuleScene.h" //*** to have GetEntityCount()
-#include "ModuleDebug.h" //*** for checkboxes grid & colliders
 #include "ModuleGame.h" //*** for world_size & defines (BASE_ENTITIES + DEFAULT_...)
 
 #include "imgui/imgui.h"
@@ -187,16 +186,18 @@ void ModuleGUI::DrawInfo()
 
 			ImGui::NextColumn();
 
-			if (ImGui::Checkbox("##Colliders", &is_draw_colliders))
-				App->debug->SetDrawColliders(is_draw_colliders); //***
-			if (ImGui::Checkbox("##Grid", &is_draw_grid))
-				App->debug->SetDrawGrid(is_draw_grid); //***
+			ImGui::Checkbox("##Colliders", &is_draw_colliders);
+
+			ImGui::Checkbox("##Grid", &is_draw_grid);
+
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 			if (ImGui::DragInt("##World Width", &world_width, 1.0f, 1, 1000))
-				App->game->SetWorldWidth(world_width * WORLD_SCALE); //***
+				App->event_mgr->Publish(new EventWorldSizeUpdate(world_width * WORLD_SCALE, world_height * WORLD_SCALE));
+
 			if (ImGui::DragInt("##World Height", &world_height, 1.0f, 1, 1000))
-				App->game->SetWorldHeight(world_height * WORLD_SCALE); //***
+				App->event_mgr->Publish(new EventWorldSizeUpdate(world_width * WORLD_SCALE, world_height * WORLD_SCALE));
+
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 			if (ImGui::DragInt("##Move Speed", &move_speed, 1.0f, 1, 10000))
 				App->event_mgr->Publish(new EventCameraSpeedChanged((float)move_speed));

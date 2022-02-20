@@ -4,16 +4,23 @@
 #include "glm/include/glm/glm.hpp"
 #include <vector>
 
-//struct Collision {
-//	bool has_collided = false;
-//	glm::vec2 distance = glm::vec2(0.0f);
-//};
-//
-//struct CollidingPairs {
-//	ComponentCircleCollider* collider1;
-//	ComponentCircleCollider* collider2;
-//	glm::vec2 distance;
-//};
+struct C_Collider;
+
+enum class CollisionDirection {
+	UP = 0,
+	DOWN,
+	RIGHT,
+	LEFT,
+	ERROR
+};
+
+enum class CollisionType {
+	ERROR = 0,
+	CIRCLE_CIRCLE,
+	CIRCLE_RECT,
+	RECT_CIRCLE,
+	RECT_RECT
+};
 
 class ModulePhysics : public Module
 {
@@ -26,34 +33,7 @@ public:
 	bool Update(float dt) override;
 	bool CleanUp() override;
 
-	void DrawColliders();
-
-	//void AddCollider(ComponentRectCollider* collider);
-	//void AddCollider(ComponentCircleCollider* collider);
-	//void RemoveCollider(ComponentRectCollider* collider);
-	//void RemoveCollider(ComponentCircleCollider* collider);
-
-//private:
-	//int Exists(ComponentRectCollider* collider);
-	//int Exists(ComponentCircleCollider* collider);
-	//bool FindPair(CollidingPairs new_pair, std::vector<CollidingPairs> list);
-
-	//const int& GetCollisionDirection(glm::vec2 distance) const;
-
-	//Collision CheckCollision(ComponentRectCollider* collider1, ComponentRectCollider* collider2);	  // Rect - Rect
-	//Collision CheckCollision(ComponentRectCollider* collider1, ComponentCircleCollider* collider2);	  // Rect - Circle
-	//Collision CheckCollision(ComponentCircleCollider* collider1, ComponentCircleCollider* collider2); // Circle - Circle
-	//Collision CheckCollision(ComponentCircleCollider* collider1, ComponentRectCollider* collider2);	  // Circle - Rect
-
-	//void ResolveCollisionStatic(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentCircleCollider* collider2);	// Circle - Circle
-	//void ResolveCollisionDynamic(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentCircleCollider* collider2);	// Circle - Circle
-	//void ResolveCollision(glm::vec2 distance, ComponentCircleCollider* collider1, ComponentRectCollider* collider2);			// Circle - Rect
-
-//private:
-	//std::vector<ComponentRectCollider*> rect_colliders;
-	//std::vector<ComponentCircleCollider*> circle_colliders;
-
-	//std::vector<CollidingPairs> colliding_pairs;
-	//std::vector<CollidingPairs> prev_colliding_pairs; //used for fixing sticking bug
+	bool CheckCollision(const C_Collider& collider1, const C_Collider& collider2, glm::vec2& distance, CollisionType& type);
+	CollisionDirection& GetCollisionDirection(glm::vec2 distance) const;
 };
 

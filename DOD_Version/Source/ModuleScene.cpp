@@ -1,7 +1,10 @@
 #include "ModuleScene.h"
 
 #include "Components.h"
-#include "Systems.h"
+#include "S_Renderer.h"
+#include "S_Debug.h"
+#include "S_CameraController.h"
+#include "S_Physics.h"
 
 #include "mmgr/mmgr.h"
 
@@ -28,8 +31,7 @@ bool ModuleScene::Init()
 	RegisterComponent<C_Camera>();
 	RegisterComponent<C_CameraController>();
 	RegisterComponent<C_RigidBody>();
-	RegisterComponent<C_CircleCollider>();
-	RegisterComponent<C_RectCollider>();
+	RegisterComponent<C_Collider>();
 
 	//--- Register Systems and Init ---
 	// Renderer
@@ -41,6 +43,15 @@ bool ModuleScene::Init()
 		signature.set(GetComponentType<C_Sprite>());
 		SetSystemSignature<S_Renderer>(signature);
 	}
+
+	// Debug
+	debug_system = RegisterSystem<S_Debug>();
+	{
+		ComponentMask signature;
+		signature.set(GetComponentType<C_Collider>());
+		SetSystemSignature<S_Debug>(signature);
+	}
+	debug_system->Init();
 
 	// Camera Controller
 	camera_system = RegisterSystem<S_CameraController>();
@@ -59,8 +70,7 @@ bool ModuleScene::Init()
 		ComponentMask signature;
 		signature.set(GetComponentType<C_Transform>());
 		signature.set(GetComponentType<C_RigidBody>());
-		signature.set(GetComponentType<C_CircleCollider>()); //***
-		signature.set(GetComponentType<C_RectCollider>()); //***
+		signature.set(GetComponentType<C_Collider>());
 		SetSystemSignature<S_Physics>(signature);
 	}
 	physics_system->Init();
@@ -70,6 +80,8 @@ bool ModuleScene::Init()
 
 bool ModuleScene::Start()
 {
+	debug_system->Start();
+
 	return true;
 }
 
@@ -78,21 +90,6 @@ bool ModuleScene::Update(float dt)
 	// Update Systems
 	camera_system->Update(dt);
 	physics_system->Update(dt);
-
-	//// Check if asteroid is out of bounds
-	//for (size_t i = 0; i < entities.size(); ++i)
-	//{
-	//	if (entities[i]->GetComponent(Component::Type::ASTEROID) != nullptr)
-	//	{
-	//		ComponentTransform* transform = (ComponentTransform*)entities[i]->GetComponent(Component::Type::TRANSFORM);
-	//		glm::vec2 pos = transform->GetPosition();
-	//		glm::vec2 size = transform->GetSize() * transform->GetScale();
-	
-	//		if (pos.x + size.x < 0 || pos.x > world_width ||
-	//			pos.y + size.y < 0 || pos.y > world_height)
-	//			DeleteEntity(entities[i]);
-	//	}
-	//}
 
 	return true;
 }
@@ -110,4 +107,13 @@ bool ModuleScene::CleanUp()
 void ModuleScene::Draw()
 {
 	render_system->Render();
+}
+
+void ModuleScene::DrawDebug(bool grid, bool colliders)
+{
+	if (grid)
+		debug_system->RenderGrid();
+
+	if (colliders)
+		debug_system->RenderColliders();
 }
