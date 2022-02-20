@@ -56,22 +56,27 @@ bool ModuleGame::Start()
 	// Create Boundaries
 	transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(0.0f) };
 	C_Collider collider = { true, false, C_Collider::ColliderType::RECT, glm::vec2(0.0f), glm::vec2(0.0f), glm::vec2(0.0f), 0.0f };
+	C_RigidBody rigidbody = { glm::vec2(0.0f), 0.0f, 0.0f };
 
 	b_top = App->scene->CreateEntity();
 	App->scene->AddComponent(b_top, transform);
 	App->scene->AddComponent(b_top, collider);
+	App->scene->AddComponent(b_top, rigidbody);
 
 	b_bottom = App->scene->CreateEntity();
 	App->scene->AddComponent(b_bottom, transform);
 	App->scene->AddComponent(b_bottom, collider);
+	App->scene->AddComponent(b_bottom, rigidbody);
 
 	b_left = App->scene->CreateEntity();
 	App->scene->AddComponent(b_left, transform);
 	App->scene->AddComponent(b_left, collider);
+	App->scene->AddComponent(b_left, rigidbody);
 
 	b_right = App->scene->CreateEntity();
 	App->scene->AddComponent(b_right, transform);
 	App->scene->AddComponent(b_right, collider);
+	App->scene->AddComponent(b_right, rigidbody);
 
 	// Update World Size
 	UpdateWorldSize();
@@ -197,8 +202,8 @@ void ModuleGame::AddAsteroids(int num)
 		// --- Collider
 		C_Collider collider;
 		collider.type = C_Collider::ColliderType::CIRCLE;
-		collider.center = transform.position;
 		collider.radius = transform.size.x * transform.scale.x / 2;
+		collider.center = transform.position + collider.radius;
 		App->scene->AddComponent(entity, collider);
 
 		// --- Rigidbody

@@ -18,6 +18,10 @@ void S_Physics::Update(float dt)
 	for (EntityIdx entity1 : entities)
 	{
 		C_Collider& collider1 = App->scene->GetComponent<C_Collider>(entity1); // get first collider
+		collider1.is_colliding = false;
+
+		if (collider1.is_static)
+			continue;
 
 		for (EntityIdx entity2 : entities)
 		{
@@ -25,6 +29,7 @@ void S_Physics::Update(float dt)
 				continue;
 
 			C_Collider& collider2 = App->scene->GetComponent<C_Collider>(entity2); // get second collider
+			collider2.is_colliding = false;
 
 			glm::vec2 distance = glm::vec2(0.0f);
 			CollisionType type = CollisionType::ERROR;
@@ -66,15 +71,18 @@ void S_Physics::Update(float dt)
 		}
 	}
 
-	//--- Transform Update (Movement)
+	//--- Movement Update
 	for (EntityIdx entity : entities)
 	{
 		C_Transform& transform = App->scene->GetComponent<C_Transform>(entity);
+		C_Collider& collider = App->scene->GetComponent<C_Collider>(entity);
 		C_RigidBody rigidbody = App->scene->GetComponent<C_RigidBody>(entity);
-		C_Collider collider = App->scene->GetComponent<C_Collider>(entity);
 
-		if (collider.is_static)
-			continue;
+		if (!collider.is_static)
+		{
+			collider.position = transform.position;
+			collider.center = transform.position + collider.radius;
+		}
 
 		transform.position += rigidbody.velocity * dt;
 		transform.rotation += rigidbody.rotation_speed * dt;

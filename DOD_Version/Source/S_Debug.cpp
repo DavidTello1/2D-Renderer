@@ -68,6 +68,8 @@ void S_Debug::RenderColliders()
 		{
 		case C_Collider::ColliderType::CIRCLE:
 		{
+			transform.position;
+			collider.center;
 			App->renderer->DrawCircle(App->resources->default_shader, circle_texture, transform.position, 
 				collider.radius * 2 * transform.scale.x, color);
 			break;

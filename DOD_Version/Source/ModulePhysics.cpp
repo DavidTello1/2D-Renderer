@@ -75,7 +75,12 @@ bool ModulePhysics::CheckCollision(const C_Collider& collider1, const C_Collider
 		{
 			type = CollisionType::CIRCLE_RECT;
 			distance = collider1.center - glm::clamp(collider1.center, collider2.position, collider2.position + collider2.size);
-			return ((distance.x * distance.x) + (distance.y * distance.y) < (collider1.radius * collider1.radius));
+			float distanceSquared = (distance.x * distance.x) + (distance.y * distance.y);
+			float radiusSquared = (collider1.radius * collider1.radius);
+			if ( distanceSquared < radiusSquared)
+				return true;
+			else
+				return false;
 		}
 		case C_Collider::ColliderType::UNKNOWN: {
 			LOG("---Error: Collider Type Unknown");
