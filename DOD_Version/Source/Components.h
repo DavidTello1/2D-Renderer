@@ -42,7 +42,7 @@ struct C_Collider {
 	enum class ColliderType {
 		UNKNOWN = 0,
 		RECT,
-		CIRCLE,
+		CIRCLE
 	};
 
 	bool is_static = false;

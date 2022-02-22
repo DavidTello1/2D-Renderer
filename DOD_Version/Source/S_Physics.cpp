@@ -35,12 +35,7 @@ void S_Physics::Update(float dt)
 			CollisionType type = CollisionType::ERROR;
 			if (App->physics->CheckCollision(collider1, collider2, distance, type)) // check if they are colliding and retrieve distance & type
 			{
-				collider1.is_colliding = true;
-				collider2.is_colliding = true;
-
 				CollidingPair new_pair = { entity1, entity2, distance, type };
-				if (type == CollisionType::RECT_CIRCLE)
-					new_pair = { entity2, entity1, distance, type }; // Changed order of entities for correct usage in collision resolution
 
 				// Check if pair already exists
 				if (PairExists(new_pair, colliding_pairs) == false)
@@ -50,7 +45,7 @@ void S_Physics::Update(float dt)
 	}
 
 	//--- Collision Resolution
-	for (const CollidingPair pair : colliding_pairs)
+	for (CollidingPair pair : colliding_pairs)
 	{
 		switch (pair.type) 
 		{
@@ -66,6 +61,14 @@ void S_Physics::Update(float dt)
 			CollisionRectRect(pair);
 			break;
 
+		case CollisionType::RECT_CIRCLE:
+		{
+			EntityIdx tmp = pair.entity1; // Changed order of entities for correct usage in collision resolution
+			pair.entity1 = pair.entity2;
+			pair.entity2 = tmp;
+			CollisionCircleRect(pair);
+			break;
+		}
 		case CollisionType::ERROR:
 			break;
 		}
@@ -78,14 +81,14 @@ void S_Physics::Update(float dt)
 		C_Collider& collider = App->scene->GetComponent<C_Collider>(entity);
 		C_RigidBody rigidbody = App->scene->GetComponent<C_RigidBody>(entity);
 
-		if (!collider.is_static)
-		{
-			collider.position = transform.position;
-			collider.center = transform.position + collider.radius;
-		}
+		if (collider.is_static)
+			continue;
 
 		transform.position += rigidbody.velocity * dt;
 		transform.rotation += rigidbody.rotation_speed * dt;
+		
+		collider.position = transform.position;
+		collider.center = transform.position + collider.radius;
 	}
 }
 
@@ -103,7 +106,7 @@ void S_Physics::CollisionCircleRect(const CollidingPair pair)
 	C_Transform& transform2 = App->scene->GetComponent<C_Transform>(pair.entity2);
 	C_RigidBody& rigidbody2 = App->scene->GetComponent<C_RigidBody>(pair.entity2);
 
-	float overlap = collider1.size.x - glm::sqrt(pair.distance.x * pair.distance.x + pair.distance.y * pair.distance.y); // Get Overlap
+	float overlap = collider1.radius - glm::sqrt(pair.distance.x * pair.distance.x + pair.distance.y * pair.distance.y); // Get Overlap
 	if (std::isnan(overlap)) overlap = 0;
 	if (overlap > 0)
 	{
@@ -122,6 +125,7 @@ void S_Physics::CollisionCircleRect(const CollidingPair pair)
 		}
 
 		// Circle
+		collider1.is_colliding = true;
 		if (collider1.is_static == false)
 		{
 			transform1.position += position;
@@ -130,10 +134,11 @@ void S_Physics::CollisionCircleRect(const CollidingPair pair)
 		}
 
 		// Rect
+		collider2.is_colliding = true;
 		if (collider2.is_static == false)
 		{
-			transform2.position += -position;
-			rigidbody2.velocity *= -velocity;
+			transform2.position -= position;
+			rigidbody2.velocity *= velocity;
 			collider2.position = transform2.position;
 		}
 	}
@@ -152,25 +157,28 @@ void S_Physics::CollisionCircleCircle(const CollidingPair pair)
 
 	// --- Static Collision
 	float dist = glm::sqrt(pair.distance.x * pair.distance.x + pair.distance.y * pair.distance.y);
+	float overlap = 0.5f * (dist - collider1.radius - collider2.radius);
 
+	collider1.is_colliding = true;
 	if (collider1.is_static == false)
 	{
-		float overlap = 0.5f * (dist - collider1.radius - collider2.radius);
-
 		collider1.center -= overlap * pair.distance / dist;
 		transform1.position = glm::vec2(collider1.center - collider1.radius);
 	}
+
+	collider2.is_colliding = true;
 	if (collider2.is_static == false)
 	{
-		float overlap = 0.5f * (dist - collider2.radius - collider1.radius);
-
-		collider2.center -= overlap * pair.distance / dist;
+		collider2.center += overlap * pair.distance / dist;
 		transform2.position = glm::vec2(collider2.center - collider2.radius);
 	}
 
 	// --- Dynamic Collision
-	glm::vec2 normal = glm::vec2((collider2.center - collider1.center) / dist);
-	glm::vec2 tangent = glm::vec2(normal.x, -normal.y);
+	float fDistance = sqrtf((collider1.center.x - collider2.center.x) * (collider1.center.x - collider2.center.x) + 
+							(collider1.center.y - collider2.center.y) * (collider1.center.y - collider2.center.y));
+
+	glm::vec2 normal = glm::vec2((collider2.center - collider1.center) / fDistance);
+	glm::vec2 tangent = glm::vec2(-normal.y, normal.x);
 
 	// Dot Product Tangent
 	float dpTan1 = rigidbody1.velocity.x * tangent.x + rigidbody1.velocity.y * tangent.y;
@@ -183,7 +191,7 @@ void S_Physics::CollisionCircleCircle(const CollidingPair pair)
 	float m1 = (dpNorm1 * (rigidbody1.mass - rigidbody2.mass) + 2.0f * rigidbody2.mass * dpNorm2) / (rigidbody1.mass + rigidbody2.mass);
 	float m2 = (dpNorm2 * (rigidbody2.mass - rigidbody1.mass) + 2.0f * rigidbody1.mass * dpNorm1) / (rigidbody1.mass + rigidbody2.mass);
 
-	// Update Asteroid Velocities
+	// Update RigidBody Velocities
 	rigidbody1.velocity = tangent * dpTan1 + normal * m1;
 	rigidbody2.velocity = tangent * dpTan2 + normal * m2;
 }

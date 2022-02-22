@@ -8,8 +8,8 @@ struct C_Collider;
 
 enum class CollisionDirection {
 	UP = 0,
-	DOWN,
 	RIGHT,
+	DOWN,
 	LEFT,
 	ERROR
 };
@@ -34,6 +34,6 @@ public:
 	bool CleanUp() override;
 
 	bool CheckCollision(const C_Collider& collider1, const C_Collider& collider2, glm::vec2& distance, CollisionType& type);
-	CollisionDirection& GetCollisionDirection(glm::vec2 distance) const;
+	CollisionDirection GetCollisionDirection(glm::vec2 distance) const;
 };
 

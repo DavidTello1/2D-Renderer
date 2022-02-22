@@ -32,28 +32,27 @@ bool ModulePhysics::CleanUp()
 }
 
 //----------------------
-CollisionDirection& ModulePhysics::GetCollisionDirection(glm::vec2 distance) const
+CollisionDirection ModulePhysics::GetCollisionDirection(glm::vec2 distance) const
 {
-	float max = 0.0f;
-	CollisionDirection direction = CollisionDirection::ERROR;
-
 	glm::vec2 compass[] = {
 		glm::vec2(0.0f, 1.0f),	// up
-		glm::vec2(0.0f, -1.0f),	// down
 		glm::vec2(1.0f, 0.0f),	// right
+		glm::vec2(0.0f, -1.0f),	// down
 		glm::vec2(-1.0f, 0.0f)	// left
 	};
 
+	float max = 0.0f;
+	uint direction = -1;
 	for (uint i = 0; i < 4; i++)
 	{
 		float dot_product = glm::dot(glm::normalize(distance), compass[i]);
 		if (dot_product > max)
 		{
 			max = dot_product;
-			direction = CollisionDirection(i);
+			direction = i;
 		}
 	}
-	return direction;
+	return (CollisionDirection)direction;
 }
 
 bool ModulePhysics::CheckCollision(const C_Collider& collider1, const C_Collider& collider2, glm::vec2& distance, CollisionType& type)
@@ -75,12 +74,7 @@ bool ModulePhysics::CheckCollision(const C_Collider& collider1, const C_Collider
 		{
 			type = CollisionType::CIRCLE_RECT;
 			distance = collider1.center - glm::clamp(collider1.center, collider2.position, collider2.position + collider2.size);
-			float distanceSquared = (distance.x * distance.x) + (distance.y * distance.y);
-			float radiusSquared = (collider1.radius * collider1.radius);
-			if ( distanceSquared < radiusSquared)
-				return true;
-			else
-				return false;
+			return ((distance.x * distance.x) + (distance.y * distance.y) <= (collider1.radius * collider1.radius));
 		}
 		case C_Collider::ColliderType::UNKNOWN: {
 			LOG("---Error: Collider Type Unknown");
