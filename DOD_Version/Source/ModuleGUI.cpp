@@ -12,6 +12,7 @@
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 ModuleGUI::ModuleGUI(bool start_enabled) : Module("ModuleGUI", start_enabled), fps_log(FPS_LOG_SIZE), ms_log(FPS_LOG_SIZE), num_asteroids(1)
@@ -59,6 +60,8 @@ bool ModuleGUI::Start()
 
 bool ModuleGUI::PreUpdate(float dt)
 {
+	OPTICK_CATEGORY("GUI PreUpdate", Optick::Category::UI);
+
 	// ImGui New Frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->GetWindow());

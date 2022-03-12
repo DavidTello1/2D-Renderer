@@ -6,6 +6,7 @@
 
 #include "Components.h"
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 void S_Renderer::Init()
@@ -16,6 +17,8 @@ void S_Renderer::Render()
 {
     for (EntityIdx entity : entities)
     {
+        OPTICK_PUSH("Entity Draw");
+
         if (App->scene->GetComponent<C_Renderer>(entity).render == false)
             continue;
 
@@ -24,5 +27,7 @@ void S_Renderer::Render()
 
         App->renderer->DrawQuad(sprite.shader, transform.position, transform.size * transform.scale,
             sprite.texture, glm::vec4(1.0f), transform.rotation, transform.size * transform.scale / 2.0f);
+        
+        OPTICK_POP();
     }
 }

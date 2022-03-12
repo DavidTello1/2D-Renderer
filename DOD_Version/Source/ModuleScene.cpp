@@ -6,6 +6,7 @@
 #include "S_CameraController.h"
 #include "S_Physics.h"
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 ModuleScene::ModuleScene(bool start_enabled) : Module("ModuleScene", start_enabled)
@@ -87,9 +88,16 @@ bool ModuleScene::Start()
 
 bool ModuleScene::Update(float dt)
 {
+	OPTICK_CATEGORY("Scene Update", Optick::Category::Scene);
+
 	// Update Systems
+	OPTICK_PUSH("Camera System");
 	camera_system->Update(dt);
+	OPTICK_POP();
+
+	OPTICK_PUSH("Physics System");
 	physics_system->Update(dt);
+	OPTICK_POP();
 
 	return true;
 }

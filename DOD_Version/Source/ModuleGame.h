@@ -68,5 +68,9 @@ private:
 	Entity b_top = 0;
 	Entity b_bottom = 0;
 	Entity b_left = 0;
-	Entity b_right = 0;	
+	Entity b_right = 0;
+
+	uint asteroid_tex1 = 0;
+	uint asteroid_tex2 = 0;
+	uint asteroid_tex3 = 0;
 };

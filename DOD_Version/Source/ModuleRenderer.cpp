@@ -81,9 +81,11 @@ bool ModuleRenderer::PostUpdate(float dt)
 	OPTICK_POP();
 
 	// --- Debug Draw
-	OPTICK_PUSH("Debug Draw");
+	OPTICK_PUSH("Draw Colliders");
 	App->scene->DrawDebug(App->gui->IsDrawGrid(), App->gui->IsDrawColliders());
+	OPTICK_POP();
 
+	OPTICK_PUSH("Draw Grid");
 	if (App->gui->IsDrawGrid())
 		stats.draw_calls++;
 	OPTICK_POP();
@@ -113,6 +115,8 @@ bool ModuleRenderer::CleanUp()
 void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, const uint32_t texture, 
 	const glm::vec4& color, const float& rotation, const glm::vec2& center)
 {
+	OPTICK_PUSH("Draw Quad");
+
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
 
@@ -140,10 +144,14 @@ void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, cons
 
 	stats.draw_calls++;
 	stats.quad_count++;
+
+	OPTICK_POP();
 }
 
 void ModuleRenderer::DrawCircle(const uint shader, const uint32_t texture, const glm::vec2& position, const float& diameter, const glm::vec4& color)
 {
+	OPTICK_PUSH("Draw Circle");
+
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
 
@@ -163,6 +171,8 @@ void ModuleRenderer::DrawCircle(const uint shader, const uint32_t texture, const
 
 	stats.draw_calls++;
 	stats.quad_count++;
+
+	OPTICK_POP();
 }
 
 //--------------------------------

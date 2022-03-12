@@ -26,6 +26,7 @@ void S_CameraController::Update(float dt)
 	{
 		C_Transform& transform = App->scene->GetComponent<C_Transform>(entity);
 		C_CameraController& controller = App->scene->GetComponent<C_CameraController>(entity);
+		C_Camera& camera = App->scene->GetComponent<C_Camera>(entity);
 
 		float world_width = (float)App->game->GetWorldWidth();
 		float world_height = (float)App->game->GetWorldHeight();
@@ -79,7 +80,14 @@ void S_CameraController::Update(float dt)
 		}
 
 		if (tmp_pos != transform.position)
+		{
 			transform.position = tmp_pos;
+
+			glm::mat4 transf = glm::translate(glm::mat4(1.0f), { transform.position, 0.0f }) *
+				glm::rotate(glm::mat4(1.0f), glm::radians(transform.rotation), glm::vec3(0, 0, 1));
+			camera.view = glm::inverse(transf);
+			camera.viewproj = camera.projection * camera.view;
+		}
 	}
 }
 
@@ -89,6 +97,7 @@ void S_CameraController::OnResize(EventWindowResize* e)
 	C_CameraController controller = App->scene->GetComponent<C_CameraController>(App->game->GetMainCamera());
 
 	camera.projection = glm::ortho(0.0f, e->width * controller.zoom, e->height * controller.zoom, 0.0f);
+	camera.viewproj = camera.projection * camera.view;
 }
 
 void S_CameraController::OnZoom(EventCameraZoom* e)
@@ -100,6 +109,7 @@ void S_CameraController::OnZoom(EventCameraZoom* e)
 	controller.zoom = std::max(controller.zoom, controller.zoom_speed);
 	
 	camera.projection = glm::ortho(0.0f, App->window->GetWidth() * controller.zoom, App->window->GetHeight() * controller.zoom, 0.0f);
+	camera.viewproj = camera.projection * camera.view;
 }
 
 void S_CameraController::OnSpeedChange(EventCameraSpeedChanged* e)

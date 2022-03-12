@@ -5,6 +5,7 @@
 
 #include "Components.h"
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 void S_Physics::Init()
@@ -13,14 +14,16 @@ void S_Physics::Init()
 
 void S_Physics::Update(float dt)
 {
+	OPTICK_PUSH("Collision Detection");
 	//--- Collision Detection
 	std::vector<CollidingPair> colliding_pairs;
+	
 	for (EntityIdx entity1 : entities)
 	{
 		C_Collider& collider1 = App->scene->GetComponent<C_Collider>(entity1); // get first collider
 		collider1.is_colliding = false;
 
-		if (collider1.is_static)
+		if (collider1.is_static) // if collider is static check next one
 			continue;
 
 		for (EntityIdx entity2 : entities)
@@ -43,7 +46,9 @@ void S_Physics::Update(float dt)
 			}
 		}
 	}
+	OPTICK_POP();
 
+	OPTICK_PUSH("Collision Resolution");
 	//--- Collision Resolution
 	for (CollidingPair pair : colliding_pairs)
 	{
@@ -73,7 +78,9 @@ void S_Physics::Update(float dt)
 			break;
 		}
 	}
+	OPTICK_POP();
 
+	OPTICK_PUSH("Movement Update");
 	//--- Movement Update
 	for (EntityIdx entity : entities)
 	{
@@ -90,6 +97,7 @@ void S_Physics::Update(float dt)
 		collider.position = transform.position;
 		collider.center = transform.position + collider.radius;
 	}
+	OPTICK_POP();
 }
 
 // ---------------------------

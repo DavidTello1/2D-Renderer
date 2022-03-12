@@ -115,6 +115,8 @@ bool ModuleRenderer::CleanUp()
 void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, uint32_t texture, 
 	const glm::vec4& color, const float& rotation, const glm::vec2& center)
 {
+	OPTICK_PUSH("Draw Quad");
+
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
 
@@ -142,10 +144,14 @@ void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, cons
 
 	stats.draw_calls++;
 	stats.quad_count++;
+
+	OPTICK_POP();
 }
 
 void ModuleRenderer::DrawCircle(const uint shader, const glm::vec2& position, const float& diameter, const glm::vec4& color)
 {
+	OPTICK_PUSH("Draw Circle");
+
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->scene_base->GetViewProjMatrix());
 
@@ -165,6 +171,8 @@ void ModuleRenderer::DrawCircle(const uint shader, const glm::vec2& position, co
 
 	stats.draw_calls++;
 	stats.quad_count++;
+
+	OPTICK_POP();
 }
 
 //--------------------------------

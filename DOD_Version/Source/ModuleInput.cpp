@@ -7,6 +7,7 @@
 #include "imGui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 #define MAX_KEYS 300
@@ -43,6 +44,8 @@ bool ModuleInput::Init()
 // Called every draw update
 bool ModuleInput::PreUpdate(float dt)
 {
+	OPTICK_CATEGORY("Input PreUpdate", Optick::Category::Input);
+
 	SDL_PumpEvents();
 	mouse_motion_x = mouse_motion_y = 0;
 

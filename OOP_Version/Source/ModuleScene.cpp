@@ -16,6 +16,7 @@
 
 #include "glm/include/glm/gtc/type_ptr.hpp"
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 ModuleScene::ModuleScene(bool start_enabled) : Module("ModuleScene", start_enabled), world_width(DEFAULT_WORLD_WIDTH), world_height(DEFAULT_WORLD_HEIGHT)
@@ -104,8 +105,13 @@ bool ModuleScene::CleanUp()
 
 void ModuleScene::Draw()
 {
+
 	for (Entity* entity : entities)
+	{
+		OPTICK_PUSH("Entity Draw");
 		entity->Draw();
+		OPTICK_POP();
+	}
 }
 
 Entity* ModuleScene::CreateEntity()
@@ -157,8 +163,10 @@ void ModuleScene::UpdateWorldSize()
 
 void ModuleScene::AddAsteroids(int num)
 {
+
 	for (int i = 0; i < num; ++i)
 	{
+		OPTICK_PUSH("Add Asteroids");
 		Entity* entity = CreateEntity();
 		entity->AddComponent(Component::Type::RENDERER);
 
@@ -187,7 +195,9 @@ void ModuleScene::AddAsteroids(int num)
 		if (pos.y == 0) pos.y = BOUNDARIES_SIZE;
 
 		transform->SetPosition(pos);
+		OPTICK_POP();
 	}
+
 }
 
 void ModuleScene::DeleteAsteroids(int num)

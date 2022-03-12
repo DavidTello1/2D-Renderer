@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <fstream>
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 ModuleResources::ModuleResources(bool start_enabled) : Module("ModuleResources", start_enabled)
@@ -34,6 +35,8 @@ bool ModuleResources::Start()
 
 bool ModuleResources::Update(float dt)
 {
+    OPTICK_CATEGORY("Resources Update", Optick::Category::Cloth);
+
     // Hot reloading
     for (uint i = 0; i < shaders.size(); ++i)
     {

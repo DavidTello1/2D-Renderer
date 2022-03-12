@@ -10,6 +10,7 @@
 
 #include "glm/include/glm/gtc/type_ptr.hpp"
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 ModuleGame::ModuleGame(bool start_enabled) : Module("ModuleGame", start_enabled), world_width(DEFAULT_WORLD_WIDTH), world_height(DEFAULT_WORLD_HEIGHT)
@@ -29,8 +30,14 @@ bool ModuleGame::Init()
 
 	// Create Main Camera
 	C_Transform transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(0.0f) };
-	C_Camera camera = { glm::ortho(0.0f, (float)App->window->GetWidth(), (float)App->window->GetHeight(), 0.0f) };
 	C_CameraController controller = { 1.0f, 200.0f, 0.25f };
+
+	C_Camera camera;
+	glm::mat4 transf = glm::translate(glm::mat4(1.0f), { transform.position, 0.0f }) *
+		glm::rotate(glm::mat4(1.0f), glm::radians(transform.rotation), glm::vec3(0, 0, 1));
+	camera.view = glm::inverse(transf);
+	camera.projection = glm::ortho(0.0f, (float)App->window->GetWidth(), (float)App->window->GetHeight(), 0.0f);
+	camera.viewproj = camera.projection * camera.view;
 
 	main_camera = App->scene->CreateEntity();
 	App->scene->AddComponent(main_camera, transform);
@@ -42,6 +49,11 @@ bool ModuleGame::Init()
 
 bool ModuleGame::Start()
 {
+	// Load Asteroid Textures
+	asteroid_tex1 = App->resources->LoadTexture("Assets/asteroid_1.png")->index;
+	asteroid_tex2 = App->resources->LoadTexture("Assets/asteroid_2.png")->index;
+	asteroid_tex3 = App->resources->LoadTexture("Assets/asteroid_3.png")->index;
+
 	// Create Background
 	C_Transform transform = { glm::vec2(0.0f), glm::vec2(1.0f), 0.0f, glm::vec2(0.0f) };
 	C_Sprite sprite = {
@@ -107,15 +119,7 @@ bool ModuleGame::Update(float dt)
 //--------------------------------------
 const glm::mat4& ModuleGame::GetViewProjMatrix() const
 {
-	C_Transform transform = App->scene->GetComponent<C_Transform>(main_camera);
-	glm::mat4 projection = App->scene->GetComponent<C_Camera>(main_camera).projection;
-
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), { transform.position, 0.0f }) *
-		glm::rotate(glm::mat4(1.0f), glm::radians(transform.rotation), glm::vec3(0, 0, 1));
-	view = glm::inverse(view);
-
-	glm::mat4 viewproj = projection * view;
-	return viewproj;
+	return App->scene->GetComponent<C_Camera>(main_camera).viewproj;
 }
 
 //--------------------------------------
@@ -163,6 +167,7 @@ void ModuleGame::AddAsteroids(int num)
 {
 	for (int i = 0; i < num; ++i)
 	{
+		OPTICK_PUSH("Add Asteroids");
 		Entity entity = App->scene->CreateEntity();
 		App->scene->AddComponent(entity, C_Renderer{ true });
 
@@ -171,12 +176,9 @@ void ModuleGame::AddAsteroids(int num)
 		sprite.shader = App->resources->default_shader;
 
 		int tex = pcg32_boundedrand_r(&App->scene->GetRNG(), 3);
-		if (tex == 0)
-			sprite.texture = App->resources->LoadTexture("Assets/asteroid_1.png")->index;
-		else if(tex == 1)
-			sprite.texture = App->resources->LoadTexture("Assets/asteroid_2.png")->index;
-		else if (tex == 2)
-			sprite.texture = App->resources->LoadTexture("Assets/asteroid_3.png")->index;
+		if (tex == 0)		sprite.texture = asteroid_tex1;
+		else if (tex == 1)	sprite.texture = asteroid_tex2;
+		else if (tex == 2)	sprite.texture = asteroid_tex3;
 
 		App->scene->AddComponent(entity, sprite);
 
@@ -230,6 +232,7 @@ void ModuleGame::AddAsteroids(int num)
 
 		// orientation
 		App->scene->AddComponent(entity, rigidbody);
+		OPTICK_POP();
 	}
 }
 

@@ -65,16 +65,13 @@ public:
     {
         HandlerList* handlers = subscribers[typeid(EventType)];
 
-        if (handlers == nullptr)
+        if (handlers != nullptr)
         {
-            delete evnt;
-            return;
-        }
-
-        for (auto& handler : *handlers) 
-        {
-            if (handler != nullptr)
-                handler->Exec(evnt);
+            for (auto& handler : *handlers)
+            {
+                if (handler != nullptr)
+                    handler->Exec(evnt);
+            }
         }
 
         delete evnt;
