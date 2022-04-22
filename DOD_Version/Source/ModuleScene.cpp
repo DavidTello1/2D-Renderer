@@ -71,14 +71,13 @@ bool ModuleScene::Update(float dt)
 
 bool ModuleScene::CleanUp()
 {
-	//*** CLEANUP ALL ENTITIES
-	//while(!entities.empty())
-	//	DeleteEntity(entities.front());
-	//entities.clear();
+	// Delete Component Managers
+	for (int i = count_types - 1; i >= 0; --i)
+		RELEASE(component_mgrs[i]);
 
-	//*** CLEANUP ALL COMPONENT MANAGERS
-
-	//*** CLEANUP ALL SYSTEMS
+	// Delete Systems
+	for (int i = systems.size() - 1; i >= 0; --i)
+		RELEASE(systems[i]);
 
 	return true;
 }

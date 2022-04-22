@@ -46,7 +46,7 @@ public:
         return index;
     }
 
-    void DestroyEntity(EntityIdx entity) 
+    void DeleteEntity(EntityIdx entity) 
     {
         component_masks[entity].reset();
         available_indexes.push(entity);
@@ -66,14 +66,10 @@ public:
     template<typename T>
     void RegisterComponent() 
     {
-        const char* type = typeid(T).name();
+        const char* type = typeid(T).name(); // Get type as string
         type = strstr(type, "_") + 1;
 
         component_types[count_types] = type; // Add type to list
-
-        //Component comp = (Component)T;
-        //comp.type_count = count_types;
-
         component_mgrs[count_types] = new ComponentManager<T>(); // create new manager and add to list
         count_types++;
     }
@@ -114,10 +110,7 @@ public:
 
     template<typename T>
     int GetComponentType()
-    {
-        //Component* comp = (Component*)T;
-        //return comp->type_count;
-        
+    {        
         const char* type = typeid(T).name(); // Get type as string
         type = strstr(type, "_") + 1;
 
@@ -130,7 +123,7 @@ public:
     }
 
     // --- SYSTEMS ---
-    void EntityMaskUpdated(const EntityIdx& entity, const ComponentMask& mask) //*** NOT TESTED
+    void EntityMaskUpdated(const EntityIdx& entity, const ComponentMask& mask)
     { 
         for (System* system : systems)
         {

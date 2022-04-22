@@ -2,6 +2,7 @@
 #include "Module.h"
 
 #include "glm/include/glm/glm.hpp"
+#include <vector>
 
 #define BASE_ENTITIES 6 //camera + background + boundaries(4)
 #define BOUNDARIES_SIZE 100
@@ -22,8 +23,6 @@ struct EventAsteroidAdded;
 struct EventAsteroidRemoved;
 struct EventWorldSizeUpdate;
 
-typedef unsigned int Entity;
-
 class ModuleGame : public Module
 {
 public:
@@ -35,8 +34,8 @@ public:
 	bool Update(float dt) override;
 
 	// Main Camera
-	const Entity& GetMainCamera() const { return main_camera; }
-	void SetMainCamera(Entity camera) { main_camera = camera; }
+	const EntityIdx& GetMainCamera() const { return main_camera; }
+	void SetMainCamera(EntityIdx camera) { main_camera = camera; }
 	const glm::mat4& GetViewProjMatrix() const;
 
 	// World
@@ -59,18 +58,20 @@ private:
 	void OnRemoveAsteroid(EventAsteroidRemoved* e);
 
 private:
-	Entity main_camera = 0;
+	EntityIdx main_camera = 0;
 
 	int world_width = 0;
 	int world_height = 0;
 
-	Entity background = 0;
-	Entity b_top = 0;
-	Entity b_bottom = 0;
-	Entity b_left = 0;
-	Entity b_right = 0;
+	EntityIdx background = 0;
+	EntityIdx b_top = 0;
+	EntityIdx b_bottom = 0;
+	EntityIdx b_left = 0;
+	EntityIdx b_right = 0;
 
 	uint asteroid_tex1 = 0;
 	uint asteroid_tex2 = 0;
 	uint asteroid_tex3 = 0;
+
+	std::vector<EntityIdx> asteroid_list;
 };

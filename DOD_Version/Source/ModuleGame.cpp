@@ -168,7 +168,7 @@ void ModuleGame::AddAsteroids(int num)
 	for (int i = 0; i < num; ++i)
 	{
 		OPTICK_PUSH("Add Asteroids");
-		Entity entity = App->scene->CreateEntity();
+		EntityIdx entity = App->scene->CreateEntity();
 		App->scene->AddComponent(entity, C_Renderer{ true });
 
 		// --- Sprite
@@ -232,14 +232,17 @@ void ModuleGame::AddAsteroids(int num)
 
 		// orientation
 		App->scene->AddComponent(entity, rigidbody);
+
+		// Add to asteroid list
+		asteroid_list.push_back(entity);
 		OPTICK_POP();
 	}
 }
 
 void ModuleGame::DeleteAsteroids(int num)
 {
-	//for (int i = 0; i < num; ++i)
-	//	DeleteEntity(entities[BASE_ENTITIES]); // start from asteroids position in vector to not delete base entities
+	for (int i = 0; i < num; ++i)
+		App->scene->DeleteEntity(asteroid_list[i]);
 }
 
 //-------------------------------------
