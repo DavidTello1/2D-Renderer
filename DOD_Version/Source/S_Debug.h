@@ -10,9 +10,13 @@ struct EventWorldSizeUpdate;
 class S_Debug : public System
 {
 public:
-    void Init();
-	void Start();
+	S_Debug();
+	~S_Debug();
 
+    void Init() override;
+	void Start() override;
+
+	// Render
     void RenderGrid();
     void RenderColliders();
 

@@ -4,6 +4,8 @@
 class S_Renderer : public System
 {
 public:
-    void Init();
-    void Render();
+    S_Renderer();
+    ~S_Renderer();
+
+    void Render() override;
 };

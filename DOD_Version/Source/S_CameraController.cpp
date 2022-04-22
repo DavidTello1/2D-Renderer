@@ -13,6 +13,17 @@
 
 #include "mmgr/mmgr.h"
 
+S_CameraController::S_CameraController()
+{
+	this->mask.set(App->scene->GetComponentType<C_Transform>());
+	this->mask.set(App->scene->GetComponentType<C_Camera>());
+	this->mask.set(App->scene->GetComponentType<C_CameraController>());
+}
+
+S_CameraController::~S_CameraController()
+{
+}
+
 void S_CameraController::Init()
 {
 	App->event_mgr->Subscribe(this, &S_CameraController::OnResize);
@@ -25,8 +36,8 @@ void S_CameraController::Update(float dt)
 	for (EntityIdx entity : entities)
 	{
 		C_Transform& transform = App->scene->GetComponent<C_Transform>(entity);
-		C_CameraController& controller = App->scene->GetComponent<C_CameraController>(entity);
 		C_Camera& camera = App->scene->GetComponent<C_Camera>(entity);
+		C_CameraController controller = App->scene->GetComponent<C_CameraController>(entity);
 
 		float world_width = (float)App->game->GetWorldWidth();
 		float world_height = (float)App->game->GetWorldHeight();

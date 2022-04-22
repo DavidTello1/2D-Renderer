@@ -1,56 +1,76 @@
 #pragma once
-#include "ComponentArray.h"
+#include "Globals.h"
 
-#include <unordered_map>
-#include <memory>
+#include <array>
 
-typedef std::uint8_t ComponentType;
-
-class ComponentManager
+class BaseComponentManager
 {
 public:
-    template<typename T> void AddComponent(EntityIdx entity, T component) { GetComponentArray<T>()->InsertData(entity, component); }
-    template<typename T> void RemoveComponent(EntityIdx entity) { GetComponentArray<T>()->RemoveData(entity); }
-    template<typename T> T& GetComponent(EntityIdx entity) { return GetComponentArray<T>()->GetData(entity); }
+    virtual ~BaseComponentManager() = default;
+};
 
-    template<typename T>
-    void RegisterComponent() {
-        const char* type = typeid(T).name();
-        assert(component_types.find(type) == component_types.end() && "Registering component type more than once.");
+template<typename Component>
+class ComponentManager : public BaseComponentManager
+{
+public:
+    void AddComponent(EntityIdx entity, Component& component)
+    {
+        if (entity >= MAX_ENTITIES)
+            return;
 
-        component_types.insert({ type, count_types });
-        component_arrays.insert({ type, std::make_shared<ComponentArray<T>>() });
-        ++count_types;
-    }
+        components[n] = component;
+        dense[n] = entity;
+        sparse[entity] = n;
+        ++n;
+    };
 
-    template<typename T>
-    ComponentType GetComponentType() {
-        const char* type = typeid(T).name();
-        assert(component_types.find(type) != component_types.end() && "Component not registered before use.");
-
-        return component_types[type];
-    }
-
-    void EntityDestroyed(EntityIdx entity) { //*** EVENT SYSTEM
-        for (auto const& pair : component_arrays)
+    void RemoveComponent(EntityIdx entity)
+    {
+        if (HasComponent(entity))
         {
-            auto const& component = pair.second;
-            component->EntityDestroyed(entity);
+            --n;
+            Component data = components[n];
+            uint32_t item = dense[n];
+            uint32_t dense_index = sparse[entity];
+
+            components[dense_index] = data;
+            dense[dense_index] = item;
+            sparse[data] = dense_index;
         }
     }
 
-private:
-    template<typename T>
-    std::shared_ptr<ComponentArray<T>> GetComponentArray() {
-        const char* type = typeid(T).name();
-        assert(component_types.find(type) != component_types.end() && "Component not registered before use.");
+    bool HasComponent(EntityIdx entity)
+    {
+        if (entity >= MAX_ENTITIES)
+            return false;
 
-        return std::static_pointer_cast<ComponentArray<T>>(component_arrays[type]);
+        return sparse[entity] < n;
+    }
+
+    Component& GetComponent(EntityIdx entity)
+    {
+        uint32_t index = sparse[entity];
+        return components[index];
+    }
+
+    const Component& GetComponent(EntityIdx entity) const
+    {
+        uint32_t index = sparse[entity];
+        return const components[index];
+    }
+
+    size_t GetSize() const 
+    {
+        return n;
     }
 
 private:
-    std::unordered_map<const char*, std::shared_ptr<IComponentArray>> component_arrays;
+    std::array<Component, MAX_ENTITIES> components; // actual data, order is the same as dense
 
-    std::unordered_map<const char*, ComponentType> component_types;
-    ComponentType count_types;
+    std::array<uint32_t, MAX_ENTITIES> dense;
+    std::array<uint32_t, MAX_ENTITIES> sparse;
+    uint n;
+
+    //// Disallow this to be copied by mistake
+    //ComponentManager(const ComponentManager&) = delete;
 };

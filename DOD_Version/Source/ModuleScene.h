@@ -2,11 +2,17 @@
 #include "Module.h"
 
 #include "ComponentManager.h"
-#include "EntityManager.h"
-#include "SystemManager.h"
+#include "Components.h"
+
+#include "System.h"
 
 #include "PCG/pcg_basic.h"
+#include <array>
+#include <queue>
+#include <bitset>
 #include <memory>
+
+typedef std::bitset<MAX_COMPONENTS> ComponentMask;
 
 class S_Renderer;
 class S_Debug;
@@ -31,83 +37,137 @@ public:
 
 
 	// --- ENTITY COMPONENT SYSTEM ---
-    // Entities
-    EntityIdx CreateEntity() {
-        return mEntityManager->CreateEntity();
+    // --- ENTITIES ---
+    EntityIdx CreateEntity() 
+    {
+        EntityIdx index = available_indexes.front();
+        available_indexes.pop();
+        ++count_entities;
+        return index;
     }
 
-    void DestroyEntity(EntityIdx entity) {
-        mEntityManager->DestroyEntity(entity);
-        mComponentManager->EntityDestroyed(entity);
-        mSystemManager->EntityDestroyed(entity);
+    void DestroyEntity(EntityIdx entity) 
+    {
+        component_masks[entity].reset();
+        available_indexes.push(entity);
+        --count_entities;
+
+        //for (BaseComponentManager* mgr : component_mgrs)
+        //    mgr->EntityDestroyed(entity); //*** EVENT
+
+        for (System* system : systems)
+            system->RemoveEntity(entity);
     }
 
-    int GetEntityCount() {
-        return mEntityManager->GetCountEntities();
-    }
+    int GetEntityCount() { return count_entities; }
 
 
-    // Components
+    // --- COMPONENTS ---
     template<typename T>
-    void RegisterComponent() {
-        mComponentManager->RegisterComponent<T>();
-    }
+    void RegisterComponent() 
+    {
+        const char* type = typeid(T).name();
+        type = strstr(type, "_") + 1;
 
-    template<typename T>
-    void AddComponent(EntityIdx entity, T component) {
-        mComponentManager->AddComponent<T>(entity, component);
+        component_types[count_types] = type; // Add type to list
 
-        ComponentMask mask = mEntityManager->GetMask(entity);
-        mask.set(mComponentManager->GetComponentType<T>(), true);
-        mEntityManager->SetMask(entity, mask);
+        //Component comp = (Component)T;
+        //comp.type_count = count_types;
 
-        mSystemManager->EntitySignatureChanged(entity, mask);
-    }
-
-    template<typename T>
-    void RemoveComponent(EntityIdx entity) {
-        mComponentManager->RemoveComponent<T>(entity);
-
-        ComponentMask mask = mEntityManager->GetMask(entity);
-        mask.set(mComponentManager->GetComponentType<T>(), false);
-        mEntityManager->SetMask(entity, mask);
-
-        mSystemManager->EntitySignatureChanged(entity, mask);
+        component_mgrs[count_types] = new ComponentManager<T>(); // create new manager and add to list
+        count_types++;
     }
 
     template<typename T>
-    T& GetComponent(EntityIdx entity) {
-        return mComponentManager->GetComponent<T>(entity);
+    void AddComponent(const EntityIdx& entity, T& component)
+    {
+        ComponentManager<T>* mgr = GetComponentManager<T>();
+        mgr->AddComponent(entity, component);
+
+        component_masks[entity].set(GetComponentType<T>(), true);
+        EntityMaskUpdated(entity, component_masks[entity]);
     }
 
     template<typename T>
-    ComponentType GetComponentType() {
-        return mComponentManager->GetComponentType<T>();
-    }
+    void RemoveComponent(EntityIdx entity)
+    {
+        ComponentManager<T>* mgr = GetComponentManager<T>();
+        mgr->RemoveComponent(entity);
 
-
-    // Systems
-    template<typename T>
-    std::shared_ptr<T> RegisterSystem() {
-        return mSystemManager->RegisterSystem<T>();
+        component_masks[entity].set(GetComponentType<T>(), false);
+        EntityMaskUpdated(entity, component_masks[entity]);
     }
 
     template<typename T>
-    void SetSystemSignature(ComponentMask signature) {
-        mSystemManager->SetMask<T>(signature);
+    T& GetComponent(EntityIdx entity)
+    {
+        ComponentManager<T>* mgr = GetComponentManager<T>();
+        return mgr->GetComponent(entity);
+    }
+
+    template<typename T>
+    bool HasComponent(EntityIdx entity)
+    {
+        ComponentManager<T>* mgr = GetComponentManager<T>();
+        return mgr->HasComponent(entity);
+    }
+
+    template<typename T>
+    int GetComponentType()
+    {
+        //Component* comp = (Component*)T;
+        //return comp->type_count;
+        
+        const char* type = typeid(T).name(); // Get type as string
+        type = strstr(type, "_") + 1;
+
+        for (size_t i = 0; i < count_types; ++i)
+        {
+            if (strcmp(component_types[i], type) == 0)
+                return (int)i;
+        }
+        return -1;
+    }
+
+    // --- SYSTEMS ---
+    void EntityMaskUpdated(const EntityIdx& entity, const ComponentMask& mask) //*** NOT TESTED
+    { 
+        for (System* system : systems)
+        {
+            if ((mask & system->GetSignature()) == system->GetSignature())
+                system->AddEntity(entity);
+            else
+                system->RemoveEntity(entity);
+        }
+    }
+
+private:
+    template<typename T>
+    ComponentManager<T>* GetComponentManager() 
+    {
+        int type = GetComponentType<T>();
+        return (ComponentManager<T>*)component_mgrs[type];
     }
 
 private:
 	pcg32_random_t rng;
 
-	// Managers
-	std::unique_ptr<ComponentManager> mComponentManager;
-	std::unique_ptr<EntityManager> mEntityManager;
-	std::unique_ptr<SystemManager> mSystemManager;
+	// --- Entities ---
+    std::array<ComponentMask, MAX_ENTITIES> component_masks;
 
-	// Systems
-	std::shared_ptr<S_Renderer> render_system;
-    std::shared_ptr<S_Debug> debug_system;
-	std::shared_ptr<S_CameraController> camera_system;
-	std::shared_ptr<S_Physics> physics_system;
+    std::queue<EntityIdx> available_indexes;
+    uint32_t count_entities = 0;
+
+    // --- Components ---
+    std::array<BaseComponentManager*, MAX_COMPONENTS> component_mgrs;
+    std::array<const char*, MAX_COMPONENTS> component_types;
+    uint32_t count_types = 0;
+
+	// --- Systems ---
+    std::vector<System*> systems;
+
+	S_Renderer* render_system;
+    S_Debug* debug_system;
+	S_CameraController* camera_system;
+	S_Physics* physics_system;
 };

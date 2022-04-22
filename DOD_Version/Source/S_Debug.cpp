@@ -13,6 +13,16 @@
 
 #include "mmgr/mmgr.h"
 
+S_Debug::S_Debug()
+{
+	this->mask.set(App->scene->GetComponentType<C_Collider>());
+	this->mask.set(App->scene->GetComponentType<C_Transform>());
+}
+
+S_Debug::~S_Debug()
+{
+}
+
 void S_Debug::Init()
 {
 	// Events
@@ -57,6 +67,7 @@ void S_Debug::RenderColliders()
 	{
 		C_Collider collider = App->scene->GetComponent<C_Collider>(entity);
 		C_Transform transform = App->scene->GetComponent<C_Transform>(entity);
+
 		glm::vec4 color;
 		if (collider.is_colliding)
 			color = RED;

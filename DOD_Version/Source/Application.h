@@ -12,7 +12,6 @@ class ModuleGUI;
 class ModuleResources;
 class ModuleScene;
 class ModuleGame;
-class ModulePhysics;
 class ModuleRenderer;
 
 class Application
@@ -41,7 +40,6 @@ public:
 	ModuleResources* resources;
 	ModuleScene* scene;
 	ModuleGame* game;
-	ModulePhysics* physics;
 	ModuleRenderer* renderer;
 
 private:

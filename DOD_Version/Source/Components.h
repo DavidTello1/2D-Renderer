@@ -34,7 +34,6 @@ struct C_CameraController {
 };
 
 struct C_RigidBody {
-
 	glm::vec2 velocity = glm::vec2(0.0f);
 	float mass = 0.0f;
 	float rotation_speed = 0.0f;

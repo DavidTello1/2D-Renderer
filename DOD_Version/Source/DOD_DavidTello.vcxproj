@@ -134,10 +134,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="ComponentArray.h" />
     <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="Components.h" />
-    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Glew\include\eglew.h" />
     <ClInclude Include="Glew\include\glew.h" />
@@ -158,7 +156,6 @@
     <ClInclude Include="ModuleEvent.h" />
     <ClInclude Include="ModuleGUI.h" />
     <ClInclude Include="ModuleInput.h" />
-    <ClInclude Include="ModulePhysics.h" />
     <ClInclude Include="ModuleRenderer.h" />
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleGame.h" />
@@ -264,7 +261,6 @@
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="System.h" />
-    <ClInclude Include="SystemManager.h" />
     <ClInclude Include="S_CameraController.h" />
     <ClInclude Include="S_Debug.h" />
     <ClInclude Include="S_Physics.h" />
@@ -283,7 +279,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModuleGUI.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
-    <ClCompile Include="ModulePhysics.cpp" />
     <ClCompile Include="ModuleRenderer.cpp" />
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleGame.cpp" />

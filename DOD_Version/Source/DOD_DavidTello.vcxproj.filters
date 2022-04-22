@@ -46,9 +46,6 @@
     <Filter Include="Sources\ECS\Components">
       <UniqueIdentifier>{9c4848c0-9fed-4cbd-a73a-6e44765818f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\ECS\Managers">
-      <UniqueIdentifier>{8b5dab0b-9557-4ada-a769-ee8b7e5d5ea9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -378,9 +375,6 @@
     <ClInclude Include="stb\stb_image_write.h">
       <Filter>Sources\3rd Party\stb</Filter>
     </ClInclude>
-    <ClInclude Include="ModulePhysics.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
     <ClInclude Include="Optick\include\optick.config.h">
       <Filter>Sources\3rd Party\Optick</Filter>
     </ClInclude>
@@ -426,9 +420,6 @@
     <ClInclude Include="ModuleScene.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentArray.h">
-      <Filter>Sources\ECS\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Sources\ECS\Components</Filter>
     </ClInclude>
@@ -450,17 +441,11 @@
     <ClInclude Include="System.h">
       <Filter>Sources\ECS\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentManager.h">
-      <Filter>Sources\ECS\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>Sources\ECS\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemManager.h">
-      <Filter>Sources\ECS\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="S_Debug.h">
       <Filter>Sources\ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentManager.h">
+      <Filter>Sources\ECS\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -514,9 +499,6 @@
     </ClCompile>
     <ClCompile Include="stb\stb.cpp">
       <Filter>Sources\3rd Party\stb</Filter>
-    </ClCompile>
-    <ClCompile Include="ModulePhysics.cpp">
-      <Filter>Sources\Modules</Filter>
     </ClCompile>
     <ClCompile Include="Optick\include\optick_core.cpp">
       <Filter>Sources\3rd Party\Optick</Filter>

@@ -8,8 +8,11 @@ struct EventCameraSpeedChanged;
 class S_CameraController : public System
 {
 public:
-    void Init();
-    void Update(float dt);
+    S_CameraController();
+    ~S_CameraController();
+
+    void Init() override;
+    void Update(float dt) override;
 
 private:
     // Events

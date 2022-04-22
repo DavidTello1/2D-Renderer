@@ -9,7 +9,14 @@
 #include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
-void S_Renderer::Init()
+S_Renderer::S_Renderer()
+{
+    this->mask.set(App->scene->GetComponentType<C_Transform>());
+    this->mask.set(App->scene->GetComponentType<C_Renderer>());
+    this->mask.set(App->scene->GetComponentType<C_Sprite>());
+}
+
+S_Renderer::~S_Renderer()
 {
 }
 
