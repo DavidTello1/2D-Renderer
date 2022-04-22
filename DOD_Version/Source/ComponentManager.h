@@ -1,7 +1,10 @@
 #pragma once
 #include "Globals.h"
+#include "ModuleEvent.h"
 
 #include <array>
+
+struct EventEntityDestroyed;
 
 class BaseComponentManager
 {
@@ -13,6 +16,12 @@ template<typename Component>
 class ComponentManager : public BaseComponentManager
 {
 public:
+    ComponentManager()
+    {
+        n = 0;
+        App->event_mgr->Subscribe(this, &ComponentManager::OnEntityDestroyed);
+    }
+
     void AddComponent(EntityIdx entity, Component& component)
     {
         if (entity >= MAX_ENTITIES)
@@ -35,7 +44,7 @@ public:
 
             components[dense_index] = data;
             dense[dense_index] = item;
-            sparse[data] = dense_index;
+            sparse[item] = dense_index;
         }
     }
 
@@ -65,12 +74,15 @@ public:
     }
 
 private:
+    void OnEntityDestroyed(EventEntityDestroyed* e)
+    {
+        RemoveComponent(e->entity);
+    }
+
+private:
     std::array<Component, MAX_ENTITIES> components; // actual data, order is the same as dense
 
     std::array<uint32_t, MAX_ENTITIES> dense;
     std::array<uint32_t, MAX_ENTITIES> sparse;
-    uint n;
-
-    //// Disallow this to be copied by mistake
-    //ComponentManager(const ComponentManager&) = delete;
+    uint n = 0;
 };

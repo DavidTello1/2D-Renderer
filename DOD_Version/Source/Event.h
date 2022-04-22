@@ -16,8 +16,8 @@ struct EventWindowResize : public Event
 
 struct EventEntityDestroyed : public Event
 {
-    EventEntityDestroyed(unsigned int index) : entity(index) {};
-    unsigned int entity;
+    EventEntityDestroyed(EntityIdx index) : entity(index) {};
+    EntityIdx entity;
 };
 
 struct EventEntityMaskChanged : public Event

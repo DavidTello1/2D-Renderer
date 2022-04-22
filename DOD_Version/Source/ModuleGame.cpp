@@ -243,6 +243,9 @@ void ModuleGame::DeleteAsteroids(int num)
 {
 	for (int i = 0; i < num; ++i)
 		App->scene->DeleteEntity(asteroid_list[i]);
+
+	for (int i = 0; i < num; ++i)
+		asteroid_list.erase(asteroid_list.begin());
 }
 
 //-------------------------------------

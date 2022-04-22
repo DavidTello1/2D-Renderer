@@ -16,11 +16,19 @@ public:
 
     const ComponentMask& GetSignature() { return mask; }
 
-    void AddEntity(const EntityIdx& entity) { 
+    void AddEntity(const EntityIdx& entity) 
+    { 
+        for (EntityIdx object : entities) // check if entity is already in the system
+        {
+            if (entity == object)
+                return;
+        }
+
         entities.push_back(entity); 
     }
 
-    void RemoveEntity(const EntityIdx& entity) {
+    void RemoveEntity(const EntityIdx& entity) 
+    {
         for (size_t i = 0; i < entities.size(); ++i)
         {
             if (entity == entities[i])

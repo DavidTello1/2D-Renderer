@@ -1,6 +1,9 @@
 #pragma once
 #include "Module.h"
 
+#include "Application.h"
+#include "ModuleEvent.h"
+
 #include "ComponentManager.h"
 #include "Components.h"
 
@@ -52,11 +55,8 @@ public:
         available_indexes.push(entity);
         --count_entities;
 
-        //for (BaseComponentManager* mgr : component_mgrs)
-        //    mgr->EntityDestroyed(entity); //*** EVENT
-
-        for (System* system : systems)
-            system->RemoveEntity(entity);
+        App->event_mgr->Publish(new EventEntityDestroyed(entity));
+        EntityMaskUpdated(entity, component_masks[entity]);
     }
 
     int GetEntityCount() { return count_entities; }
