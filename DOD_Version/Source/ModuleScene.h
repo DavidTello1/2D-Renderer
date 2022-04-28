@@ -64,14 +64,10 @@ public:
 
     // --- COMPONENTS ---
     template<typename T>
-    void RegisterComponent() 
+    void RegisterComponentMgr() 
     {
-        const char* type = typeid(T).name(); // Get type as string
-        type = strstr(type, "_") + 1;
-
-        component_types[count_types] = type; // Add type to list
-        component_mgrs[count_types] = new ComponentManager<T>(); // create new manager and add to list
-        count_types++;
+        int type = GetComponentType<T>(); // Add type to list
+        component_mgrs[type] = new ComponentManager<T>(); // create new manager and add to list
     }
 
     template<typename T>
@@ -108,19 +104,6 @@ public:
         return mgr->HasComponent(entity);
     }
 
-    template<typename T>
-    int GetComponentType()
-    {        
-        const char* type = typeid(T).name(); // Get type as string
-        type = strstr(type, "_") + 1;
-
-        for (size_t i = 0; i < count_types; ++i)
-        {
-            if (strcmp(component_types[i], type) == 0)
-                return (int)i;
-        }
-        return -1;
-    }
 
     // --- SYSTEMS ---
     void EntityMaskUpdated(const EntityIdx& entity, const ComponentMask& mask)
@@ -133,6 +116,19 @@ public:
                 system->RemoveEntity(entity);
         }
     }
+
+
+    //------------------------------
+    template<typename T>
+    int GetComponentType() { assert(0 && "No ID for this component type"); }
+
+    template<> int GetComponentType<C_Transform>() { return (int)ComponentType::C_TRANSFORM; }
+    template<> int GetComponentType<C_Sprite>() { return (int)ComponentType::C_SPRITE; }
+    template<> int GetComponentType<C_Renderer>() { return (int)ComponentType::C_RENDERER; }
+    template<> int GetComponentType<C_Camera>() { return (int)ComponentType::C_CAMERA; }
+    template<> int GetComponentType<C_CameraController>() { return (int)ComponentType::C_CAMERACONTROLLER; }
+    template<> int GetComponentType<C_RigidBody>() { return (int)ComponentType::C_RIGIDBODY; }
+    template<> int GetComponentType<C_Collider>() { return (int)ComponentType::C_COLLIDER; }
 
 private:
     template<typename T>
@@ -153,8 +149,6 @@ private:
 
     // --- Components ---
     std::array<BaseComponentManager*, MAX_COMPONENTS> component_mgrs;
-    std::array<const char*, MAX_COMPONENTS> component_types;
-    uint32_t count_types = 0;
 
 	// --- Systems ---
     std::vector<System*> systems;

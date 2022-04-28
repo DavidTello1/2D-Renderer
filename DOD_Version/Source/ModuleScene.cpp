@@ -25,13 +25,13 @@ bool ModuleScene::Init()
 		available_indexes.push(entity);
 
 	//--- Register Components ---
-	RegisterComponent<C_Transform>();
-	RegisterComponent<C_Sprite>();
-	RegisterComponent<C_Renderer>();
-	RegisterComponent<C_Camera>();
-	RegisterComponent<C_CameraController>();
-	RegisterComponent<C_RigidBody>();
-	RegisterComponent<C_Collider>();
+	RegisterComponentMgr<C_Transform>();
+	RegisterComponentMgr<C_Sprite>();
+	RegisterComponentMgr<C_Renderer>();
+	RegisterComponentMgr<C_Camera>();
+	RegisterComponentMgr<C_CameraController>();
+	RegisterComponentMgr<C_RigidBody>();
+	RegisterComponentMgr<C_Collider>();
 
 	//--- Register Systems and Init ---
 	systems.push_back(render_system = new S_Renderer());
@@ -72,7 +72,7 @@ bool ModuleScene::Update(float dt)
 bool ModuleScene::CleanUp()
 {
 	// Delete Component Managers
-	for (int i = count_types - 1; i >= 0; --i)
+	for (int i = (int)ComponentType::TYPE_COUNT - 1; i >= 0; --i)
 		RELEASE(component_mgrs[i]);
 
 	// Delete Systems
