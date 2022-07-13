@@ -28,6 +28,8 @@ struct CollidingPair
 };
 
 struct C_Collider;
+struct C_Transform;
+struct C_RigidBody;
 
 class S_Physics : public System
 {
@@ -46,4 +48,9 @@ private:
 
     bool PairExists(const CollidingPair& new_pair, const std::vector<CollidingPair>& list) const;
     CollisionDirection GetCollisionDirection(glm::vec2 distance) const;
+
+private:
+    std::vector<C_Transform> transforms;
+    std::vector<C_Collider> colliders;
+    std::vector<C_RigidBody> rigidbodies;
 };

@@ -39,6 +39,17 @@ void S_Debug::Start()
 	CreateGrid(DEFAULT_WORLD_WIDTH, DEFAULT_WORLD_HEIGHT, DEFAULT_GRID_SPACING);
 }
 
+void S_Debug::Update(float dt)
+{
+	transforms.clear();
+	colliders.clear();
+	for (EntityIdx entity : entities)
+	{
+		transforms.push_back(App->scene->GetComponent<C_Transform>(entity));
+		colliders.push_back(App->scene->GetComponent<C_Collider>(entity));
+	}
+}
+
 void S_Debug::RenderGrid()
 {
 	glUseProgram(grid_shader);
@@ -63,10 +74,10 @@ void S_Debug::RenderGrid()
 
 void S_Debug::RenderColliders()
 {
-	for (EntityIdx entity : entities)
+	for (size_t i = 0; i < entities.size(); ++i)
 	{
-		C_Collider collider = App->scene->GetComponent<C_Collider>(entity);
-		C_Transform transform = App->scene->GetComponent<C_Transform>(entity);
+		C_Collider collider = colliders[i];
+		C_Transform transform = transforms[i];
 
 		glm::vec4 color;
 		if (collider.is_colliding)

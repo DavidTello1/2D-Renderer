@@ -11,6 +11,7 @@
 
 #include "glm/include/glm/gtc/type_ptr.hpp"
 
+#include "Optick/include/optick.h"
 #include "mmgr/mmgr.h"
 
 S_CameraController::S_CameraController()
@@ -33,11 +34,22 @@ void S_CameraController::Init()
 
 void S_CameraController::Update(float dt)
 {
+	// --- Get Components ---
+	transforms.clear();
+	cameras.clear();
+	controllers.clear();
 	for (EntityIdx entity : entities)
 	{
-		C_Transform& transform = App->scene->GetComponent<C_Transform>(entity);
-		C_Camera& camera = App->scene->GetComponent<C_Camera>(entity);
-		C_CameraController controller = App->scene->GetComponent<C_CameraController>(entity);
+		transforms.push_back(App->scene->GetComponent<C_Transform>(entity));
+		cameras.push_back(App->scene->GetComponent<C_Camera>(entity));
+		controllers.push_back(App->scene->GetComponent<C_CameraController>(entity));
+	}
+
+	for (size_t i = 0; i < entities.size(); ++i)
+	{
+		C_Transform& transform = transforms[i];
+		C_Camera& camera = cameras[i];
+		C_CameraController& controller = controllers[i];
 
 		float world_width = (float)App->game->GetWorldWidth();
 		float world_height = (float)App->game->GetWorldHeight();
@@ -100,6 +112,16 @@ void S_CameraController::Update(float dt)
 			camera.viewproj = camera.projection * camera.view;
 		}
 	}
+
+	OPTICK_PUSH("Set Components");
+	for (size_t i = 0; i < entities.size(); ++i)
+	{
+		App->scene->SetComponent<C_Transform>(entities[i], transforms[i]);
+		App->scene->SetComponent<C_Camera>(entities[i], cameras[i]);
+		App->scene->SetComponent<C_CameraController>(entities[i], controllers[i]);
+	}
+	OPTICK_POP();
+
 }
 
 void S_CameraController::OnResize(EventWindowResize* e)

@@ -56,6 +56,12 @@ public:
         return sparse[entity] < n;
     }
 
+    void SetComponent(EntityIdx entity, Component& component)
+    {
+        uint32_t index = sparse[entity];
+        components[index] = component;
+    }
+
     Component& GetComponent(EntityIdx entity)
     {
         uint32_t index = sparse[entity];

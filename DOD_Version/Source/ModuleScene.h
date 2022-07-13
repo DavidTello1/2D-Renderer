@@ -104,6 +104,13 @@ public:
         return mgr->HasComponent(entity);
     }
 
+    template<typename T>
+    void SetComponent(EntityIdx entity, T& component)
+    {
+        ComponentManager<T>* mgr = GetComponentManager<T>();
+        mgr->SetComponent(entity, component);
+    }
+
 
     // --- SYSTEMS ---
     void EntityMaskUpdated(const EntityIdx& entity, const ComponentMask& mask)
@@ -153,8 +160,8 @@ private:
 	// --- Systems ---
     std::vector<System*> systems;
 
-	S_Renderer* render_system;
-    S_Debug* debug_system;
-	S_CameraController* camera_system;
-	S_Physics* physics_system;
+    S_Renderer* render_system = nullptr;
+    S_Debug* debug_system = nullptr;
+	S_CameraController* camera_system = nullptr;
+	S_Physics* physics_system = nullptr;
 };

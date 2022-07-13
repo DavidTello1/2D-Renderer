@@ -21,31 +21,44 @@ S_Physics::~S_Physics()
 
 void S_Physics::Update(float dt)
 {
+	OPTICK_PUSH("Get Components");
+	//--- Get Components ---
+	transforms.clear();
+	rigidbodies.clear();
+	colliders.clear();
+	for (EntityIdx entity : entities)
+	{
+		transforms.push_back(App->scene->GetComponent<C_Transform>(entity));
+		rigidbodies.push_back(App->scene->GetComponent<C_RigidBody>(entity));
+		colliders.push_back(App->scene->GetComponent<C_Collider>(entity));
+	}
+	OPTICK_POP();
+
 	OPTICK_PUSH("Collision Detection");
 	//--- Collision Detection
 	std::vector<CollidingPair> colliding_pairs;
 	
-	for (EntityIdx entity1 : entities)
+	for (size_t i = 0; i < entities.size(); ++i)
 	{
-		C_Collider& collider1 = App->scene->GetComponent<C_Collider>(entity1); // get first collider
+		C_Collider collider1 = colliders[i]; // get first collider
 		collider1.is_colliding = false;
 
 		if (collider1.is_static) // if collider is static check next one
 			continue;
 
-		for (EntityIdx entity2 : entities)
+		for (size_t j = 0; j < entities.size(); ++j)
 		{
-			if (entity1 == entity2) // if same entity check next one
+			if (i == j) // if same entity check next one
 				continue;
 
-			C_Collider& collider2 = App->scene->GetComponent<C_Collider>(entity2); // get second collider
+			C_Collider& collider2 = colliders[j]; // get second collider
 			collider2.is_colliding = false;
 
 			glm::vec2 distance = glm::vec2(0.0f);
 			CollisionType type = CollisionType::ERROR;
 			if (CheckCollision(collider1, collider2, distance, type)) // check if they are colliding and retrieve distance & type
 			{
-				CollidingPair new_pair = { entity1, entity2, distance, type };
+				CollidingPair new_pair = { i, j, distance, type };
 
 				// Check if pair already exists
 				if (PairExists(new_pair, colliding_pairs) == false)
@@ -89,11 +102,11 @@ void S_Physics::Update(float dt)
 
 	OPTICK_PUSH("Movement Update");
 	//--- Movement Update
-	for (EntityIdx entity : entities)
+	for (size_t i = 0; i < entities.size(); ++i)
 	{
-		C_Transform& transform = App->scene->GetComponent<C_Transform>(entity);
-		C_Collider& collider = App->scene->GetComponent<C_Collider>(entity);
-		C_RigidBody rigidbody = App->scene->GetComponent<C_RigidBody>(entity);
+		C_Transform& transform = transforms[i];
+		C_Collider& collider = colliders[i];
+		C_RigidBody rigidbody = rigidbodies[i];
 
 		if (collider.is_static)
 			continue;
@@ -103,6 +116,16 @@ void S_Physics::Update(float dt)
 		
 		collider.position = transform.position;
 		collider.center = transform.position + collider.radius;
+	}
+	OPTICK_POP();
+
+	// --- Set Components ---
+	OPTICK_PUSH("Set Components");
+	for (size_t i = 0; i < entities.size(); ++i)
+	{
+		App->scene->SetComponent<C_Transform>(entities[i], transforms[i]);
+		App->scene->SetComponent<C_RigidBody>(entities[i], rigidbodies[i]);
+		App->scene->SetComponent<C_Collider>(entities[i], colliders[i]);
 	}
 	OPTICK_POP();
 }
@@ -172,6 +195,8 @@ bool S_Physics::CheckCollision(const C_Collider& collider1, const C_Collider& co
 		return false;
 	}
 	}
+
+	return false;
 }
 
 // -------------------
@@ -180,14 +205,14 @@ bool S_Physics::CheckCollision(const C_Collider& collider1, const C_Collider& co
 void S_Physics::CollisionCircleRect(const CollidingPair pair)
 {
 	// Circle
-	C_Collider& collider1 = App->scene->GetComponent<C_Collider>(pair.entity1);
-	C_Transform& transform1 = App->scene->GetComponent<C_Transform>(pair.entity1);
-	C_RigidBody& rigidbody1 = App->scene->GetComponent<C_RigidBody>(pair.entity1);
+	C_Collider& collider1 = colliders[pair.entity1];
+	C_Transform& transform1 = transforms[pair.entity1];
+	C_RigidBody& rigidbody1 = rigidbodies[pair.entity1];
 
 	// Rect
-	C_Collider& collider2 = App->scene->GetComponent<C_Collider>(pair.entity2);
-	C_Transform& transform2 = App->scene->GetComponent<C_Transform>(pair.entity2);
-	C_RigidBody& rigidbody2 = App->scene->GetComponent<C_RigidBody>(pair.entity2);
+	C_Collider& collider2 = colliders[pair.entity2];
+	C_Transform& transform2 = transforms[pair.entity2];
+	C_RigidBody& rigidbody2 = rigidbodies[pair.entity2];
 
 	float overlap = collider1.radius - glm::sqrt(pair.distance.x * pair.distance.x + pair.distance.y * pair.distance.y); // Get Overlap
 	if (std::isnan(overlap)) overlap = 0;
@@ -230,13 +255,13 @@ void S_Physics::CollisionCircleRect(const CollidingPair pair)
 // --- CIRCLE-CIRCLE ---
 void S_Physics::CollisionCircleCircle(const CollidingPair pair)
 {
-	C_Collider& collider1 = App->scene->GetComponent<C_Collider>(pair.entity1);
-	C_Transform& transform1 = App->scene->GetComponent<C_Transform>(pair.entity1);
-	C_RigidBody& rigidbody1 = App->scene->GetComponent<C_RigidBody>(pair.entity1);
+	C_Collider& collider1 = colliders[pair.entity1];
+	C_Transform& transform1 = transforms[pair.entity1];
+	C_RigidBody& rigidbody1 = rigidbodies[pair.entity1];
 
-	C_Collider& collider2 = App->scene->GetComponent<C_Collider>(pair.entity2);
-	C_Transform& transform2 = App->scene->GetComponent<C_Transform>(pair.entity2);
-	C_RigidBody& rigidbody2 = App->scene->GetComponent<C_RigidBody>(pair.entity2);
+	C_Collider& collider2 = colliders[pair.entity2];
+	C_Transform& transform2 = transforms[pair.entity2];
+	C_RigidBody& rigidbody2 = rigidbodies[pair.entity2];
 
 	// --- Static Collision
 	float dist = glm::sqrt(pair.distance.x * pair.distance.x + pair.distance.y * pair.distance.y);
@@ -282,13 +307,13 @@ void S_Physics::CollisionCircleCircle(const CollidingPair pair)
 // --- RECT-RECT ---
 void S_Physics::CollisionRectRect(const CollidingPair pair)
 {
-	C_Collider& collider1 = App->scene->GetComponent<C_Collider>(pair.entity1);
-	C_Transform& transform1 = App->scene->GetComponent<C_Transform>(pair.entity1);
-	C_RigidBody& rigidbody1 = App->scene->GetComponent<C_RigidBody>(pair.entity1);
+	C_Collider& collider1 = colliders[pair.entity1];
+	C_Transform& transform1 = transforms[pair.entity1];
+	C_RigidBody& rigidbody1 = rigidbodies[pair.entity1];
 
-	C_Collider& collider2 = App->scene->GetComponent<C_Collider>(pair.entity2);
-	C_Transform& transform2 = App->scene->GetComponent<C_Transform>(pair.entity2);
-	C_RigidBody& rigidbody2 = App->scene->GetComponent<C_RigidBody>(pair.entity2);
+	C_Collider& collider2 = colliders[pair.entity2];
+	C_Transform& transform2 = transforms[pair.entity2];
+	C_RigidBody& rigidbody2 = rigidbodies[pair.entity2];
 
 	//*** right now does nothing - update code
 }

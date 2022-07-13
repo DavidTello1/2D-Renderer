@@ -34,10 +34,10 @@ bool ModuleScene::Init()
 	RegisterComponentMgr<C_Collider>();
 
 	//--- Register Systems and Init ---
-	systems.push_back(render_system = new S_Renderer());
-	systems.push_back(debug_system = new S_Debug());
 	systems.push_back(camera_system = new S_CameraController());
 	systems.push_back(physics_system = new S_Physics());
+	systems.push_back(render_system = new S_Renderer());
+	systems.push_back(debug_system = new S_Debug());
 
 	for (size_t i = 0, size = systems.size(); i < size; ++i)
 		systems[i]->Init();
@@ -57,14 +57,17 @@ bool ModuleScene::Update(float dt)
 {
 	OPTICK_CATEGORY("Scene Update", Optick::Category::Scene);
 
-	// Update Systems
-	OPTICK_PUSH("Camera System");
-	camera_system->Update(dt);
-	OPTICK_POP();
+	for (size_t i = 0, size = systems.size(); i < size; ++i)
+		systems[i]->Update(dt);
 
-	OPTICK_PUSH("Physics System");
-	physics_system->Update(dt);
-	OPTICK_POP();
+	//// Update Systems
+	//OPTICK_PUSH("Camera System");
+	//camera_system->Update(dt);
+	//OPTICK_POP();
+
+	//OPTICK_PUSH("Physics System");
+	//physics_system->Update(dt);
+	//OPTICK_POP();
 
 	return true;
 }

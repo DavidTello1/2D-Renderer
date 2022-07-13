@@ -7,6 +7,9 @@ typedef unsigned int uint;
 
 struct EventWorldSizeUpdate;
 
+struct C_Transform;
+struct C_Collider;
+
 class S_Debug : public System
 {
 public:
@@ -15,6 +18,7 @@ public:
 
     void Init() override;
 	void Start() override;
+	void Update(float dt) override;
 
 	// Render
     void RenderGrid();
@@ -47,4 +51,7 @@ private:
 	// Colliders
 	uint circle_texture = 0;
 
+	//---
+	std::vector<C_Transform> transforms;
+	std::vector<C_Collider> colliders;
 };
