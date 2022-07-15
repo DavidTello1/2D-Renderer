@@ -79,6 +79,9 @@ void S_Debug::RenderColliders()
 		C_Collider collider = colliders[i];
 		C_Transform transform = transforms[i];
 
+		if (App->game->IsInsideCamera(transform) == false) // Frustum Culling
+			continue;
+
 		glm::vec4 color;
 		if (collider.is_colliding)
 			color = RED;

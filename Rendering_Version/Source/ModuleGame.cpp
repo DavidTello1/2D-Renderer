@@ -123,6 +123,23 @@ const glm::mat4& ModuleGame::GetViewProjMatrix() const
 }
 
 //--------------------------------------
+const bool ModuleGame::IsInsideCamera(C_Transform transform) const //--- For frustum culling
+{
+	float zoom = App->scene->GetComponent<C_CameraController>(main_camera).zoom;
+	C_Transform camera = App->scene->GetComponent<C_Transform>(main_camera);
+	uint width = App->window->GetWidth() * zoom;
+	uint height = App->window->GetHeight() * zoom;
+
+	if (transform.position.x < camera.position.x + width &&
+		transform.position.y < camera.position.y + height &&
+		transform.position.x + transform.size.x * transform.scale.x > camera.position.x &&
+		transform.position.y + transform.size.y * transform.scale.y > camera.position.y)
+		return true;
+	else
+		return false;
+}
+
+//--------------------------------------
 void ModuleGame::UpdateWorldSize()
 {
 	//--- Update Background

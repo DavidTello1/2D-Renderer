@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "ModuleScene.h"
+#include "ModuleGame.h"
 #include "ModuleRenderer.h"
 
 #include "Components.h"
@@ -43,15 +44,14 @@ void S_Renderer::Render()
         if (renderers[i].render == false)
             continue;
 
-        /*
-        //--- FRUSTUM CULLING ---
-        if (AABB(entity).IsInside(MainCamera) == false)
-            continue;
-        */
-
         C_Transform transform = transforms[i];
         C_Sprite sprite = sprites[i];
 
+        //--- Frustum Culling
+        if (App->game->IsInsideCamera(transform) == false)
+            continue;
+
+        //--- Draw Quad
         App->renderer->DrawQuad(sprite.shader, transform.position, transform.size * transform.scale,
             sprite.texture, glm::vec4(1.0f), transform.rotation, transform.size * transform.scale / 2.0f);
         

@@ -19,6 +19,8 @@
 #define MAX_ASTEROID_SIZE 100
 #define MIN_ASTEROID_SIZE 50
 
+struct C_Transform;
+
 struct EventAsteroidAdded;
 struct EventAsteroidRemoved;
 struct EventWorldSizeUpdate;
@@ -37,6 +39,7 @@ public:
 	const EntityIdx& GetMainCamera() const { return main_camera; }
 	void SetMainCamera(EntityIdx camera) { main_camera = camera; }
 	const glm::mat4& GetViewProjMatrix() const;
+	const bool IsInsideCamera(C_Transform transform) const;
 
 	// World
 	const int& GetWorldWidth() const { return world_width; }
