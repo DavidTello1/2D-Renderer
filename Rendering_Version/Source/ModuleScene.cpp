@@ -93,11 +93,15 @@ void ModuleScene::Draw()
 
 void ModuleScene::DrawDebug(bool grid, bool colliders)
 {
+	OPTICK_PUSH("Draw Grid");
 	if (grid)
 		debug_system->RenderGrid();
+	OPTICK_POP();
 
+	OPTICK_PUSH("Draw Colliders");
 	if (colliders)
 		debug_system->RenderColliders();
+	OPTICK_POP();
 }
 
 //--------------------------------------

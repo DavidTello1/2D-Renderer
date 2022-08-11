@@ -6,31 +6,41 @@
 #if defined(VERTEX) ///////////////////////////////////////////////////
 
 layout(location = 0) in vec3 aPosition;
-layout(location = 1) in vec2 aTexCoord;
+layout(location = 1) in vec4 aColor;
+layout(location = 2) in vec2 aTexCoord;
+layout(location = 3) in int aTexIndex;
 
 uniform mat4 uTransform;
 uniform mat4 uViewProj;
 
+//uniform int uIndices[32];
+
+out vec4 vColor;
 out vec2 vTexCoord;
+flat out int vTexIndex;
 
 void main()
 {
+	vColor = aColor;
 	vTexCoord = aTexCoord;
+	//vTexIndex = uIndices[gl_InstanceID];
+	vTexIndex = aTexIndex;
 	gl_Position = uViewProj * uTransform * vec4(aPosition, 1.0);
 }
 
 #elif defined(FRAGMENT) ///////////////////////////////////////////////
 
+layout (location = 0) out vec4 oColor;
+
+in vec4 vColor;
 in vec2 vTexCoord;
+flat in int vTexIndex;
 
-uniform sampler2D uTexture;
-uniform vec4 uColor;
-
-out vec4 oColor;
+uniform sampler2D uTextures[32];
 
 void main()
 {
-	oColor = texture(uTexture, vTexCoord) * uColor;
+	oColor = texture(uTextures[vTexIndex],  vTexCoord) * vColor;
 }
 
 #endif

@@ -1,5 +1,6 @@
 #pragma once
 #include "Module.h"
+#include <array>
 
 #include "glm/include/glm/glm.hpp"
 
@@ -7,11 +8,23 @@ struct Texture;
 struct EventWindowResize;
 typedef void* SDL_GLContext;
 
-struct RenderStats
-{
+struct RenderStats {
 	uint quad_count = 0;
 	uint draw_calls = 0;
 };
+
+struct Vertex {
+	glm::vec3 position;
+	glm::vec4 color;
+	glm::vec2 tex_coords;
+	int tex_index;
+};
+
+static const size_t MaxQuadCount = 10000;
+static const size_t MaxVertexCount = MaxQuadCount * 4;
+static const size_t MaxIndexCount = MaxQuadCount * 6;
+static const size_t MaxTextures = 32;
+
 
 // -------------------------------------------
 class ModuleRenderer : public Module
@@ -21,6 +34,7 @@ public:
 	virtual ~ModuleRenderer();
 
 	bool Init() override;
+	bool Start() override;
 	bool PreUpdate(float dt) override;
 	bool PostUpdate(float dt) override;
 	bool CleanUp() override;
@@ -29,6 +43,15 @@ public:
 
 	const SDL_GLContext& GetContext() const { return context; }
 	const RenderStats& GetStats() const { return stats; }
+
+	// --- BATCHES ---
+	void BeginBatch();
+	void EndBatch();
+	void RenderBatch();
+
+	// --- DRAWING ---
+	void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
+	void DrawQuad(const glm::vec2& position, const glm::vec2& size, uint32_t texture);
 
 	void DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, const uint32_t texture, 
 		const glm::vec4& color = glm::vec4(1.0f), const float& rotation = 0.0f, const glm::vec2& center = glm::vec2(0.0f)); //*** CLEAN
@@ -49,4 +72,11 @@ private:
 	uint quadVAO = 0;
 	uint quadVBO = 0;
 	uint quadIBO = 0;
+
+	uint index_count = 0;
+	Vertex* quad_buffer = nullptr;
+	Vertex* quad_buffer_ptr = nullptr;
+
+	std::array<uint32_t, MaxTextures> tex_slots;
+	uint32_t tex_slot_index = 1;
 };
