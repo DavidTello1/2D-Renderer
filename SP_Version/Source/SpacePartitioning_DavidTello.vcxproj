@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{746CC4C3-787F-4B0E-AA66-E388FE3FF4F6}</ProjectGuid>
+    <RootNamespace>SDLGame</RootNamespace>
+    <ProjectName>SP_Version</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="Components.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="Glew\include\eglew.h" />
+    <ClInclude Include="Glew\include\glew.h" />
+    <ClInclude Include="Glew\include\glxew.h" />
+    <ClInclude Include="Glew\include\wglew.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="Imgui\imconfig.h" />
+    <ClInclude Include="Imgui\imgui.h" />
+    <ClInclude Include="Imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Imgui\imgui_impl_sdl.h" />
+    <ClInclude Include="Imgui\imgui_internal.h" />
+    <ClInclude Include="Imgui\imstb_rectpack.h" />
+    <ClInclude Include="Imgui\imstb_textedit.h" />
+    <ClInclude Include="Imgui\imstb_truetype.h" />
+    <ClInclude Include="mmgr\mmgr.h" />
+    <ClInclude Include="mmgr\nommgr.h" />
+    <ClInclude Include="Module.h" />
+    <ClInclude Include="ModuleEvent.h" />
+    <ClInclude Include="ModuleGUI.h" />
+    <ClInclude Include="ModuleInput.h" />
+    <ClInclude Include="ModuleRenderer.h" />
+    <ClInclude Include="ModuleResources.h" />
+    <ClInclude Include="ModuleGame.h" />
+    <ClInclude Include="ModuleScene.h" />
+    <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="Optick\include\optick.config.h" />
+    <ClInclude Include="Optick\include\optick.h" />
+    <ClInclude Include="Optick\include\optick_common.h" />
+    <ClInclude Include="Optick\include\optick_core.freebsd.h" />
+    <ClInclude Include="Optick\include\optick_core.h" />
+    <ClInclude Include="Optick\include\optick_core.platform.h" />
+    <ClInclude Include="Optick\include\optick_core.win.h" />
+    <ClInclude Include="Optick\include\optick_gpu.h" />
+    <ClInclude Include="Optick\include\optick_memory.h" />
+    <ClInclude Include="Optick\include\optick_message.h" />
+    <ClInclude Include="Optick\include\optick_miniz.h" />
+    <ClInclude Include="Optick\include\optick_serialization.h" />
+    <ClInclude Include="Optick\include\optick_server.h" />
+    <ClInclude Include="PCG\pcg_basic.h" />
+    <ClInclude Include="SDL\include\begin_code.h" />
+    <ClInclude Include="SDL\include\close_code.h" />
+    <ClInclude Include="SDL\include\SDL.h" />
+    <ClInclude Include="SDL\include\SDL_assert.h" />
+    <ClInclude Include="SDL\include\SDL_atomic.h" />
+    <ClInclude Include="SDL\include\SDL_audio.h" />
+    <ClInclude Include="SDL\include\SDL_bits.h" />
+    <ClInclude Include="SDL\include\SDL_blendmode.h" />
+    <ClInclude Include="SDL\include\SDL_clipboard.h" />
+    <ClInclude Include="SDL\include\SDL_config.h" />
+    <ClInclude Include="SDL\include\SDL_config_android.h" />
+    <ClInclude Include="SDL\include\SDL_config_iphoneos.h" />
+    <ClInclude Include="SDL\include\SDL_config_macosx.h" />
+    <ClInclude Include="SDL\include\SDL_config_minimal.h" />
+    <ClInclude Include="SDL\include\SDL_config_pandora.h" />
+    <ClInclude Include="SDL\include\SDL_config_psp.h" />
+    <ClInclude Include="SDL\include\SDL_config_windows.h" />
+    <ClInclude Include="SDL\include\SDL_config_winrt.h" />
+    <ClInclude Include="SDL\include\SDL_config_wiz.h" />
+    <ClInclude Include="SDL\include\SDL_copying.h" />
+    <ClInclude Include="SDL\include\SDL_cpuinfo.h" />
+    <ClInclude Include="SDL\include\SDL_egl.h" />
+    <ClInclude Include="SDL\include\SDL_endian.h" />
+    <ClInclude Include="SDL\include\SDL_error.h" />
+    <ClInclude Include="SDL\include\SDL_events.h" />
+    <ClInclude Include="SDL\include\SDL_filesystem.h" />
+    <ClInclude Include="SDL\include\SDL_gamecontroller.h" />
+    <ClInclude Include="SDL\include\SDL_gesture.h" />
+    <ClInclude Include="SDL\include\SDL_haptic.h" />
+    <ClInclude Include="SDL\include\SDL_hints.h" />
+    <ClInclude Include="SDL\include\SDL_joystick.h" />
+    <ClInclude Include="SDL\include\SDL_keyboard.h" />
+    <ClInclude Include="SDL\include\SDL_keycode.h" />
+    <ClInclude Include="SDL\include\SDL_loadso.h" />
+    <ClInclude Include="SDL\include\SDL_log.h" />
+    <ClInclude Include="SDL\include\SDL_main.h" />
+    <ClInclude Include="SDL\include\SDL_messagebox.h" />
+    <ClInclude Include="SDL\include\SDL_mouse.h" />
+    <ClInclude Include="SDL\include\SDL_mutex.h" />
+    <ClInclude Include="SDL\include\SDL_name.h" />
+    <ClInclude Include="SDL\include\SDL_opengl.h" />
+    <ClInclude Include="SDL\include\SDL_opengles.h" />
+    <ClInclude Include="SDL\include\SDL_opengles2.h" />
+    <ClInclude Include="SDL\include\SDL_opengles2_gl2.h" />
+    <ClInclude Include="SDL\include\SDL_opengles2_gl2ext.h" />
+    <ClInclude Include="SDL\include\SDL_opengles2_gl2platform.h" />
+    <ClInclude Include="SDL\include\SDL_opengles2_khrplatform.h" />
+    <ClInclude Include="SDL\include\SDL_opengl_glext.h" />
+    <ClInclude Include="SDL\include\SDL_pixels.h" />
+    <ClInclude Include="SDL\include\SDL_platform.h" />
+    <ClInclude Include="SDL\include\SDL_power.h" />
+    <ClInclude Include="SDL\include\SDL_quit.h" />
+    <ClInclude Include="SDL\include\SDL_rect.h" />
+    <ClInclude Include="SDL\include\SDL_render.h" />
+    <ClInclude Include="SDL\include\SDL_revision.h" />
+    <ClInclude Include="SDL\include\SDL_rwops.h" />
+    <ClInclude Include="SDL\include\SDL_scancode.h" />
+    <ClInclude Include="SDL\include\SDL_sensor.h" />
+    <ClInclude Include="SDL\include\SDL_shape.h" />
+    <ClInclude Include="SDL\include\SDL_stdinc.h" />
+    <ClInclude Include="SDL\include\SDL_surface.h" />
+    <ClInclude Include="SDL\include\SDL_system.h" />
+    <ClInclude Include="SDL\include\SDL_syswm.h" />
+    <ClInclude Include="SDL\include\SDL_test.h" />
+    <ClInclude Include="SDL\include\SDL_test_assert.h" />
+    <ClInclude Include="SDL\include\SDL_test_common.h" />
+    <ClInclude Include="SDL\include\SDL_test_compare.h" />
+    <ClInclude Include="SDL\include\SDL_test_crc32.h" />
+    <ClInclude Include="SDL\include\SDL_test_font.h" />
+    <ClInclude Include="SDL\include\SDL_test_fuzzer.h" />
+    <ClInclude Include="SDL\include\SDL_test_harness.h" />
+    <ClInclude Include="SDL\include\SDL_test_images.h" />
+    <ClInclude Include="SDL\include\SDL_test_log.h" />
+    <ClInclude Include="SDL\include\SDL_test_md5.h" />
+    <ClInclude Include="SDL\include\SDL_test_memory.h" />
+    <ClInclude Include="SDL\include\SDL_test_random.h" />
+    <ClInclude Include="SDL\include\SDL_thread.h" />
+    <ClInclude Include="SDL\include\SDL_timer.h" />
+    <ClInclude Include="SDL\include\SDL_touch.h" />
+    <ClInclude Include="SDL\include\SDL_types.h" />
+    <ClInclude Include="SDL\include\SDL_version.h" />
+    <ClInclude Include="SDL\include\SDL_video.h" />
+    <ClInclude Include="SDL\include\SDL_vulkan.h" />
+    <ClInclude Include="stb\stb_image.h" />
+    <ClInclude Include="stb\stb_image_write.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="S_CameraController.h" />
+    <ClInclude Include="S_Debug.h" />
+    <ClInclude Include="S_Physics.h" />
+    <ClInclude Include="S_Renderer.h" />
+    <ClInclude Include="Timer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Imgui\imgui.cpp" />
+    <ClCompile Include="Imgui\imgui_demo.cpp" />
+    <ClCompile Include="Imgui\imgui_draw.cpp" />
+    <ClCompile Include="Imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="log.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ModuleGUI.cpp" />
+    <ClCompile Include="ModuleInput.cpp" />
+    <ClCompile Include="ModuleRenderer.cpp" />
+    <ClCompile Include="ModuleResources.cpp" />
+    <ClCompile Include="ModuleGame.cpp" />
+    <ClCompile Include="ModuleScene.cpp" />
+    <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="Optick\include\optick_core.cpp" />
+    <ClCompile Include="Optick\include\optick_gpu.cpp" />
+    <ClCompile Include="Optick\include\optick_message.cpp" />
+    <ClCompile Include="Optick\include\optick_miniz.cpp" />
+    <ClCompile Include="Optick\include\optick_serialization.cpp" />
+    <ClCompile Include="Optick\include\optick_server.cpp" />
+    <ClCompile Include="PCG\pcg_basic.c" />
+    <ClCompile Include="mmgr\mmgr.cpp" />
+    <ClCompile Include="stb\stb.cpp" />
+    <ClCompile Include="S_CameraController.cpp" />
+    <ClCompile Include="S_Debug.cpp" />
+    <ClCompile Include="S_Physics.cpp" />
+    <ClCompile Include="S_Renderer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Game\Assets\shaders.glsl" />
+    <None Include="SDL\include\SDL_config.h.cmake" />
+    <None Include="SDL\include\SDL_config.h.in" />
+    <None Include="SDL\include\SDL_config_macosx.h.orig" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
