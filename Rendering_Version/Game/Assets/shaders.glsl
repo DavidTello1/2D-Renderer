@@ -5,15 +5,13 @@
 
 #if defined(VERTEX) ///////////////////////////////////////////////////
 
-layout(location = 0) in vec3 aPosition;
-layout(location = 1) in vec4 aColor;
-layout(location = 2) in vec2 aTexCoord;
-layout(location = 3) in int aTexIndex;
+layout(location = 0) in mat4 aTransform;
+layout(location = 4) in vec3 aPosition;
+layout(location = 5) in vec4 aColor;
+layout(location = 6) in vec2 aTexCoord;
+layout(location = 7) in int aTexIndex;
 
-uniform mat4 uTransform;
 uniform mat4 uViewProj;
-
-//uniform int uIndices[32];
 
 out vec4 vColor;
 out vec2 vTexCoord;
@@ -23,9 +21,8 @@ void main()
 {
 	vColor = aColor;
 	vTexCoord = aTexCoord;
-	//vTexIndex = uIndices[gl_InstanceID];
 	vTexIndex = aTexIndex;
-	gl_Position = uViewProj * uTransform * vec4(aPosition, 1.0);
+	gl_Position = uViewProj * aTransform * vec4(aPosition, 1.0);
 }
 
 #elif defined(FRAGMENT) ///////////////////////////////////////////////

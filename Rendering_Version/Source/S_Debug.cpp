@@ -93,15 +93,14 @@ void S_Debug::RenderColliders()
 		{
 		case C_Collider::ColliderType::CIRCLE:
 		{
-			App->renderer->DrawCircle(App->resources->default_shader, circle_texture, transform.position, 
-				collider.radius * 2 * transform.scale.x, color);
+			App->renderer->DrawCircle(circle_texture, transform.position, collider.radius * 2 * transform.scale.x, color);
 			break;
 		}
 
 		case C_Collider::ColliderType::RECT:
 		{
-			App->renderer->DrawQuad(App->resources->default_shader, transform.position, transform.size * transform.scale,
-				App->resources->default_tex, color, transform.rotation, transform.size * transform.scale / 2.0f);
+			App->renderer->DrawQuad(transform.position, transform.rotation, transform.size * transform.scale,
+				App->resources->default_tex, color, transform.size * transform.scale / 2.0f);
 			break;
 		}
 

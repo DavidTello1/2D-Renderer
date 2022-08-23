@@ -103,24 +103,32 @@ bool ModuleRenderer::PostUpdate(float dt)
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
 
-	glm::mat4 model = glm::mat4(1.0f);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
-
 	// --- Render Scene
 	OPTICK_PUSH("Scene Draw");
 	App->scene->Draw();
 	OPTICK_POP();
 
+	// --- Colliders
+	OPTICK_PUSH("Draw Colliders");
+	if (App->gui->IsDrawColliders())
+		App->scene->DrawColliders();
+	OPTICK_POP();
+
 	// --- End Batch and Render ---
+	OPTICK_PUSH("Render Batch");
 	EndBatch();
 	RenderBatch();
+	OPTICK_POP();
 
-	//// --- Debug Draw
-	//OPTICK_PUSH("Debug Draw");
-	//App->scene->DrawDebug(App->gui->IsDrawGrid(), App->gui->IsDrawColliders());
-	//if (App->gui->IsDrawGrid())
-	//	stats.draw_calls++;
-	//OPTICK_POP();
+	// --- Grid
+	OPTICK_PUSH("Draw Grid");
+	if (App->gui->IsDrawGrid())
+	{
+		App->scene->DrawGrid();
+		stats.draw_calls++;
+	}
+	OPTICK_POP();
+
 
 	// --- Render ImGui
 	OPTICK_PUSH("Draw Imgui");
@@ -153,6 +161,7 @@ void ModuleRenderer::BeginBatch()
 
 void ModuleRenderer::EndBatch()
 {
+	// Set VBO
 	GLsizeiptr size = (uint8_t*)quad_buffer_ptr - (uint8_t*)quad_buffer;
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, size, quad_buffer);
@@ -175,46 +184,7 @@ void ModuleRenderer::RenderBatch()
 }
 
 //--------------------------------
-void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
-{
-	if (index_count >= MaxIndexCount)
-	{
-		EndBatch();
-		RenderBatch();
-		BeginBatch();
-	}
-
-	int tex_index = 0;
-
-	quad_buffer_ptr->position = { position.x, position.y, 0.0f };
-	quad_buffer_ptr->color = color;
-	quad_buffer_ptr->tex_coords = { 0.0f, 0.0f };
-	quad_buffer_ptr->tex_index = tex_index;
-	quad_buffer_ptr++;
-
-	quad_buffer_ptr->position = { position.x + size.x, position.y, 0.0f };
-	quad_buffer_ptr->color = color;
-	quad_buffer_ptr->tex_coords = { 1.0f, 0.0f };
-	quad_buffer_ptr->tex_index = tex_index;
-	quad_buffer_ptr++;
-
-	quad_buffer_ptr->position = { position.x + size.x, position.y + size.y, 0.0f };
-	quad_buffer_ptr->color = color;
-	quad_buffer_ptr->tex_coords = { 1.0f, 1.0f };
-	quad_buffer_ptr->tex_index = tex_index;
-	quad_buffer_ptr++;
-
-	quad_buffer_ptr->position = { position.x, position.y + size.y, 0.0f };
-	quad_buffer_ptr->color = color;
-	quad_buffer_ptr->tex_coords = { 0.0f, 1.0f };
-	quad_buffer_ptr->tex_index = tex_index;
-	quad_buffer_ptr++;
-
-	index_count += 6;
-	stats.quad_count++;
-}
-
-void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, uint32_t texture)
+void ModuleRenderer::DrawQuad(const glm::mat4& transform, const glm::vec2& position, const glm::vec2& size, uint32_t texture, const glm::vec4& color)
 {
 	if (index_count >= MaxIndexCount || tex_slot_index > 31)
 	{
@@ -223,10 +193,8 @@ void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, 
 		BeginBatch();
 	}
 
-	constexpr glm::vec4 color = glm::vec4(1.0);
-	int tex_index = 0;
-
 	// Check if texture is already loaded
+	int tex_index = 0;
 	for (uint32_t i = 0; i < tex_slot_index; ++i)
 	{
 		if (tex_slots[i] == texture)
@@ -244,93 +212,65 @@ void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, 
 		tex_slot_index++;
 	}
 
-	quad_buffer_ptr->position = { position.x, position.y, 0.0f };
-	quad_buffer_ptr->color = color;
-	quad_buffer_ptr->tex_coords = { 0.0f, 0.0f };
-	quad_buffer_ptr->tex_index = tex_index;
-	quad_buffer_ptr++;
+	constexpr glm::vec2 texCoords[] = { 
+		{ 0.0f, 1.0f }, 
+		{ 1.0f, 0.0f }, 
+		{ 0.0f, 0.0f }, 
+		{ 1.0f, 1.0f } 
+	};
 
-	quad_buffer_ptr->position = { position.x + size.x, position.y, 0.0f };
-	quad_buffer_ptr->color = color;
-	quad_buffer_ptr->tex_coords = { 1.0f, 0.0f };
-	quad_buffer_ptr->tex_index = tex_index;
-	quad_buffer_ptr++;
+	constexpr glm::vec3 positions[] = { 
+		{ 0.0f, 1.0f, 0.0f },  
+		{ 1.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f },
+		{ 1.0f, 1.0f, 0.0f }
+	};
 
-	quad_buffer_ptr->position = { position.x + size.x, position.y + size.y, 0.0f };
-	quad_buffer_ptr->color = color;
-	quad_buffer_ptr->tex_coords = { 1.0f, 1.0f };
-	quad_buffer_ptr->tex_index = tex_index;
-	quad_buffer_ptr++;
-
-	quad_buffer_ptr->position = { position.x, position.y + size.y, 0.0f };
-	quad_buffer_ptr->color = color;
-	quad_buffer_ptr->tex_coords = { 0.0f, 1.0f };
-	quad_buffer_ptr->tex_index = tex_index;
-	quad_buffer_ptr++;
+	// Fill buffer (4 vertices)
+	for (size_t i = 0; i < 4; i++)
+	{
+		quad_buffer_ptr->model = transform;
+		quad_buffer_ptr->position = positions[i];
+		quad_buffer_ptr->color = color;
+		quad_buffer_ptr->tex_coords = texCoords[i];
+		quad_buffer_ptr->tex_index = tex_index;
+		quad_buffer_ptr++;
+	}
 
 	index_count += 6;
 	stats.quad_count++;
 }
 
-void ModuleRenderer::DrawQuad(const uint shader, const glm::vec2& position, const glm::vec2& size, const uint32_t texture, 
-	const glm::vec4& color, const float& rotation, const glm::vec2& center)
+void ModuleRenderer::DrawQuad(const glm::vec2& position, const float& rotation, const glm::vec2& size, const uint32_t texture, const glm::vec4& color, const glm::vec2& center)
 {
 	OPTICK_PUSH("Draw Quad");
 
-	//glUseProgram(shader);
-	//glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(position, 0.0f));
+	if (center != glm::vec2(0.0f))
+	{
+		model = glm::translate(model, glm::vec3(center, 0.0f));
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-center, 0.0f));
+	}
+	else
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
 
-	//glm::mat4 model = glm::mat4(1.0f);
-	//model = glm::translate(model, glm::vec3(position, 0.0f));
-	//if (center != glm::vec2(0.0f))
-	//{
-	//	model = glm::translate(model, glm::vec3(center, 0.0f));
-	//	model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-	//	model = glm::translate(model, glm::vec3(-center, 0.0f));
-	//}
-	//else
-	//	model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-	//model = glm::scale(model, glm::vec3(size, 1.0f));
-	//glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
-
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, texture);
-	//glUniform1i(glGetUniformLocation(shader, "uTexture"), 0);
-
-	//glUniform4f(glGetUniformLocation(shader, "uColor"), color.r, color.g, color.b, color.a);
-
-	//glBindVertexArray(quadVAO);
-	//glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, );
-
-	//stats.draw_calls++;
-	//stats.quad_count++;
+	DrawQuad(model, position, size, texture, color);
 
 	OPTICK_POP();
 }
 
-void ModuleRenderer::DrawCircle(const uint shader, const uint32_t texture, const glm::vec2& position, const float& diameter, const glm::vec4& color)
+void ModuleRenderer::DrawCircle(const uint32_t texture, const glm::vec2& position, const float& diameter, const glm::vec4& color)
 {
 	OPTICK_PUSH("Draw Circle");
-
-	glUseProgram(shader);
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&App->game->GetViewProjMatrix());
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position, 0.0f));
 	model = glm::scale(model, glm::vec3(diameter, diameter, 1.0f));
-	glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&model);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(glGetUniformLocation(shader, "uTexture"), 0);
-
-	glUniform4f(glGetUniformLocation(shader, "uColor"), color.r, color.g, color.b, color.a);
-
-	glBindVertexArray(quadVAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	stats.draw_calls++;
-	stats.quad_count++;
+	DrawQuad(model, position, glm::vec2(diameter), texture, color);
 
 	OPTICK_POP();
 }
@@ -338,19 +278,6 @@ void ModuleRenderer::DrawCircle(const uint shader, const uint32_t texture, const
 //--------------------------------
 void ModuleRenderer::CreateQuad()
 {
-	//float vertices[] = {
-	//	// positions        // texture coords
-	//	0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
-	//	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-	//	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-	//	1.0f, 1.0f, 0.0f,	1.0f, 1.0f
-	//};
-	//
-	//unsigned int indices[] = {
-	//	0, 1, 2, // first triangle
-	//	0, 3, 1  // second triangle
-	//};
-
 	quad_buffer = new Vertex[MaxVertexCount];
 
 	glCreateVertexArrays(1, &quadVAO);
@@ -358,19 +285,24 @@ void ModuleRenderer::CreateQuad()
 
 	glCreateBuffers(1, &quadVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(Vertex), nullptr, GL_STATIC_DRAW);
 
 	glEnableVertexArrayAttrib(quadVAO, 0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
-
 	glEnableVertexArrayAttrib(quadVAO, 1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
-
 	glEnableVertexArrayAttrib(quadVAO, 2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tex_coords));
-
 	glEnableVertexArrayAttrib(quadVAO, 3);
-	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tex_index));
+	glEnableVertexArrayAttrib(quadVAO, 4);
+	glEnableVertexArrayAttrib(quadVAO, 5);
+	glEnableVertexArrayAttrib(quadVAO, 6);
+	glEnableVertexArrayAttrib(quadVAO, 7);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(0 * sizeof(glm::vec4)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(1 * sizeof(glm::vec4)));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(2 * sizeof(glm::vec4)));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(glm::vec4)));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
+	glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tex_coords));
+	glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tex_index));
 
 	uint32_t indices[MaxIndexCount];
 	uint32_t offset = 0;
@@ -380,9 +312,9 @@ void ModuleRenderer::CreateQuad()
 		indices[i + 1] = 1 + offset;
 		indices[i + 2] = 2 + offset;
 
-		indices[i + 3] = 2 + offset;
+		indices[i + 3] = 0 + offset;
 		indices[i + 4] = 3 + offset;
-		indices[i + 5] = 0 + offset;
+		indices[i + 5] = 1 + offset;
 
 		offset += 4;
 	}

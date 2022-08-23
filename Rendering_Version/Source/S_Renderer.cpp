@@ -52,9 +52,7 @@ void S_Renderer::Render()
             continue;
 
         //--- Draw Quad
-        App->renderer->DrawQuad(transform.position, transform.size, sprite.texture);
-        //App->renderer->DrawQuad(sprite.shader, transform.position, transform.size * transform.scale,
-        //    sprite.texture, glm::vec4(1.0f), transform.rotation, transform.size * transform.scale / 2.0f);
+        App->renderer->DrawQuad(transform.position, transform.rotation,  transform.size * transform.scale, sprite.texture, glm::vec4(1.0f), transform.size * transform.scale / 2.0f);
         
         OPTICK_POP();
     }

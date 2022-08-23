@@ -60,15 +60,6 @@ bool ModuleScene::Update(float dt)
 	for (size_t i = 0, size = systems.size(); i < size; ++i)
 		systems[i]->Update(dt);
 
-	//// Update Systems
-	//OPTICK_PUSH("Camera System");
-	//camera_system->Update(dt);
-	//OPTICK_POP();
-
-	//OPTICK_PUSH("Physics System");
-	//physics_system->Update(dt);
-	//OPTICK_POP();
-
 	return true;
 }
 
@@ -91,18 +82,12 @@ void ModuleScene::Draw()
 	render_system->Render();
 }
 
-void ModuleScene::DrawDebug(bool grid, bool colliders)
+void ModuleScene::DrawGrid()
 {
-	OPTICK_PUSH("Draw Grid");
-	if (grid)
-		debug_system->RenderGrid();
-	OPTICK_POP();
-
-	OPTICK_PUSH("Draw Colliders");
-	if (colliders)
-		debug_system->RenderColliders();
-	OPTICK_POP();
+	debug_system->RenderGrid();
 }
 
-//--------------------------------------
-// --- ENTITY COMPONENT SYSTEM ---
+void ModuleScene::DrawColliders()
+{
+	debug_system->RenderColliders();
+}

@@ -36,7 +36,8 @@ public:
 	pcg32_random_t& GetRNG() { return rng; }
 	
     void Draw();
-    void DrawDebug(bool grid, bool colliders);
+    void DrawGrid();
+    void DrawColliders();
 
 
 	// --- ENTITY COMPONENT SYSTEM ---
