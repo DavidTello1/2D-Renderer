@@ -46,6 +46,9 @@
     <Filter Include="Sources\ECS\Components">
       <UniqueIdentifier>{9c4848c0-9fed-4cbd-a73a-6e44765818f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Tools\FR_Grid">
+      <UniqueIdentifier>{dff13541-bd3a-48bf-aec5-dd37223dc1ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -447,6 +450,9 @@
     <ClInclude Include="ComponentManager.h">
       <Filter>Sources\ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="FixedGrid.h">
+      <Filter>Sources\Tools\FR_Grid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Imgui\imgui.cpp">
@@ -535,6 +541,9 @@
     </ClCompile>
     <ClCompile Include="S_Debug.cpp">
       <Filter>Sources\ECS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedGrid.cpp">
+      <Filter>Sources\Tools\FR_Grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -13,12 +13,17 @@ struct RenderStats {
 	uint draw_calls = 0;
 };
 
-struct Vertex {
+struct QuadVertex {
 	glm::mat4 model;
 	glm::vec3 position;
 	glm::vec4 color;
 	glm::vec2 tex_coords;
 	int tex_index;
+};
+
+struct LineVertex {
+	glm::vec2 position;
+	glm::vec4 color;
 };
 
 static const size_t MaxQuadCount = 10000;
@@ -56,11 +61,14 @@ public:
 
 	void DrawCircle(const uint32_t texture, const glm::vec2& center, const float& radius, const glm::vec4& color);
 
+	void DrawLine(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color = glm::vec4(1.0f));
+
 	// --- EVENTS ---
 	void OnResize(EventWindowResize* e) { UpdateViewportSize(); }
 
 private:
 	void CreateQuad();
+	void CreateLine();
 
 private:
 	SDL_GLContext context;
@@ -71,11 +79,20 @@ private:
 	uint quadVBO = 0;
 	uint quadIBO = 0;
 
-	uint index_count = 0;
-	Vertex* quad_buffer = nullptr;
-	Vertex* quad_buffer_ptr = nullptr;
+	uint quad_index_count = 0;
+	QuadVertex* quad_buffer = nullptr;
+	QuadVertex* quad_buffer_ptr = nullptr;
 
 	// Textures
-	std::array<uint32_t, MaxTextures> tex_slots;
+	std::array<uint32_t, MaxTextures> tex_slots{};
 	uint32_t tex_slot_index = 1;
+
+public: // public for debug drawing (not best solution)
+	// Line
+	uint lineVAO = 0;
+	uint lineVBO = 0;
+
+	uint line_index_count = 0;
+	LineVertex* line_buffer = nullptr;
+	LineVertex* line_buffer_ptr = nullptr;
 };

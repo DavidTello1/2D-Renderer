@@ -9,6 +9,9 @@ typedef std::bitset<MAX_COMPONENTS> ComponentMask;
 class System
 {
 public:
+    System() {};
+    virtual ~System() {};
+
     virtual void Init() {};
     virtual void Start() {};
     virtual void Update(float dt) {};

@@ -39,6 +39,8 @@ public:
     void DrawGrid();
     void DrawColliders();
 
+    const S_Physics* GetSystemPhysics() const { return physics_system; }
+    S_Physics* GetSystemPhysics() { return physics_system; }
 
 	// --- ENTITY COMPONENT SYSTEM ---
     // --- ENTITIES ---

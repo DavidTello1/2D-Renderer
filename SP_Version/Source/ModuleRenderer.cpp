@@ -76,6 +76,9 @@ bool ModuleRenderer::Start()
 	// Create Basic Quad
 	CreateQuad();
 
+	// Create Line
+	CreateLine();
+
 	return true;
 }
 
@@ -129,7 +132,6 @@ bool ModuleRenderer::PostUpdate(float dt)
 	}
 	OPTICK_POP();
 
-
 	// --- Render ImGui
 	OPTICK_PUSH("Draw Imgui");
 	App->gui->Draw();
@@ -148,20 +150,25 @@ bool ModuleRenderer::CleanUp()
 	glDeleteVertexArrays(1, &quadVAO);
 	glDeleteBuffers(1, &quadVBO);
 	glDeleteBuffers(1, &quadIBO);
-
 	RELEASE_ARRAY(quad_buffer);
+
+	glDeleteVertexArrays(1, &lineVAO);
+	glDeleteBuffers(1, &lineVBO);
+	RELEASE_ARRAY(line_buffer);
+
 
 	return true;
 }
 //--------------------------------
 void ModuleRenderer::BeginBatch()
 {
+	quad_index_count = 0;
 	quad_buffer_ptr = quad_buffer;
 }
 
 void ModuleRenderer::EndBatch()
 {
-	// Set VBO
+	// Set Quad VBO
 	GLsizeiptr size = (uint8_t*)quad_buffer_ptr - (uint8_t*)quad_buffer;
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, size, quad_buffer);
@@ -176,17 +183,17 @@ void ModuleRenderer::RenderBatch()
 	}
 
 	glBindVertexArray(quadVAO);
-	glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, quad_index_count, GL_UNSIGNED_INT, nullptr);
 	stats.draw_calls++;
 
-	index_count = 0;
+	quad_index_count = 0;
 	tex_slot_index = 1;
 }
 
 //--------------------------------
 void ModuleRenderer::DrawQuad(const glm::mat4& transform, const glm::vec2& position, const glm::vec2& size, uint32_t texture, const glm::vec4& color)
 {
-	if (index_count >= MaxIndexCount || tex_slot_index > 31)
+	if (quad_index_count >= MaxIndexCount || tex_slot_index > 31)
 	{
 		EndBatch();
 		RenderBatch();
@@ -237,7 +244,7 @@ void ModuleRenderer::DrawQuad(const glm::mat4& transform, const glm::vec2& posit
 		quad_buffer_ptr++;
 	}
 
-	index_count += 6;
+	quad_index_count += 6;
 	stats.quad_count++;
 }
 
@@ -275,17 +282,34 @@ void ModuleRenderer::DrawCircle(const uint32_t texture, const glm::vec2& positio
 	OPTICK_POP();
 }
 
+void ModuleRenderer::DrawLine(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color)
+{
+	OPTICK_PUSH("Draw Line");
+
+	line_buffer_ptr->position = start;
+	line_buffer_ptr->color = color;
+	line_buffer_ptr++;
+
+	line_buffer_ptr->position = end;
+	line_buffer_ptr->color = color;
+	line_buffer_ptr++;
+
+	line_index_count += 2;
+
+	OPTICK_POP();
+}
+
 //--------------------------------
 void ModuleRenderer::CreateQuad()
 {
-	quad_buffer = new Vertex[MaxVertexCount];
+	quad_buffer = new QuadVertex[MaxVertexCount];
 
 	glCreateVertexArrays(1, &quadVAO);
 	glBindVertexArray(quadVAO);
 
 	glCreateBuffers(1, &quadVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(Vertex), nullptr, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(QuadVertex), nullptr, GL_STATIC_DRAW);
 
 	glEnableVertexArrayAttrib(quadVAO, 0);
 	glEnableVertexArrayAttrib(quadVAO, 1);
@@ -295,14 +319,14 @@ void ModuleRenderer::CreateQuad()
 	glEnableVertexArrayAttrib(quadVAO, 5);
 	glEnableVertexArrayAttrib(quadVAO, 6);
 	glEnableVertexArrayAttrib(quadVAO, 7);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(0 * sizeof(glm::vec4)));
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(1 * sizeof(glm::vec4)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(2 * sizeof(glm::vec4)));
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(glm::vec4)));
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
-	glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tex_coords));
-	glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tex_index));
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (void*)(0 * sizeof(glm::vec4)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (void*)(1 * sizeof(glm::vec4)));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (void*)(2 * sizeof(glm::vec4)));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (void*)(3 * sizeof(glm::vec4)));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, position));
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, color));
+	glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, tex_coords));
+	glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, tex_index));
 
 	uint32_t indices[MaxIndexCount];
 	uint32_t offset = 0;
@@ -322,6 +346,23 @@ void ModuleRenderer::CreateQuad()
 	glCreateBuffers(1, &quadIBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+}
+
+void ModuleRenderer::CreateLine()
+{
+	line_buffer = new LineVertex[MaxVertexCount];
+
+	glCreateVertexArrays(1, &lineVAO);
+	glBindVertexArray(lineVAO);
+
+	glCreateBuffers(1, &lineVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+	glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(LineVertex), nullptr, GL_STATIC_DRAW);
+
+	glEnableVertexArrayAttrib(lineVAO, 0);
+	glEnableVertexArrayAttrib(lineVAO, 1);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, position));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, color));
 }
 
 void ModuleRenderer::UpdateViewportSize()

@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "ModuleScene.h"
+#include "ModuleGame.h"
 
 #include "Components.h"
 
@@ -13,16 +14,25 @@ S_Physics::S_Physics()
 	this->mask.set(App->scene->GetComponentType<C_Transform>());
 	this->mask.set(App->scene->GetComponentType<C_RigidBody>());
 	this->mask.set(App->scene->GetComponentType<C_Collider>());
+
+	grid = new FixedGrid(glm::vec2(0.0f), glm::vec2(App->game->GetWorldWidth(), App->game->GetWorldHeight()), GRID_CELLSIZE);
 }
 
 S_Physics::~S_Physics()
 {
+	RELEASE(grid);
+}
+
+void S_Physics::Init()
+{
+	// Events
+	App->event_mgr->Subscribe(this, &S_Physics::OnWorldSizeUpdate);
 }
 
 void S_Physics::Update(float dt)
 {
 	OPTICK_PUSH("Get Components");
-	//--- Get Components ---
+	// --- Get Components ---
 	transforms.clear();
 	rigidbodies.clear();
 	colliders.clear();
@@ -34,28 +44,32 @@ void S_Physics::Update(float dt)
 	}
 	OPTICK_POP();
 
+	// --- Recalculate Grid ---
+	OPTICK_PUSH("Recalculate Grid");
+	RecalculateGrid();
+	OPTICK_POP();
+
 	OPTICK_PUSH("Collision Detection");
-	//--- Collision Detection
+	// --- Collision Detection ---
 	std::vector<CollidingPair> colliding_pairs;
 	
 	for (size_t i = 0; i < entities.size(); ++i)
 	{
-		C_Collider collider1 = colliders[i]; // get first collider
+		C_Collider& collider1 = colliders[i]; // get first collider
 		collider1.is_colliding = false;
 
 		if (collider1.is_static) // if collider is static check next one
 			continue;
 
-		for (size_t j = 0; j < entities.size(); ++j)
-		{
-			if (i == j) // if same entity check next one
-				continue;
+		glm::vec2 distance = glm::vec2(0.0f);
+		CollisionType type = CollisionType::ERROR;
 
-			C_Collider& collider2 = colliders[j]; // get second collider
+		// Check Collision with Borders
+		for (size_t j = 0; j < 4; ++j)
+		{
+			C_Collider& collider2 = colliders[j]; // get border collider
 			collider2.is_colliding = false;
 
-			glm::vec2 distance = glm::vec2(0.0f);
-			CollisionType type = CollisionType::ERROR;
 			if (CheckCollision(collider1, collider2, distance, type)) // check if they are colliding and retrieve distance & type
 			{
 				CollidingPair new_pair = { i, j, distance, type };
@@ -63,6 +77,28 @@ void S_Physics::Update(float dt)
 				// Check if pair already exists
 				if (PairExists(new_pair, colliding_pairs) == false)
 					colliding_pairs.push_back(new_pair); // add to vector
+			}
+		}
+
+		// Check Collision with other asteroids
+		for (uint32_t index : grid->GetCandidates(i, collider1.position, glm::vec2(collider1.radius)))
+		{
+			if (index == i) // if same entity check next one
+				continue;
+
+			// Check if pair already exists
+			CollidingPair new_pair = { i, index, distance, type };
+			if (PairExists(new_pair, colliding_pairs) == false)
+			{
+				C_Collider& collider2 = colliders[index]; // get second collider
+				collider2.is_colliding = false;
+
+				if (CheckCollision(collider1, collider2, distance, type)) // check if they are colliding and retrieve distance & type	
+				{
+					new_pair.distance = distance;
+					new_pair.type = type;
+					colliding_pairs.push_back(new_pair); // add new pair to vector
+				}
 			}
 		}
 	}
@@ -354,4 +390,45 @@ CollisionDirection S_Physics::GetCollisionDirection(glm::vec2 distance) const
 		}
 	}
 	return (CollisionDirection)direction;
+}
+
+// -----------------------------
+// --- FIXED RESOLUTION GRID ---
+void S_Physics::ResizeGrid(glm::vec2 pos, glm::vec2 size, float cellSize)
+{
+	RELEASE(grid);
+	grid = new FixedGrid(pos, size, cellSize);
+
+	for (uint32_t i = 0; i < entities.size(); ++i)
+	{
+		if (colliders[i].is_static)
+			continue;
+
+		C_Transform& transform = transforms[i];
+		grid->Insert(i, transform.position, transform.size);
+	}
+}
+
+void S_Physics::RecalculateGrid()
+{
+	grid->Clear();
+
+	for (uint32_t i = 0; i < entities.size(); ++i)
+	{
+		if (colliders[i].is_static)
+			continue;
+
+		C_Transform& transform = transforms[i];
+
+		OPTICK_PUSH("Insert Item");
+		grid->Insert(i, transform.position, transform.size);
+		OPTICK_POP();
+	}
+}
+
+//-------------------------------
+// --- EVENTS ---
+void S_Physics::OnWorldSizeUpdate(EventWorldSizeUpdate* e)
+{
+	ResizeGrid(glm::vec2(0.0f), glm::vec2(e->width, e->height), GRID_CELLSIZE);
 }

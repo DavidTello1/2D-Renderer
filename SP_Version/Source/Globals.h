@@ -78,7 +78,7 @@ typedef unsigned long long UID;
 #define YELLOW  { 1.0f, 1.0f, 0.0f , 1.0f}
 
 // ECS
-const int MAX_ENTITIES = 10000;
+const int MAX_ENTITIES = 20000;
 const int MAX_COMPONENTS = 32;
 
 typedef unsigned int EntityIdx;
