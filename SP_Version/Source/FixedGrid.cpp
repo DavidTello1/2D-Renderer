@@ -13,68 +13,66 @@ FixedGrid::FixedGrid(glm::vec2 pos, glm::vec2 size, float cellSize)
     this->cellSize = cellSize;
 
     int32_t numCells = numRows * numColumns;
-    cell_heads.reserve(numCells);
-    cell_sizes.reserve(numCells);
-
-    for (size_t i = 0; i < numCells; ++i)
-    {
-        cell_heads.push_back((uint32_t) 0);
-        cell_sizes.push_back((uint32_t) 0);
-    }
+    cell_heads.resize(numCells);
+    cell_sizes.resize(numCells);
 }
 
 void FixedGrid::Clear()
 {
     int32_t numCells = numRows * numColumns;
-    for (size_t i = 0; i < numCells; ++i)
-    {
-        cell_heads[i] = (uint32_t)0;
-        cell_sizes[i] = (uint32_t)0;
-    }
+    cell_heads.reserve(numCells);
+    cell_sizes.reserve(numCells);
+    std::fill(cell_heads.begin(), cell_heads.end(), (uint32_t)0);
+    std::fill(cell_sizes.begin(), cell_sizes.end(), (uint32_t)0);
 
     items_list.clear();
 }
 
-void FixedGrid::Insert(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size)
+void FixedGrid::RecalculateGrid(const uint32_t& num_elements, const std::vector<bool>& static_colliders, const std::vector<glm::vec2>& positions, const std::vector<glm::vec2>& sizes)
 {
-    // For each cell occupied by the item
-    for (uint32_t cell_index : GetCells(item, pos, size))
-    {
-        // Insert item to list after last-item's index inside this cell
-        items_list.insert(items_list.begin() + cell_heads[cell_index] + cell_sizes[cell_index], item);
-        
-        // Increase count of cell's items
-        cell_sizes[cell_index]++;
+    OPTICK_PUSH("Clear Grid");
+    // Clear Current Grid
+    Clear();
+    OPTICK_POP();
 
-        // Update all cell_heads behind this cell
-        for (size_t i = cell_index + 1; i < cell_heads.size(); ++i)
-            cell_heads[i]++;
-    }
-}
-
-void FixedGrid::Remove(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size)
-{
-    // For each cell occupied by the item
-    for (uint32_t cell_index : GetCells(item, pos, size))
+    OPTICK_PUSH("First Pass");
+    // First Pass (set number of items inside each cell)
+    uint32_t num_items = 0;
+    for (uint32_t i = 4; i < num_elements; ++i)
     {
-        for (size_t i = 0; i < cell_sizes[cell_index]; ++i) // For each item inside the cell
+        for (uint32_t index : GetCells(i, positions[i], sizes[i]))
         {
-            uint index = cell_heads[cell_index] + i; // Get Index to items_list
-
-            if (items_list[index] == item) // If found
-            {
-                items_list.erase(items_list.begin() + index); // Erase the item from the items_list
-                break;
-            }
+            cell_sizes[index]++;
+            num_items++;
         }
-
-        // Decrease count of cell's items
-        cell_sizes[cell_index]--; 
-
-        // Update all cell_heads behind this cell
-        for (size_t i = cell_index + 1; i < cell_heads.size(); ++i)
-            cell_heads[i]--;
     }
+    items_list.resize(num_items); // Resize items_list to actual size (but empty)
+    OPTICK_POP();
+
+    OPTICK_PUSH("Second Pass");
+    // Second Pass (set first item index of each cell)
+    size_t numCells = (size_t)numRows * numColumns;
+    for (uint32_t i = 1; i < numCells; ++i) // we start from second cell because the first cell will always start at head 0
+    {
+        cell_heads[i] = cell_heads[i - 1] + cell_sizes[i - 1];
+    }
+    OPTICK_POP();
+
+    OPTICK_PUSH("Third Pass");
+    // Third Pass (insert items inside items_list)
+    std::vector<uint32_t> tmp_cellSizes(numCells, (uint32_t)0);
+    for (uint32_t i = 4; i < num_elements; ++i)
+    {
+        for (uint32_t index : GetCells(i, positions[i], sizes[i]))
+        {
+            uint32_t item_index = cell_heads[index] + tmp_cellSizes[index];
+            items_list[item_index] = i;
+
+            tmp_cellSizes[index]++;
+        }
+    }
+    OPTICK_POP();
+
 }
 
 std::vector<uint32_t> FixedGrid::GetCandidates(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size) const
@@ -85,15 +83,8 @@ std::vector<uint32_t> FixedGrid::GetCandidates(const uint32_t& item, const glm::
 
     for (const uint32_t& cell_index : GetCells(item, pos, size))
     {
-        OPTICK_PUSH("GetCells");
-        const uint32_t cell_size = cell_sizes[cell_index];
-        const uint32_t cell_head = cell_heads[cell_index];
-        for (uint32_t i = 0; i < cell_size; ++i)
-        {
-            uint32_t item_index = cell_head + i;
-            candidates.push_back(items_list[item_index]);
-        }
-        OPTICK_POP();
+        const std::vector<uint32_t>::const_iterator& start = items_list.begin() + cell_heads[cell_index];
+        candidates.insert(candidates.end(), start, start + cell_sizes[cell_index]);
     }
 
     OPTICK_POP();

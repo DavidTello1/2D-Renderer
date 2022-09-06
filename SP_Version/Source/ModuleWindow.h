@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 
-#define TITLE "Rendering Version - David Tello"
+#define TITLE "Space Partitioning Version - David Tello"
 #define DEFAULT_WIDTH 1024
 #define DEFAULT_HEIGHT 768
 

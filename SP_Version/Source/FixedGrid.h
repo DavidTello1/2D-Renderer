@@ -2,9 +2,7 @@
 #include "Globals.h"
 
 #include "glm/include/glm/glm.hpp"
-#include <array>
 #include <vector>
-#include <list>
 
 class FixedGrid
 {
@@ -20,9 +18,7 @@ public:
 	void SetCellSize(const float& size) { cellSize = size; }
 
 	void Clear();
-
-	void Insert(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size);
-	void Remove(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size);
+	void RecalculateGrid(const uint32_t& num_elements, const std::vector<bool>& static_colliders, const std::vector<glm::vec2>& positions, const std::vector<glm::vec2>& sizes);
 
 	std::vector<uint32_t> GetCandidates(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size) const;
 
@@ -39,7 +35,7 @@ private:
 
 	// Grid Cells
 	std::vector<uint32_t> cell_heads; //index of first item in cell inside items_list
-	std::vector<uint32_t> cell_sizes;
+	std::vector<uint32_t> cell_sizes; //number of items inside each cell
 
 	// Items
 	std::vector<uint32_t> items_list;

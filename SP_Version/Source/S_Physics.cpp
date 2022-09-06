@@ -399,31 +399,24 @@ void S_Physics::ResizeGrid(glm::vec2 pos, glm::vec2 size, float cellSize)
 	RELEASE(grid);
 	grid = new FixedGrid(pos, size, cellSize);
 
-	for (uint32_t i = 0; i < entities.size(); ++i)
-	{
-		if (colliders[i].is_static)
-			continue;
-
-		C_Transform& transform = transforms[i];
-		grid->Insert(i, transform.position, transform.size);
-	}
+	RecalculateGrid();
 }
 
 void S_Physics::RecalculateGrid()
 {
-	grid->Clear();
-
-	for (uint32_t i = 0; i < entities.size(); ++i)
+	// Create GridElements struct
+	std::vector<bool> static_colliders(entities.size());
+	std::vector<glm::vec2> positions(entities.size());
+	std::vector<glm::vec2> sizes(entities.size());
+	for (size_t i = 0; i < entities.size(); ++i)
 	{
-		if (colliders[i].is_static)
-			continue;
-
-		C_Transform& transform = transforms[i];
-
-		OPTICK_PUSH("Insert Item");
-		grid->Insert(i, transform.position, transform.size);
-		OPTICK_POP();
+		static_colliders[i] = colliders[i].is_static;
+		positions[i] = transforms[i].position;
+		sizes[i] = transforms[i].size;
 	}
+
+	// Recalculate Grid
+	grid->RecalculateGrid(entities.size(), static_colliders, positions, sizes);
 }
 
 //-------------------------------
