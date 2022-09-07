@@ -40,7 +40,7 @@ void FixedGrid::RecalculateGrid(const uint32_t& num_elements, const std::vector<
     uint32_t num_items = 0;
     for (uint32_t i = 4; i < num_elements; ++i)
     {
-        for (uint32_t index : GetCells(i, positions[i], sizes[i]))
+        for (uint32_t index : GetCells(positions[i], sizes[i]))
         {
             cell_sizes[index]++;
             num_items++;
@@ -63,7 +63,7 @@ void FixedGrid::RecalculateGrid(const uint32_t& num_elements, const std::vector<
     std::vector<uint32_t> tmp_cellSizes(numCells, (uint32_t)0);
     for (uint32_t i = 4; i < num_elements; ++i)
     {
-        for (uint32_t index : GetCells(i, positions[i], sizes[i]))
+        for (uint32_t index : GetCells(positions[i], sizes[i]))
         {
             uint32_t item_index = cell_heads[index] + tmp_cellSizes[index];
             items_list[item_index] = i;
@@ -75,24 +75,30 @@ void FixedGrid::RecalculateGrid(const uint32_t& num_elements, const std::vector<
 
 }
 
-std::vector<uint32_t> FixedGrid::GetCandidates(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size) const
+std::vector<uint32_t> FixedGrid::GetCandidates(const glm::vec2& pos, const glm::vec2& size) const
 {
-    OPTICK_PUSH("CheckCollision Candidates");
-
     std::vector<uint32_t> candidates = {};
 
-    for (const uint32_t& cell_index : GetCells(item, pos, size))
+    for (const uint32_t& cell_index : GetCells(pos, size))
     {
+        // Add items inside cell to candidates list
         const std::vector<uint32_t>::const_iterator& start = items_list.begin() + cell_heads[cell_index];
         candidates.insert(candidates.end(), start, start + cell_sizes[cell_index]);
-    }
 
-    OPTICK_POP();
+        // Check Borders
+        const int cell_x = cell_index >= numColumns ? cell_index % numColumns : cell_index; // apply the modulo operator only when needed
+        const int cell_y = cell_index / numColumns;
+
+        if      (cell_y == 0)               candidates.push_back(0); // Top
+        else if (cell_y == numRows - 1)     candidates.push_back(1); // Bottom
+        if      (cell_x == 0)               candidates.push_back(2); // Left
+        else if (cell_x == numColumns - 1)  candidates.push_back(3); // Right
+    }
 
     return candidates;
 }
 
-std::vector<uint32_t> FixedGrid::GetCells(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size) const
+std::vector<uint32_t> FixedGrid::GetCells(const glm::vec2& pos, const glm::vec2& size) const
 {
     std::vector<uint32_t> cell_indices = {};
     int TL = -1, TR = -1, BL = -1, BR = -1;

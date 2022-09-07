@@ -20,10 +20,10 @@ public:
 	void Clear();
 	void RecalculateGrid(const uint32_t& num_elements, const std::vector<bool>& static_colliders, const std::vector<glm::vec2>& positions, const std::vector<glm::vec2>& sizes);
 
-	std::vector<uint32_t> GetCandidates(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size) const;
+	std::vector<uint32_t> GetCandidates(const glm::vec2& pos, const glm::vec2& size) const;
 
 private:
-	std::vector<uint32_t> GetCells(const uint32_t& item, const glm::vec2& pos, const glm::vec2& size) const;
+	std::vector<uint32_t> GetCells(const glm::vec2& pos, const glm::vec2& size) const;
 
 private:
 	uint numRows = 0;

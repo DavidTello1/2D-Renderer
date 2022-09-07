@@ -61,46 +61,32 @@ void S_Physics::Update(float dt)
 		if (collider1.is_static) // if collider is static check next one
 			continue;
 
-		glm::vec2 distance = glm::vec2(0.0f);
-		CollisionType type = CollisionType::ERROR;
-
-		// Check Collision with Borders
-		for (size_t j = 0; j < 4; ++j)
-		{
-			C_Collider& collider2 = colliders[j]; // get border collider
-			collider2.is_colliding = false;
-
-			if (CheckCollision(collider1, collider2, distance, type)) // check if they are colliding and retrieve distance & type
-			{
-				CollidingPair new_pair = { i, j, distance, type };
-
-				// Check if pair already exists
-				if (PairExists(new_pair, colliding_pairs) == false)
-					colliding_pairs.push_back(new_pair); // add to vector
-			}
-		}
-
+		OPTICK_PUSH("CheckCollision Candidates");
 		// Check Collision with other asteroids
-		for (uint32_t index : grid->GetCandidates(i, collider1.position, glm::vec2(collider1.radius)))
+		for (uint32_t index : grid->GetCandidates(collider1.position, glm::vec2(collider1.radius)))
 		{
-			if (index == i) // if same entity check next one
+			// Create new pair
+			glm::vec2 distance = glm::vec2(0.0f);
+			CollisionType type = CollisionType::ERROR;
+			CollidingPair new_pair = { i, index, distance, type };
+
+			// Check if pair is valid
+			if (index == i || PairExists(new_pair, colliding_pairs))
 				continue;
 
-			// Check if pair already exists
-			CollidingPair new_pair = { i, index, distance, type };
-			if (PairExists(new_pair, colliding_pairs) == false)
-			{
-				C_Collider& collider2 = colliders[index]; // get second collider
-				collider2.is_colliding = false;
+			// Get Second Collider
+			C_Collider& collider2 = colliders[index];
+			collider2.is_colliding = false;
 
-				if (CheckCollision(collider1, collider2, distance, type)) // check if they are colliding and retrieve distance & type	
-				{
-					new_pair.distance = distance;
-					new_pair.type = type;
-					colliding_pairs.push_back(new_pair); // add new pair to vector
-				}
+			// Check if they are colliding and retrieve distance & type
+			if (CheckCollision(collider1, collider2, distance, type))	
+			{
+				new_pair.distance = distance;
+				new_pair.type = type;
+				colliding_pairs.push_back(new_pair); // add new pair to vector
 			}
 		}
+		OPTICK_POP();
 	}
 	OPTICK_POP();
 
@@ -149,16 +135,11 @@ void S_Physics::Update(float dt)
 
 		transform.position += rigidbody.velocity * dt;
 		transform.rotation += rigidbody.rotation_speed * dt;
-		
+
 		collider.position = transform.position;
 		collider.center = transform.position + collider.radius;
-	}
-	OPTICK_POP();
 
-	// --- Set Components ---
-	OPTICK_PUSH("Set Components");
-	for (size_t i = 0; i < entities.size(); ++i)
-	{
+		// --- Set Components ---
 		App->scene->SetComponent<C_Transform>(entities[i], transforms[i]);
 		App->scene->SetComponent<C_RigidBody>(entities[i], rigidbodies[i]);
 		App->scene->SetComponent<C_Collider>(entities[i], colliders[i]);
@@ -404,7 +385,7 @@ void S_Physics::ResizeGrid(glm::vec2 pos, glm::vec2 size, float cellSize)
 
 void S_Physics::RecalculateGrid()
 {
-	// Create GridElements struct
+	// Fill Vectors
 	std::vector<bool> static_colliders(entities.size());
 	std::vector<glm::vec2> positions(entities.size());
 	std::vector<glm::vec2> sizes(entities.size());
