@@ -7,6 +7,7 @@
 #define PANEL_WIDTH 190
 #define PANEL_HEIGHT 266
 #define WORLD_SCALE 50
+#define CELL_SCALE 50
 
 struct EventWindowResize;
 
@@ -41,6 +42,8 @@ private:
 	int move_speed = 0;
 	int world_width = 0;
 	int world_height = 0;
+
+	int cell_size = 0;
 
 	int num_asteroids = 0;
 
