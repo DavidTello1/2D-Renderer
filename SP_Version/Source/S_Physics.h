@@ -46,8 +46,9 @@ public:
     void Init() override;
     void Update(float dt) override;
 
+    FixedGrid* GetGrid() { return grid; }
     const FixedGrid* GetGrid() const { return grid; }
-    void SetGridCellSize(const float& cellSize) { ResizeGrid(grid->GetPosition(), grid->GetSize(), cellSize); }
+    void SetGridCellSize(const float& cellSize) { grid->SetCellSize(cellSize);  ResizeGrid(grid->GetPosition(), grid->GetSize(), cellSize); }
 
 private:
     bool CheckCollision(const C_Collider& collider1, const C_Collider& collider2, glm::vec2& distance, CollisionType& type);

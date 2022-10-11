@@ -7,6 +7,9 @@
 #include "ModuleScene.h" //*** to have GetEntityCount()
 #include "ModuleGame.h" //*** for world_size & defines (BASE_ENTITIES + DEFAULT_...)
 
+#include "S_Physics.h"
+#include "FixedGrid.h"
+
 #include "imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
 #include "imgui/imgui_impl_sdl.h"
@@ -49,6 +52,8 @@ bool ModuleGUI::Start()
 {
 	world_width = DEFAULT_WORLD_WIDTH / WORLD_SCALE;
 	world_height = DEFAULT_WORLD_HEIGHT / WORLD_SCALE;
+
+	cell_size = App->scene->GetSystemPhysics()->GetGrid()->GetCellSize() / CELL_SCALE;
 
 	move_speed = DEFAULT_CAMERA_MOVE_SPEED;
 
@@ -178,8 +183,10 @@ void ModuleGUI::DrawInfo()
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
 			ImGui::Text("Colliders");
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
 			ImGui::Text("Grid");
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+			ImGui::Text("Cell Size");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
 			ImGui::Text("World Width");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
@@ -191,9 +198,22 @@ void ModuleGUI::DrawInfo()
 
 			ImGui::Checkbox("##Colliders", &is_draw_colliders);
 
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 			ImGui::Checkbox("##Grid", &is_draw_grid);
 
 			ImGui::PushStyleColor(ImGuiCol_Text, YELLOW);
+			if (ImGui::DragInt("##Cell Size", &cell_size, 1.0f, 1, 1000))
+			{
+				if (cell_size * CELL_SCALE > world_width* WORLD_SCALE || cell_size * CELL_SCALE > world_height* WORLD_SCALE)
+				{
+					if (world_width > world_height)
+						cell_size = world_height;
+					else
+						cell_size = world_width;
+				}
+				App->scene->GetSystemPhysics()->SetGridCellSize(cell_size * CELL_SCALE);
+			}
+
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
 			if (ImGui::DragInt("##World Width", &world_width, 1.0f, 1, 1000))
 				App->event_mgr->Publish(new EventWorldSizeUpdate(world_width * WORLD_SCALE, world_height * WORLD_SCALE));
