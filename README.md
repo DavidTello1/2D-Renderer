@@ -3,7 +3,7 @@ This is a final degree project, it is a small 2D engine written in C++ that can 
 
 ## Video
 
-[Video](https://www.youtube.com/watch?v=tiB8eBtxa1I)
+[Video](https://youtu.be/tiB8eBtxa1I)
 
 <br/>
 
