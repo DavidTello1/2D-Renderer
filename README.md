@@ -5,8 +5,8 @@ This is a final degree project, it is a small 2D engine written in C++ that can 
 ## Technical Specs
 **OS**: Windows 10 Pro (x64) <br/>
 **Processor**: Intel Core i7 - 8750H <br/>
-**Memory**: 16GB DDR4 2666 MHz <br/>
-**Graphics**: Nvidia GeForce RTX 2060 (6GB) 
+**Memory**: 16GB RAM <br/>
+**Graphics**: Nvidia GeForce RTX 2060 (6GB)
 
 
 ## Video
