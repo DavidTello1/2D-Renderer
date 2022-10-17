@@ -1,6 +1,16 @@
 # Optimization Techniques for a 2D Engine
 This is a final degree project, it is a small 2D engine written in C++ that can be executed in any Windows machine and can handle more than 10.000 entities interacting with each other in real time.
 
+<br/>
+
+## Technical Specs
+**OS**: Windows 10 Pro (x64) <br/>
+**Processor**: Intel Core i7 - 8750H <br/>
+**Memory**: 16GB DDR4 2666 MHz <br/>
+**Graphics**: Nvidia GeForce RTX 2060 (6GB) 
+
+<br/>
+
 ## Video
 
 [Video](https://youtu.be/tiB8eBtxa1I)
